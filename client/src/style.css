@@ -1,0 +1,234 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* font-sizes variables */
+  --mini-size: calc(0.6rem + 0.12vw);
+  --cater-size: calc(0.78rem + 0.1vw);
+  --mid-size: calc(1rem + 0.18vw);
+  --regular-size: calc(1.5rem + 0.2vw);
+
+  --title-size: calc(2.25rem + 0.15vw);
+  --hero-title-size: calc(3rem + 0.12vw);
+
+  --size-scale-factor: 0.5rem; /* 1.5rem / 3 = 0.5rem */
+
+  /* color-scheme (07 colors)*/
+  --background-primary: hsl(213, 45%, 94%);
+  --background-secondary: hsl(41, 46%, 86%);
+  --bg-main-button: hsl(345, 88%, 37%);
+
+  /* --highlight-text: hsl(32, 88%, 37%); */
+  --highlight-text: hsl(32, 88%, 37%);
+  --link--external-btn: hsl(32, 30%, 37%);
+
+  --title-color: hsl(347, 48%, 30%);
+  --text-paragraph: hsl(0, 0%, 12%);
+}
+
+@media screen and (min-width: 768px) {
+  :root {
+    --mini-size: calc(0.6rem + 0.12vw);
+    --cater-size: calc(0.78rem + 0.1vw);
+    --mid-size: calc(1rem + 0.18vw);
+    --regular-size: calc(1.5rem + 0.2vw);
+
+    --title-size: calc(2.25rem + 0.15vw);
+    --hero-title-size: calc(3rem + 0.12vw);
+  }
+}
+
+@media screen and (min-width: 1160px) {
+  :root {
+    --mini-size: calc(0.6rem + 0.12vw);
+    --cater-size: calc(0.85rem + 0.12vw);
+    --mid-size: calc(0.96rem + 0.12vw);
+    --regular-size: calc(1.25rem + 0.05vw);
+
+    --title-size: calc(2rem + 0.15vw);
+    --hero-title-size: calc(2.25rem + 0.12vw);
+  }
+}
+
+body {
+  width: 100vw;
+  margin: 0;
+  color: var(--text-paragraph);
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+h1,
+h1 span {
+  font-size: var(--hero-title-size);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+h2 {
+  font-size: var(--title-size);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+h3 {
+  font-size: var(--title-size);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+h4 {
+  font-size: var(--regular-size);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+h5 {
+  font-size: var(--mid-size);
+  font-weight: 300;
+  line-height: 1.35;
+}
+
+p {
+  font-size: var(--regular-size);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+p.smaller_p {
+  font-size: var(--mid-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+li.navlink__item,
+li.navlink__item-language {
+  font-size: var(--cater-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+span {
+  font-size: var(--regular-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+span.smaller__span {
+  font-size: var(--cater-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  padding: 0.46em 1.25em;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+a.nav_link {
+  width: max-content;
+  font-size: var(--mid-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+a.cta__button-link {
+  font-size: var(--regular-size);
+  line-height: 1.6;
+}
+
+a.cta__button-primary {
+  color: var(--background-primary);
+  background-color: var(--bg-main-button);
+  font-size: var(--mid-size);
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 1.5rem;
+}
+
+a.cta__button-secondary {
+  color: var(--text-paragraph);
+  font-size: var(--mid-size);
+  font-weight: 600;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+/* font families */
+
+.noto-sans-400 {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+.source-sans-3-900 {
+  font-family: "Source Sans 3", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.fira-sans-semibold {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.card {
+  padding: 2em;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+ */
