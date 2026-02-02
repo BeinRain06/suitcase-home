@@ -1,6 +1,6 @@
 <script>
 import { ref, reactive } from "vue";
-import LandingPage from "./components/LandingPage.vue";
+import LandingPage from "./pagetoview/LandingPage.vue";
 
 export default {
   components: {
@@ -51,7 +51,7 @@ export default {
     };
   },
   methods: {
-    getHome(id_home) {
+    /* getHome(id_home) {
       if (id_home) {
         this.$router.push({ path: "/", hash: `#${id_home}` });
       } else {
@@ -60,6 +60,12 @@ export default {
     },
     getProject(id_project) {
       this.$router.push({ name: "project", params: { projectId: id_project } });
+    }, */
+    getHome() {
+      this.$router.push({ path: "/" });
+    },
+    getProject() {
+      this.$router.push({ path: "/project" });
     },
     getContact() {
       this.$router.push({ path: "/contact" });
@@ -74,9 +80,41 @@ export default {
 
       console.log("selectLang :", this.selectLang);
     },
+
+    handleNavigationPath(e, key) {
+      console.log("e target :", e.target);
+
+      console.log("this itemsRef :", this.itemsRef);
+
+      const itemsNav = this.itemsRef;
+
+      Object.keys(itemsNav).forEach((ex_key) =>
+        itemsNav[ex_key].classList.remove("active__navlink"),
+      );
+
+      itemsNav[key].classList.add("active__navlink");
+
+      /* push to the new Route */
+      switch (key) {
+        case "0":
+          this.getHome();
+          break;
+        case "1":
+          this.getProject();
+          break;
+        case "2":
+          this.getContact();
+          break;
+        default:
+          throw new Error(
+            "There is a problem switching navlink route in navbar",
+          );
+      }
+    },
   },
   mounted() {
     if (this.itemsRef) {
+      /*  console.log("this itemRef 0:", this.itemsRef[0]); */
       this.itemsRef[0].classList.add("active__navlink");
     }
     this.langSelected();
@@ -86,9 +124,10 @@ export default {
 
 <template>
   <header>
+    <!-- i have set navbar invisible -- temporary -->
     <nav
       id="navbar"
-      class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
+      class="navbar hidden flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
     >
       <div class="logo__nav-container">
         <div class="logo__nav-icon"></div>
@@ -101,16 +140,17 @@ export default {
         class="navlinks__desktop-container w-[40%] h-full flex flex-row justify-end items-center gap-[1.5em]"
       >
         <li
-          class="navlink__item cursor-pointer"
+          class="navlink__item cursor-pointer z-20"
           :key="value.id"
           v-for="(value, key) in navlinksItems"
           :ref="(el) => setItemRef(el, key)"
+          @click="(e) => handleNavigationPath(e, key)"
         >
           {{ value.text }}
         </li>
 
         <li
-          class="navlink__item-language w-[3.5rem] flex flex-row justify-center"
+          class="navlink__item-language w-[3.5rem] flex flex-row justify-center z-20"
         >
           <select
             name="language"
@@ -133,7 +173,9 @@ export default {
   <!-- introduce component routed -->
   <router-view :user-language="selectLang"></router-view>
 
-  <footer id="footer w-full mx-auto">
+  <!-- i have set footer hidden -- temporary -->
+
+  <footer id="footer" class="hidden w-full mx-auto">
     <div class="footer__container pt-20 pb-10 px-[1rem]">
       <div
         class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"
@@ -207,13 +249,18 @@ ul {
 
 li.navlink__item {
   width: max(6.45rem, 8%);
+  color: inherit;
+  background-color: transparent;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  transition: all 1s ease;
 }
 
 li.navlink__item.active__navlink {
   /* do something */
+  color: var(--background-primary);
+  background-color: hsla(32, 30%, 37%, 0.65);
 }
 
 /* footer */

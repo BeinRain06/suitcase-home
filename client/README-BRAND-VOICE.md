@@ -26,7 +26,16 @@ Tone Of Voice depends :
 
 <br/>
 
-> SUITCASE HOME PAGE - VOICE'S TONE : "ENPOWEREMENT"
+Brand Voice represents your brand’s unique perspective and the values you stand for. In other words, this is your brand’s overall personality.
+
+
+Your tone of voice refers to how your brand communicates with your audience, which can include **word choice, communication style, and emotional tone.**
+
+This means your tone of voice can change somewhat based on what’s most appropriate for the situation.
+
+<br/>
+
+> SUITCASE HOME PAGE - OUR VOICE'S TONE --> : **Serenity**
 
 ### BRAND VOICE POSITIONING
 
@@ -107,3 +116,12 @@ Tone Of Voice depends :
 <br/>
 
 - > TITLE-TYPOGRAPHY : --title-color: hsl(347, 48%, 30%);
+
+**E/GENERAL BRAND VOICE**
+
+**Brand Voice** represents your brand’s **unique perspective and the values you stand for.** In other words, this is your brand’s overall personality.
+
+
+Values shaping our brand voice = SYMPATHETIC - AUDACIOUS - DISRUPTIVE
+
+> Our Brand Voice --> : **ENPOWEREMENT**
