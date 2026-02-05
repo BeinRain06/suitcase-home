@@ -22,11 +22,11 @@ onUpdated(() => {
 <template>
   <div class="project__container activate__modal w-full">
     <div class="projectcallpage__wrap w-hull h-full">
-      <ProjectCallPage :user-language="indexLang.val" />
+      <ProjectCallPage :user-language="props.userLanguage" />
     </div>
     <!-- Modal page appearance -->
     <div class="projectmodalpage__wrap active__project-modal">
-      <ProjectModalPage :user-language="indexLang.val" />
+      <ProjectModalPage :user-language="props.userLanguage" />
     </div>
   </div>
 </template>

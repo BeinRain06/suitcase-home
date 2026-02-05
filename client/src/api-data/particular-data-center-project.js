@@ -14,33 +14,19 @@ export const quotationFoundations = {
         en: "Foundation, Beams, Pillars",
       },
       materials: {
-        fr: {
-          needOne: {
-            qty: "- 27 poteaux",
-            dimension: "2*20*20",
-            units: "(m*cm*cm)",
-          },
-          needTwo: {
-            qty: "- 09 longrines",
-            dimension: "14*20*20",
-            units: "(m*cm*cm)",
-          },
-          needThree:
-            "- Implantation, fouilles, feraillage + entiereté des matériaux  ",
+        needOne: {
+          qty: { fr: "- 27 poteaux", en: "- 27 pillars" },
+          dimensions: "2*20*20",
+          units: "(m*cm*cm)",
         },
-        en: {
-          needOne: {
-            qty: "- 27 pillars",
-            dimension: "2*20*20",
-            units: "(m*cm*cm)",
-          },
-          needTwo: {
-            qty: "- 09 beams",
-            dimension: "14*20*20",
-            units: "(m*cm*cm)",
-          },
-          needThree:
-            "- Implantation, Digging, Irons Framework, + entire materials",
+        needTwo: {
+          qty: { fr: "- 09 longrines", en: "- 09 beams" },
+          dimensions: "14*20*20",
+          units: "(m*cm*cm)",
+        },
+        needThree: {
+          fr: "- Implantation, fouilles, feraillage + entiereté des matériaux ",
+          en: "- Implantation, Digging, Irons Framework, + entire materials",
         },
       },
       delivery: {
@@ -59,13 +45,13 @@ export const quotationFoundations = {
         en: "Mound , Chaining",
       },
       materials: {
-        fr: {
-          needOne: "- Coffrage, Coulage, Elevation,  ",
-          needTwo: "- Fers, Ciments, Parpaings, ...  ",
+        needOne: {
+          fr: "- Coffrage, Coulage, Elevation,",
+          en: "- Formwork, Pouring, Mound,",
         },
-        en: {
-          needOne: "- Formwork, Pouring, Mound,",
-          needTwo: "- Irons, Cements, Bricks, ...  ",
+        needTwo: {
+          fr: "- Fers, Ciments, Parpaings, ...",
+          en: "- Irons, Cements, Bricks, ...",
         },
       },
       delivery: {
@@ -89,33 +75,19 @@ export const quotationFoundations = {
         en: "Foundation, Beams, Pillars",
       },
       materials: {
-        fr: {
-          needOne: {
-            qty: "- 20 poteaux",
-            dimension: "2*15*15",
-            units: "(m*cm*cm)",
-          },
-          needTwo: {
-            qty: "- 09 longrines",
-            dimension: "11*15*15",
-            units: "(m*cm*cm)",
-          },
-          needThree:
-            "- Implantation, fouilles, feraillage + entiereté des matériaux  ",
+        needOne: {
+          qty: { fr: "- 20 poteaux", en: "- 20 pillars" },
+          dimensions: "2*15*15",
+          units: "(m*cm*cm)",
         },
-        en: {
-          needOne: {
-            qty: "- 20 pillars",
-            dimension: "2*15*15",
-            units: "(m*cm*cm)",
-          },
-          needTwo: {
-            qty: "- 09 beams",
-            dimension: "11*15*15",
-            units: "(m*cm*cm)",
-          },
-          needThree:
-            "- Implantation, Digging, Irons Framework, + entire materials ",
+        needTwo: {
+          qty: { fr: "- 09 longrines", en: "- 09 beams" },
+          dimensions: "11*15*15",
+          units: "(m*cm*cm)",
+        },
+        needThree: {
+          fr: "- Implantation, fouilles, feraillage + entiereté des matériaux ",
+          en: "- Implantation, Digging, Irons Framework, + entire materials",
         },
       },
       delivery: {
@@ -134,13 +106,13 @@ export const quotationFoundations = {
         en: "Mound , Chaining",
       },
       materials: {
-        fr: {
-          needOne: "- Coffrage, Coulage, Elevation,",
-          needTwo: "- Fers, Ciments, Parpaings, ...  ",
+        needOne: {
+          fr: "- Coffrage, Coulage, Elevation,",
+          en: "- Formwork, Pouring, Mound,",
         },
-        en: {
-          needOne: "- Formwork, Pouring, Mound,",
-          needTwo: "- Irons, Cements, Bricks, ...  ",
+        needTwo: {
+          fr: "- Fers, Ciments, Parpaings, ...",
+          en: "- Irons, Cements, Bricks, ...",
         },
       },
       delivery: {
@@ -164,39 +136,20 @@ export const quotationFoundations = {
           en: "Foundation, Beams, Pillars",
         },
         materials: {
-          fr: {
-            needOne: {
-              qty: "- 25 semelles",
-              dimension: "50*50*40",
-              units: "(cm*cm*cm)",
-            },
-            needTwo: {
-              qty: "- 25 poteaux",
-              dimension: "2*15*35",
-              units: "(m*cm*cm)",
-            },
-            needThree: {
-              qty: "- 10 longrines",
-              dimension: "13*15*35",
-              units: "(m*cm*cm)",
-            },
+          needOne: {
+            qty: { fr: "- 25 semelles", en: "- 25 soles" },
+            dimensions: "50*50*40",
+            units: "(m*cm*cm)",
           },
-          en: {
-            needOne: {
-              qty: "- 25 soles",
-              dimension: "50*50*40",
-              units: "(cm*cm*cm)",
-            },
-            needTwo: {
-              qty: "- 25 Pillars",
-              dimension: "2*15*35",
-              units: "(m*cm*cm)",
-            },
-            needThree: {
-              qty: "- 10 beams",
-              dimension: "13*15*35",
-              units: "(m*cm*cm)",
-            },
+          needTwo: {
+            qty: { fr: "- 25 poteaux", en: "- 25 pillars" },
+            dimensions: "2*15*35",
+            units: "(m*cm*cm)",
+          },
+          needThree: {
+            qty: { fr: "- 10 longrines", en: "- 10 beams" },
+            dimensions: "13*15*35",
+            units: "(m*cm*cm)",
           },
         },
         delivery: {
@@ -215,13 +168,13 @@ export const quotationFoundations = {
           en: "Mound , Chaining",
         },
         materials: {
-          fr: {
-            needOne: "- Coffrage, Coulage, Elevation,",
-            needTwo: "- Fers, Ciments, Parpaings, ...  ",
+          needOne: {
+            fr: "- Coffrage, Coulage, Elevation,",
+            en: "- Formwork, Pouring, Mound,",
           },
-          en: {
-            needOne: "- Formwork, Pouring, Mound,",
-            needTwo: "- Irons, Cements, Bricks, ...  ",
+          needTwo: {
+            fr: "- Fers, Ciments, Parpaings, ...",
+            en: "- Irons, Cements, Bricks, ...",
           },
         },
         delivery: {
@@ -242,15 +195,17 @@ export const quotationFoundations = {
           en: "Paving Stone",
         },
         materials: {
-          fr: {
-            needOne: "- Fers, hourdis, Nervures",
-            needTwo: "- Sables, Gravier, Ciments ",
-            needThree: "Planches, lattes, + materiaux supplementaires ",
+          needOne: {
+            fr: "- Fers, hourdis, Nervures",
+            en: "- Irons, Slabs, Nervures",
           },
-          en: {
-            needOne: "- Irons, Slabs, Nervures",
-            needTwo: "- Sands, Stones, Cements",
-            needThree: "- Planks, laths, + extra materials ",
+          needTwo: {
+            fr: "- Sables, Gravier, Ciments",
+            en: "- Sands, Stones, Cements",
+          },
+          needThree: {
+            fr: "Planches, lattes, + materiaux supplementaires",
+            en: "- Planks, laths, + extra materials",
           },
         },
         delivery: {
@@ -269,16 +224,15 @@ export const quotationFoundations = {
           en: "Mound-Chaining first floor",
         },
         materials: {
-          fr: {
-            needOne: "- Coffrage, Coulage, Elevation,",
-            needTwo: "- Fers, Ciments, Parpaings, ...  ",
+          needOne: {
+            fr: "- Coffrage, Coulage, Elevation,",
+            en: "- Formwork, Pouring, Mound,",
           },
-          en: {
-            needOne: "- Formwork, Pouring, Mound,",
-            needTwo: "- Irons, Cements, Bricks, ...  ",
+          needTwo: {
+            fr: "- Fers, Ciments, Parpaings, ...",
+            en: "- Irons, Cements, Bricks, ...",
           },
         },
-
         delivery: {
           fr: "02 Semaines",
           en: "02 Weeks",
@@ -297,17 +251,17 @@ export const quotationPlumbing = {
     labor: "220.000",
     total: "500.000",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Plomberie",
+      en: "Plumbing Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Tuyaux",
-        needTwo: "- Vannes, Coudes, Coffrets",
+      needOne: {
+        fr: "- Gaines. Tuyaux",
+        en: "- Sheaths, Pipes",
       },
-      en: {
-        needOne: "- Sheaths, Pipes",
-        needTwo: "- Gates, bends, table board",
+      needTwo: {
+        fr: "- Vannes, Coudes, Coffrets",
+        en: "- Gates, bends, table board",
       },
     },
     delivery: {
@@ -324,17 +278,17 @@ export const quotationPlumbing = {
     labor: "100.000",
     total: "281.000",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Plomberie",
+      en: "Plumbing Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Tuyaux",
-        needTwo: "- Vannes, Coudes, Coffrets",
+      needOne: {
+        fr: "- Gaines. Tuyaux",
+        en: "- Sheaths, Pipes",
       },
-      en: {
-        needOne: "- Sheaths, Pipes",
-        needTwo: "- Gates, bends, table board",
+      needTwo: {
+        fr: "- Vannes, Coudes, Coffrets",
+        en: "- Gates, bends, table board",
       },
     },
     delivery: {
@@ -351,17 +305,17 @@ export const quotationPlumbing = {
     labor: "460.000",
     total: "1.070.000",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Plomberie",
+      en: "Plumbing Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Tuyaux",
-        needTwo: "- Vannes, Coudes, Coffrets",
+      needOne: {
+        fr: "- Gaines. Tuyaux",
+        en: "- Sheaths, Pipes",
       },
-      en: {
-        needOne: "- Sheaths, Pipes",
-        needTwo: "- Gates, bends, table board",
+      needTwo: {
+        fr: "- Vannes, Coudes, Coffrets",
+        en: "- Gates, bends, table board",
       },
     },
     delivery: {
@@ -380,17 +334,17 @@ export const quotationElectricity = {
     labor: "150.000",
     total: "317.500",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Electricité",
+      en: "Electricity Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Boites Dérivation",
-        needTwo: "- Coffrets, Boitiers",
+      needOne: {
+        fr: "- Gaines. Boites Dérivation",
+        en: "- Sheaths, Wiring Boxes",
       },
-      en: {
-        needOne: "- Sheaths, Wiring Boxes",
-        needTwo: "- Table board, command Boxes",
+      needTwo: {
+        fr: "- Coffrets, Boitiers",
+        en: "- Table board, command Boxes",
       },
     },
     delivery: {
@@ -407,17 +361,17 @@ export const quotationElectricity = {
     labor: "75.000",
     total: "175.250",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Electricité",
+      en: "Electricity Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Boites Dérivation",
-        needTwo: "- Coffrets, Boitiers",
+      needOne: {
+        fr: "- Gaines. Boites Dérivation",
+        en: "- Sheaths, Wiring Boxes",
       },
-      en: {
-        needOne: "- Sheaths, Wiring Boxes",
-        needTwo: "- Table board, command Boxes",
+      needTwo: {
+        fr: "- Coffrets, Boitiers",
+        en: "- Table board, command Boxes",
       },
     },
     delivery: {
@@ -434,17 +388,17 @@ export const quotationElectricity = {
     labor: "385.000",
     total: "805.000",
     title: {
-      fr: "Tuyauterie",
-      en: "Piping",
+      fr: "Tuyauterie Electricité",
+      en: "Electricity Piping",
     },
     materials: {
-      fr: {
-        needOne: "- Gaines. Boites Dérivation",
-        needTwo: "- Coffrets, Boitiers",
+      needOne: {
+        fr: "- Gaines. Boites Dérivation",
+        en: "- Sheaths, Wiring Boxes",
       },
-      en: {
-        needOne: "- Sheaths, Wiring Boxes",
-        needTwo: "- Table board, command Boxes",
+      needTwo: {
+        fr: "- Coffrets, Boitiers",
+        en: "- Table board, command Boxes",
       },
     },
     delivery: {
@@ -458,24 +412,25 @@ export const quotationRoofing = {
   0: {
     id: "danton_roofing",
     letterRef: "D",
+    surface: "158.4 m²",
     part_1: {
       volume: "",
       material_cost: "825.000",
       labor: "675.000",
       total: "1.500.000",
       title: {
-        fr: {
-          needOne: "- Planches, Lattes, Pointes",
-          needTwo: "- Liquide Traitement Bois",
-        },
-        en: {
-          needOne: "- Planks, laths, Nails",
-          needTwo: "- Woods Treatment Solution",
-        },
-      },
-      materials: {
         fr: "Charpente",
         en: "Roof Framework",
+      },
+      materials: {
+        needOne: {
+          fr: "- Planches, Lattes, Pointes",
+          en: "- Planks, laths, Nails",
+        },
+        needTwo: {
+          fr: "- Liquide Traitement Bois",
+          en: "- Woods Treatment Solution",
+        },
       },
       delivery: {
         fr: "05 Jours",
@@ -492,11 +447,13 @@ export const quotationRoofing = {
         en: "Sheets Metal Pavement",
       },
       materials: {
-        fr: {
-          needOne: "- Toles, Pointes, Flash Band",
+        needOne: {
+          fr: "- Toles, Pointes, Flash Band",
+          en: "- Sheets Metals, Nails, Flash Band",
         },
-        en: {
-          needOne: "- Sheets Metals, Nails, Flash Band",
+        needTwo: {
+          fr: "",
+          en: "",
         },
       },
       delivery: {
@@ -509,6 +466,7 @@ export const quotationRoofing = {
   1: {
     id: "merry_roofing",
     letterRef: "D",
+    surface: "104 m²",
     part_1: {
       volume: "",
       material_cost: "415.000",
@@ -519,13 +477,13 @@ export const quotationRoofing = {
         en: "Roof Framework",
       },
       materials: {
-        fr: {
-          needOne: "- Planches, Lattes, Pointes",
-          needTwo: "- Liquide Traitement Bois",
+        needOne: {
+          fr: "- Planches, Lattes, Pointes",
+          en: "- Planks, laths, Nails",
         },
-        en: {
-          needOne: "- Planks, laths, Nails",
-          needTwo: "- Woods Treatment Solution",
+        needTwo: {
+          fr: "- Liquide Traitement Bois",
+          en: "- Woods Treatment Solution",
         },
       },
       delivery: {
@@ -543,11 +501,13 @@ export const quotationRoofing = {
         en: "Sheets Metal Pavement",
       },
       materials: {
-        fr: {
-          needOne: "- Toles, Pointes, Flash Band",
+        needOne: {
+          fr: "- Toles, Pointes, Flash Band",
+          en: "- Sheets Metals, Nails, Flash Band",
         },
-        en: {
-          needOne: "- Sheets Metals, Pointes, Flash Band",
+        needTwo: {
+          fr: "",
+          en: "",
         },
       },
       delivery: {
@@ -560,6 +520,7 @@ export const quotationRoofing = {
   2: {
     id: "dexter_roofing",
     letterRef: "D",
+    surface: "175.5 m²",
     part_1: {
       volume: "",
       material_cost: "900.000",
@@ -570,13 +531,13 @@ export const quotationRoofing = {
         en: "Roof Framework",
       },
       materials: {
-        fr: {
-          needOne: "- Planches, Lattes, Pointes",
-          needTwo: "- Liquide Traitement Bois",
+        needOne: {
+          fr: "- Planches, Lattes, Pointes",
+          en: "- Planks, laths, Nails",
         },
-        en: {
-          needOne: "- Planks, laths, Nails",
-          needTwo: "- Woods Treatment Solution",
+        needTwo: {
+          fr: "- Liquide Traitement Bois",
+          en: "- Woods Treatment Solution",
         },
       },
       delivery: {
@@ -594,11 +555,13 @@ export const quotationRoofing = {
         en: "Sheets Metal Pavement",
       },
       materials: {
-        fr: {
-          needOne: "- Sheets Metals, Pointes, Flash Band",
+        needOne: {
+          fr: "- Toles, Pointes, Flash Band",
+          en: "- Sheets Metals, Nails, Flash Band",
         },
-        en: {
-          needOne: "- Sheets Metals, Nails, Flash Band",
+        needTwo: {
+          fr: "",
+          en: "",
         },
       },
       delivery: {

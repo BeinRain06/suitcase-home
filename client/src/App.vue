@@ -175,7 +175,7 @@ export default {
 
   <!-- i have set footer hidden -- temporary -->
 
-  <footer id="footer" class="hidden w-full mx-auto">
+  <footer id="footer" class="w-full hidden mx-auto">
     <div class="footer__container pt-20 pb-10 px-[1rem]">
       <div
         class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"

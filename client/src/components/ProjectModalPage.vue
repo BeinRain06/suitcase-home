@@ -12,19 +12,46 @@ const props = defineProps({
 
 const initInfos = reactive({ 0: {}, 1: {}, 2: {}, 3: {} });
 
-const indexLang = reactive({ val: 0 });
-
 onMounted(() => {
-  const projectId = route.query.projectId;
+  /* This has to be done dynamically (not yet proper route redirection)
+
+  const projectId = route.query.projectId; */
+
+  const projectId = "danton_shield";
 
   const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
 
   typeQuotation.forEach((type, index) => {
-    initInfos[index] = {
-      projectId: projectId,
-      quotationType: type,
-    };
+    switch (projectId) {
+      case "danton_shield":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 0,
+        };
+        break;
+      case "merry_clap":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 1,
+        };
+        break;
+      case "dexter_flip":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 2,
+        };
+        break;
+      default:
+        throw new Error(
+          "Error occured while affecting --indexLink-- ,   LifeCycle onMounted(() => {...}), --ProjectModalPage component-- ",
+        );
+    }
   });
+
+  /* console.log("initInfos :", initInfos); */
 });
 </script>
 <template>
