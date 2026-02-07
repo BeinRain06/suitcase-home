@@ -20,12 +20,12 @@ onUpdated(() => {
 });
 </script>
 <template>
-  <div class="project__container activate__modal w-full">
+  <div class="project__container w-full">
     <div class="projectcallpage__wrap w-hull h-full">
       <ProjectCallPage :user-language="props.userLanguage" />
     </div>
     <!-- Modal page appearance -->
-    <div class="projectmodalpage__wrap active__project-modal">
+    <div class="projectmodalpage__wrap">
       <ProjectModalPage :user-language="props.userLanguage" />
     </div>
   </div>
@@ -52,6 +52,9 @@ onUpdated(() => {
 }
 
 .projectmodalpage__wrap {
+  /* set display none --temporary-- */
+  display: none;
+
   position: absolute;
   top: 0;
   left: -25%;

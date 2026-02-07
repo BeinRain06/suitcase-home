@@ -1,24 +1,131 @@
 <script setup>
-import { reactive, onMounted, onUpdated } from "vue";
+import { ref, reactive, onMounted, onUpdated, computed } from "vue";
+import { useRoute } from "vue-router";
 
 import MiniQuotation from "./MiniQuotation.vue";
+import { projects } from "../api-data/general-data-center-project";
+
+const route = useRoute();
 
 const props = defineProps({
   userLanguage: String,
 });
 
-const indexLang = reactive({ val: 0 });
-
-onMounted(() => {
-  if (props.userLanguage) {
-    indexLang.val = props.userLanguage === "FR" ? 0 : 1;
-  }
+const indexLang = computed(() => {
+  return props.userLanguage === "FR" ? 0 : 1;
 });
 
-onUpdated(() => {
-  if (props.userLanguage) {
-    indexLang.val = props.userLanguage === "FR" ? 0 : 1;
+const durationProject = reactive({ durationStage: "" });
+
+const home = reactive({ name: "", land_area: "", benefit: "" });
+
+const roomInProject = ref({
+  bedroom: {
+    fr: "",
+    en: "",
+  },
+  kitchen: {
+    fr: "",
+    en: "",
+  },
+  diningroom: {
+    fr: "",
+    en: "",
+  },
+  livingroom: {
+    fr: "",
+    en: "",
+  },
+  toilet: {
+    fr: "",
+    en: "",
+  },
+  keyelement: {
+    fr: "",
+    en: "",
+  },
+});
+
+const houseType = reactive({
+  one_floor: "true",
+  level: "0",
+});
+
+/* const indexToSelect = computed(() => {
+  let defaultIndex = "0";
+  const projectId = route.query.projectId || "danton_shield";
+
+  switch (projectId) {
+    case "danton_shield":
+      defaultIndex = "0";
+      break;
+    case "merry_clap":
+      defaultIndex = "1";
+      break;
+    case "dexter_flip":
+      defaultIndex = "2";
+      break;
+    default:
+      throw new Error(
+        " Error - indexToSelectCatch computed var in --ProjectCallPage-- Component ",
+      );
   }
+
+  return defaultIndex;
+}); */
+
+const initInfos = reactive({ 0: {}, 1: {}, 2: {}, 3: {} });
+
+onMounted(async () => {
+  const projectId = route.query.projectId || "dexter_flip";
+
+  const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
+
+  typeQuotation.forEach((type, index) => {
+    switch (projectId) {
+      case "danton_shield":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 0,
+        };
+        durationProject.durationStage = projects[0].duration_stage;
+        home.name = projects[0].name;
+        home.land_area = projects[0].area.land;
+        home.benefit = projects[0].benefit;
+        roomInProject.value = projects[0].compartment;
+        break;
+      case "merry_clap":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 1,
+        };
+        durationProject.durationStage = projects[1].duration_stage;
+        home.name = projects[1].name;
+        home.land_area = projects[1].area.land;
+        home.benefit = projects[1].benefit;
+        roomInProject.value = projects[1].compartment;
+        break;
+      case "dexter_flip":
+        initInfos[index] = {
+          projectId: projectId,
+          quotationType: type,
+          indexToSelect: 2,
+        };
+        durationProject.durationStage = projects[2].duration_stage;
+        home.name = projects[2].name;
+        home.land_area = projects[2].area.land;
+        home.benefit = projects[2].benefit;
+        roomInProject.value = projects[2].compartment;
+        houseType.one_floor = false;
+        break;
+      default:
+        throw new Error(
+          "Error occured while affecting --indexLink-- ,   LifeCycle onMounted(() => {...}), --ProjectModalPage component-- ",
+        );
+    }
+  });
 });
 </script>
 <template>
@@ -54,7 +161,7 @@ onUpdated(() => {
       <!-- project show layout -->
       <div class="project__layout w-full px-[3%] flex flex-col gap-4">
         <div class="project__title">
-          <h2>DANTON SHIELD</h2>
+          <h2>{{ home.name }}</h2>
         </div>
         <div
           class="project__spec-layout w-full flex flex-row justify-between gap-12"
@@ -64,7 +171,7 @@ onUpdated(() => {
             <div class="project__specification">
               <div class="project__land-area py-1">
                 <div class="project__space">
-                  <h4>200 Ft Square</h4>
+                  <h4>{{ home.land_area }}</h4>
                 </div>
               </div>
               <div class="project__rooms-in py-6">
@@ -72,47 +179,91 @@ onUpdated(() => {
                   <div class="room__item">
                     <div class="icon__room"></div>
                     <div class="project__numbers-rooms">
-                      <span class="smaller__span">02 Bedrooms</span>
+                      <span v-if="!indexLang" class="smaller__span">{{
+                        roomInProject.bedroom.fr
+                      }}</span>
+                      <span v-else class="smaller__span">{{
+                        roomInProject.bedroom.en
+                      }}</span>
                     </div>
                   </div>
                   <div class="room__item">
                     <div class="icon__room"></div>
                     <div class="project__numbers-rooms">
-                      <span class="smaller__span">01 Kitchen</span>
+                      <span v-if="!indexLang" class="smaller__span">{{
+                        roomInProject.kitchen.fr
+                      }}</span>
+                      <span v-else class="smaller__span">{{
+                        roomInProject.kitchen.en
+                      }}</span>
                     </div>
                   </div>
                   <div class="room__item">
                     <div class="icon__room"></div>
                     <div class="project__numbers-rooms">
-                      <span class="smaller__span">02 Living Rooms</span>
+                      <span v-if="!indexLang" class="smaller__span">{{
+                        roomInProject.diningroom.fr
+                      }}</span>
+                      <span v-else class="smaller__span">{{
+                        roomInProject.diningroom.en
+                      }}</span>
                     </div>
                   </div>
                   <div class="room__item">
                     <div class="icon__room"></div>
                     <div class="project__numbers-rooms">
-                      <span class="smaller__span">02 Toilets</span>
+                      <span v-if="!indexLang" class="smaller__span">{{
+                        roomInProject.livingroom.fr
+                      }}</span>
+                      <span v-else class="smaller__span">{{
+                        roomInProject.livingroom.en
+                      }}</span>
+                    </div>
+                  </div>
+                  <div class="room__item">
+                    <div class="icon__room"></div>
+                    <div class="project__numbers-rooms">
+                      <span v-if="!indexLang" class="smaller__span">{{
+                        roomInProject.toilet.fr
+                      }}</span>
+                      <span v-else class="smaller__span">{{
+                        roomInProject.toilet.en
+                      }}</span>
                     </div>
                   </div>
                 </div>
-                <div class="project__roof-type">
+                <div class="project__key-element">
                   <div class="icon__room"></div>
                   <div class="project__numbers-rooms pl-4">
-                    <span class="smaller__span">02 Slopes Roof</span>
+                    <span v-if="!indexLang" class="smaller__span">{{
+                      roomInProject.keyelement.fr
+                    }}</span>
+
+                    <span v-else class="smaller__span">{{
+                      roomInProject.keyelement.en
+                    }}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="project__hook-presentation h-[11.25rem] mt-4">
-              <p class="project__hook-text variant__weight-one py-6 opacity-90">
-                Maison adaptable, pièce indépendantes, conversations en privée.
-                Profitez de votre liberté et prenez des decisions solo dont vous
-                êtes assez fier.
+            <div class="project__hook-presentation h-max pb-6 mt-4">
+              <p
+                v-if="!indexLang"
+                class="project__hook-text variant__weight-one py-6 opacity-90"
+              >
+                {{ home.benefit.fr }}
+              </p>
+              <p
+                v-else
+                class="project__hook-text variant__weight-one py-6 opacity-90"
+              >
+                {{ home.benefit.en }}
               </p>
             </div>
             <div class="project__hook-cta relative w-max h-max">
               <div class="cta__button--depth"></div>
               <a
-                v-if="!indexLang.val"
+                v-if="!indexLang"
                 href="
         #"
                 class="cta__button-primary"
@@ -138,7 +289,12 @@ onUpdated(() => {
                 <div
                   class="project__delivery size__scale-92 w-max h-full py-[2px] px-2 grid place-items-center"
                 >
-                  <span class="smaller__span">02 Months Execution</span>
+                  <span v-if="!indexLang" class="smaller__span">{{
+                    durationProject.durationStage.fr
+                  }}</span>
+                  <span v-else class="smaller__span">{{
+                    durationProject.durationStage.en
+                  }}</span>
                 </div>
               </div>
               <div
@@ -147,7 +303,9 @@ onUpdated(() => {
                 <div class="icon_quotation"></div>
                 <div class="minibox__title flex flex-row">
                   <h4>Quotation</h4>
-                  <h4 class="size__scale-88">(niveau 0)</h4>
+                  <h4 v-if="!houseType.one_floor" class="size__scale-88">
+                    niveau {{ houseType.level }}
+                  </h4>
                 </div>
               </div>
               <!-- sample splitted Quotation -->
@@ -161,14 +319,50 @@ onUpdated(() => {
                     <div class="cta__floor-quotation w-4">
                       <span class="smaller__span">0</span>
                     </div>
-                    <div class="cta__floor-quotation active__floor w-4">
+                    <div
+                      v-if="!houseType.one_floor"
+                      class="cta__floor-quotation active__floor w-4"
+                    >
                       <span>1</span>
                     </div>
                   </div>
                 </div>
                 <div class="project__items-quotation w-full pt-1">
-                  <MiniQuotation :user-language="props.userLanguage" />
-                  <!-- <MiniQuotation /> -->
+                  <div class="project__item-container">
+                    <div class="project__item-animation">
+                      <MiniQuotation
+                        :quotation-info="initInfos[0]"
+                        :user-language="props.userLanguage"
+                      />
+                    </div>
+                  </div>
+                  <!-- hidden temporary -->
+                  <div class="project__item-container hidden">
+                    <div class="project__item-animation">
+                      <MiniQuotation
+                        :quotation-info="initInfos[1]"
+                        :user-language="props.userLanguage"
+                      />
+                    </div>
+                  </div>
+                  <!-- hidden temporary -->
+                  <div class="project__item-container hidden">
+                    <div class="project__item-animation">
+                      <MiniQuotation
+                        :quotation-info="initInfos[2]"
+                        :user-language="props.userLanguage"
+                      />
+                    </div>
+                  </div>
+                  <!-- hidden temporary -->
+                  <div class="project__item-container hidden">
+                    <div class="project__item-animation">
+                      <MiniQuotation
+                        :quotation-info="initInfos[3]"
+                        :user-language="props.userLanguage"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <!-- cta slide 04 quotations sheet -->
@@ -267,8 +461,9 @@ onUpdated(() => {
   width: 80%;
   height: 6.5rem;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 2.5rem 2.5rem 1.5rem;
+  column-gap: 2rem;
 }
 
 /* project quotation */

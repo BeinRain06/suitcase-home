@@ -87,7 +87,8 @@ const quotationType = computed(() => {
 });
 
 const materialTemplate = computed(() => {
-  console.log("materialTemplate Call :", props.dataMaterials.materialTemplate);
+  /* console.log("materialTemplate Call :", props.dataMaterials.materialTemplate); */
+
   return props.dataMaterials.materialTemplate;
 });
 
@@ -115,6 +116,7 @@ const surface = computed(() => {
     class="box__materials-form w-full h-full"
   >
     <!-- materials for the field -->
+    <!-- active Layer Foundation === 0 -->
     <div
       v-if="activeLayerFoundation === 0"
       class="needed__materials w-full h-[12.5rem] flex flex-row"
@@ -135,28 +137,86 @@ const surface = computed(() => {
             <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
-              <p class="stick__cater-size">- 27 pillars</p>
-              <p class="stick__cater-size">2*20*20</p>
+              <!--when  needOne String -->
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.part1.needOne?.fr || "" }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.part1.needOne?.en || "" }}
+              </p>
+              <!-- when needOne Object -->
+              <p v-if="!indexLang" class="stick__cater-size w-1/2 text-left">
+                {{ materialTemplate.part1.needOne?.qty.fr || "" }}
+              </p>
+              <p v-else class="stick__cater-size w-1/2 text-left">
+                {{ materialTemplate.part1.needOne?.qty.en || "" }}
+              </p>
+              <p class="stick__cater-size w-1/2 text-right">
+                {{ materialTemplate.part1.needOne?.dimensions || "" }}
+              </p>
             </div>
             <div class="unit__panel w-full flex flex-row justify-end">
-              <p class="stick__min-size font-extralight">(m*cm*cm)</p>
+              <p class="stick__min-size font-extralight">
+                {{ materialTemplate.part1.needOne?.units || "" }}
+              </p>
             </div>
           </div>
           <div class="need__pinpointed-element w-full py-2">
             <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
-              <p class="stick__cater-size">- 9 beams</p>
-              <p class="stick__cater-size">2*20*20</p>
+              <!--when  needTwo String -->
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.part1.needTwo?.fr || "" }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.part1.needTwo?.en || "" }}
+              </p>
+              <!-- when needTwo Object -->
+              <p v-if="!indexLang" class="stick__cater-size w-1/2 text-left">
+                {{ materialTemplate.part1.needTwo?.qty.fr || "" }}
+              </p>
+              <p v-else class="stick__cater-size w-1/2 text-left">
+                {{ materialTemplate.part1.needTwo?.qty.en || "" }}
+              </p>
+              <p class="stick__cater-size w-1/2 text-right">
+                {{ materialTemplate.part1.needTwo?.dimensions || "" }}
+              </p>
             </div>
             <div class="unit__panel w-full flex flex-row justify-end">
-              <p class="stick__min-size font-extralight">(m*cm*cm)</p>
+              <p class="stick__min-size font-extralight">
+                {{ materialTemplate.part1.needTwo?.units || "" }}
+              </p>
             </div>
           </div>
           <div class="need__pinpointed-element w-full py-2">
-            <div class="structure__organic-components">
-              <p class="stick__min-size opacity-75 font-bold">
-                - Sands, Rocks, Woods, Nails...included
+            <div
+              class="structure__to-install w-full flex flex-row justify-between"
+            >
+              <!--when  needThree String -->
+              <p
+                v-if="!indexLang"
+                class="stick__min-size w-max max-w-full flex-shrink-0"
+              >
+                {{ materialTemplate.part1.needThree?.fr || "" }}
+              </p>
+              <p v-else class="stick__min-size w-full flex-shrink-0">
+                {{ materialTemplate.part1.needThree?.en || "" }}
+              </p>
+              <!-- when needThree Object -->
+              <p v-if="!indexLang" class="stick__min-size w-1/2 text-left">
+                {{ materialTemplate.part1.needThree?.qty?.fr || "" }}
+              </p>
+              <p v-else class="stick__min-size w-1/2 text-left">
+                {{ materialTemplate.part1.needThree?.qty?.en || "" }}
+              </p>
+              <p class="stick__min-size w-1/2 text-right">
+                {{ materialTemplate.part1.needThree?.dimensions || "" }}
+              </p>
+            </div>
+            <div class="unit__panel w-full flex flex-row justify-end">
+              <p class="stick__min-size font-extralight">
+                {{ materialTemplate.part1.needThree?.units || "" }}
               </p>
             </div>
           </div>
@@ -167,15 +227,17 @@ const surface = computed(() => {
       <div
         class="detail__volume-occupied w-2/12 h-full grid place-items-center border border-solid border-[var(--accent-color-2)]"
       >
-        <p>08 m³</p>
+        <p>{{ dataMaterials.volume.part1 }}</p>
       </div>
       <!-- material investment -->
       <div
         class="detail__investment w-4/12 h-full grid place-items-center border border-l-0 border-solid border-[var(--accent-color-2)]"
       >
-        <p class="opacity-80">1.600.000</p>
+        <p class="opacity-80">{{ cost.part1.materials }}</p>
       </div>
     </div>
+
+    <!-- active Layer Foundation === 1 -->
     <div
       v-else-if="activeLayerFoundation === 1"
       class="needed__materials w-full h-[12.5rem] flex flex-row"
@@ -196,28 +258,23 @@ const surface = computed(() => {
             <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
-              <p class="stick__cater-size">- 27 pillars</p>
-              <p class="stick__cater-size">2*20*20</p>
-            </div>
-            <div class="unit__panel w-full flex flex-row justify-end">
-              <p class="stick__min-size font-extralight">(m*cm*cm)</p>
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.needOne.fr }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.needOne.en }}
+              </p>
             </div>
           </div>
           <div class="need__pinpointed-element w-full py-2">
             <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
-              <p class="stick__cater-size">- 9 beams</p>
-              <p class="stick__cater-size">2*20*20</p>
-            </div>
-            <div class="unit__panel w-full flex flex-row justify-end">
-              <p class="stick__min-size font-extralight">(m*cm*cm)</p>
-            </div>
-          </div>
-          <div class="need__pinpointed-element w-full py-2">
-            <div class="structure__organic-components">
-              <p class="stick__min-size opacity-75 font-bold">
-                - Sands, Rocks, Woods, Nails...included
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.needTwo.fr }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.needTwo.en }}
               </p>
             </div>
           </div>
@@ -228,13 +285,13 @@ const surface = computed(() => {
       <div
         class="detail__volume-occupied w-2/12 h-full grid place-items-center border border-solid border-[var(--accent-color-2)]"
       >
-        <p>08 m³</p>
+        <p>{{ dataMaterials.volume.part2 }}</p>
       </div>
       <!-- material investment -->
       <div
         class="detail__investment w-4/12 h-full grid place-items-center border border-l-0 border-solid border-[var(--accent-color-2)]"
       >
-        <p class="opacity-80">1.600.000</p>
+        <p class="opacity-80">{{ cost.part2.materials }}</p>
       </div>
     </div>
     <!-- labor investment -->
@@ -248,7 +305,7 @@ const surface = computed(() => {
       <div
         class="labor__investment w-4/12 h-full flex flex-row items-center justify-end"
       >
-        <p class="opacity-80">800.000</p>
+        <p class="opacity-80">{{ cost.part1.labor }}</p>
       </div>
     </div>
     <div
@@ -261,7 +318,7 @@ const surface = computed(() => {
       <div
         class="labor__investment w-4/12 h-full flex flex-row items-center justify-end"
       >
-        <p class="opacity-80">800.000</p>
+        <p class="opacity-80">{{ cost.part2.labor }}</p>
       </div>
     </div>
     <!-- total investment -->
@@ -273,7 +330,7 @@ const surface = computed(() => {
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
       <div class="total__investment h-full">
-        <p class="font-bold opacity-65">2.400.000</p>
+        <p class="font-bold opacity-65">{{ cost.part1.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>
@@ -285,7 +342,7 @@ const surface = computed(() => {
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
       <div class="total__investment h-full">
-        <p class="font-bold opacity-65">2.400.000</p>
+        <p class="font-bold opacity-65">{{ cost.part2.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>

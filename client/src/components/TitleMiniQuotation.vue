@@ -31,9 +31,9 @@ const activeLayerRoof = computed(() => {
   return props.dataTitle.activeLayer.roof;
 });
 
-/* onMounted(() => {
-  console.log("title in dataTitle props :", props.dataTitle.title);
-}); */
+onMounted(async () => {
+  const titleCatch = await props.dataTitle; // This line is important! to made ready for use *dataTitle* props to the component.
+});
 </script>
 <template>
   <div class="title_mini-container">
@@ -72,8 +72,8 @@ const activeLayerRoof = computed(() => {
       >
         <p>D</p>
         <p>-</p>
-        <p v-if="!indexLang">{{ title.part1.fr }}</p>
-        <p v-else>{{ title.part1.en }}</p>
+        <p v-if="!indexLang">{{ title.part1?.fr }}</p>
+        <p v-else>{{ title.part1?.en }}</p>
       </div>
       <div
         v-else
@@ -81,8 +81,8 @@ const activeLayerRoof = computed(() => {
       >
         <p>D</p>
         <p>-</p>
-        <p v-if="!indexLang">{{ title.part2.fr }}</p>
-        <p v-else>{{ title.part2.en }}</p>
+        <p v-if="!indexLang">{{ title.part2?.fr }}</p>
+        <p v-else>{{ title.part2?.en }}</p>
       </div>
     </div>
     <!-- electricity or plumbing title -->

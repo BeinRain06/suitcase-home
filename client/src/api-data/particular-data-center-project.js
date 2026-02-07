@@ -25,7 +25,7 @@ export const quotationFoundations = {
           units: "(m*cm*cm)",
         },
         needThree: {
-          fr: "- Implantation, fouilles, feraillage + entiereté des matériaux ",
+          fr: "- Implantation, fouilles, feraillage + autres materiaux ",
           en: "- Implantation, Digging, Irons Framework, + entire materials",
         },
       },
@@ -86,7 +86,7 @@ export const quotationFoundations = {
           units: "(m*cm*cm)",
         },
         needThree: {
-          fr: "- Implantation, fouilles, feraillage + entiereté des matériaux ",
+          fr: "- Implantation, fouilles, feraillage + autres materiaux ",
           en: "- Implantation, Digging, Irons Framework, + entire materials",
         },
       },

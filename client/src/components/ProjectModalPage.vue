@@ -2,9 +2,9 @@
 import { reactive, onMounted, onUpdated } from "vue";
 import { useRoute } from "vue-router";
 
-const route = useRoute();
-
 import MiniModalQuotation from "./MiniModalQuotation.vue";
+
+const route = useRoute();
 
 const props = defineProps({
   userLanguage: String,
@@ -17,7 +17,7 @@ onMounted(() => {
 
   const projectId = route.query.projectId; */
 
-  const projectId = "danton_shield";
+  const projectId = route.query.projectId || "dexter_flip";
 
   const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
 

@@ -44,12 +44,38 @@ export const projects = {
       building: "12.840.500",
     },
     duration_stage: {
-      fr: "01 Mois et Demi",
-      en: "01 Month and half",
+      fr: "02 Mois execution",
+      en: "02 Months execution",
     },
     benefit: {
       fr: "Maison adaptable, pièce indépendantes, conversations en privée. Profitez de votre liberté et prenez des decisions solo dont vous  êtes assez fier.",
       en: "Flexible house, independent rooms, private conversations. No longer worry about the neighbors all the times listening. Enjoy your Freedom and even take relatively proud and unknown decisions.",
+    },
+    compartment: {
+      bedroom: {
+        fr: "03 Chambres",
+        en: "03 Bedrooms",
+      },
+      kitchen: {
+        fr: "01 Cuisine",
+        en: "01 Kitchen",
+      },
+      diningroom: {
+        fr: "01 S.A.M",
+        en: "01 Dining Room ",
+      },
+      livingroom: {
+        fr: "01 Sejour",
+        en: "01 Living Room",
+      },
+      toilet: {
+        fr: "02 Douches",
+        en: "02 Baths",
+      },
+      keyelement: {
+        fr: "veranda Salon",
+        en: "Living room's porch",
+      },
     },
   },
   1: {
@@ -69,12 +95,38 @@ export const projects = {
       building: "7.996.250",
     },
     duration_stage: {
-      fr: "01 Mois et Demi",
-      en: "01 Month and half",
+      fr: "02 Mois d'execution",
+      en: "02 Months execution",
     },
     benefit: {
       fr: "Maison moderne simple, haute esthétique,  confort assurée. Merry Clap est construite sur la base de modèles ergonomiques et offre une qualité de décoration qui surenchérie vote espace bonheur.",
       en: "Modern simple house, high aestethic, pleasing comfort. Merry Clap is built alike standard house and offer a great quality of decoration in emphasize on your happiness.",
+    },
+    compartment: {
+      bedroom: {
+        fr: "02 Chambres",
+        en: "02 Bedrooms",
+      },
+      kitchen: {
+        fr: "01 Cuisine",
+        en: "01 Kitchen",
+      },
+      diningroom: {
+        fr: "01 S.A.M",
+        en: "01 Dining Room ",
+      },
+      livingroom: {
+        fr: "01 Sejour",
+        en: "01 Living Room",
+      },
+      toilet: {
+        fr: "02 Douches",
+        en: "02 Baths",
+      },
+      keyelement: {
+        fr: "veranda Cuisine",
+        en: "kitchen's porch",
+      },
     },
   },
   2: {
@@ -94,12 +146,38 @@ export const projects = {
       building: "25.570.000",
     },
     duration_stage: {
-      fr: "03 Mois",
-      en: "03 Months",
+      fr: "03 Mois D'execution",
+      en: "03 Months Execution",
     },
     benefit: {
       fr: "Extraordinaire vue d'ensemble, clairvoyance douce, repos de valeur. Explorez la beauté du paysage autour de vous et trouvez toujours de l'inspiration qu'importe le travail qui vous prend la tête.",
       en: "Enriching overview, quiet enlightening, meaningful rest. Explore the beautiful landscape around you and always find inspirations on new ideas you're working on.",
+    },
+    compartment: {
+      bedroom: {
+        fr: "03 Chambres",
+        en: "03 Bedrooms",
+      },
+      kitchen: {
+        fr: "02 Cuisines",
+        en: "02 Kitchens",
+      },
+      diningroom: {
+        fr: "01 S.A.M",
+        en: "01 Dining Room ",
+      },
+      livingroom: {
+        fr: "02 Sejours",
+        en: "02 Living Rooms",
+      },
+      toilet: {
+        fr: "03 Douches",
+        en: "03 Baths",
+      },
+      keyelement: {
+        fr: "Parking Voiture",
+        en: "Parking Car",
+      },
     },
   },
 };

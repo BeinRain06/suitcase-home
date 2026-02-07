@@ -136,6 +136,7 @@ const dataMaterials = ref({
 
 const dataToComponents = (dataSource, quotationType) => {
   let catchCost = {};
+  let catchVolume = {};
 
   dataTitle.value.quotationType = quotationType;
   dataResumeQuotation.value.quotationType = quotationType;
@@ -145,23 +146,34 @@ const dataToComponents = (dataSource, quotationType) => {
   switch (quotationType) {
     case "foundation":
       /* dataTitle first fetch */
-      dataTitle.value.title.part1 = dataSource.part_1.title;
-      dataTitle.value.title.part2 = dataSource.part_2.title;
+      const caseTitle1 =
+        dataSource.part_1?.title || dataSource.floor_1?.part_1?.title;
+      const caseTitle2 =
+        dataSource.part_2?.title || dataSource.floor_1?.part_2?.title;
+
+      dataTitle.value.title.part1 = caseTitle1;
+      dataTitle.value.title.part2 = caseTitle2;
       /* dataResumeQuotation first fetch */
-      dataResumeQuotation.value.totalCost.part1 = dataSource.part_1.total;
-      dataResumeQuotation.value.totalCost.part2 = dataSource.part_2.total;
+      const caseRes1 =
+        dataSource.part_1?.total || dataSource.floor_1?.part_1?.total;
+      const caseRes2 =
+        dataSource.part_2?.total || dataSource.floor_1?.part_2?.total;
+
+      dataResumeQuotation.value.totalCost.part1 = caseRes1;
+      dataResumeQuotation.value.totalCost.part2 = caseRes2;
       /* dataDelivery first fetch */
-      dataDelivery.value.delayToExecute.part1 = dataSource.part_1.delivery;
-      dataDelivery.value.delayToExecute.part2 = dataSource.part_2.delivery;
+      const caseDel1 =
+        dataSource.part_1?.delivery || dataSource.floor_1?.part_1?.delivery;
+      const caseDel2 =
+        dataSource.part_2?.delivery || dataSource.floor_1?.part_2?.delivery;
+
+      dataDelivery.value.delayToExecute.part1 = caseDel1;
+      dataDelivery.value.delayToExecute.part2 = caseDel2;
       /* dataMaterials first fetch */
       const caseMat1 =
-        dataSource.part_1?.materials ||
-        dataSource.floor_1?.part_1?.materials ||
-        dataSource.floor_1?.floor_1?.part_1.materials;
+        dataSource.part_1?.materials || dataSource.floor_1?.part_1?.materials;
       const caseMat2 =
-        dataSource.part_2?.materials ||
-        dataSource.floor_1?.part_2?.materials ||
-        dataSource.floor_1?.floor_1?.part_2.materials;
+        dataSource.part_2?.materials || dataSource.floor_1?.part_2?.materials;
 
       dataMaterials.value.materialTemplate.part1 = caseMat1;
 
@@ -169,17 +181,30 @@ const dataToComponents = (dataSource, quotationType) => {
 
       catchCost = {
         part1: {
-          materials: dataSource.part_1.material_cost,
-          labor: dataSource.part_1.labor,
-          total: dataSource.part_1.total,
+          materials:
+            dataSource.part_1?.material_cost ||
+            dataSource.floor_1?.part_1?.material_cost,
+          labor: dataSource.part_1?.labor || dataSource.floor_1?.part_1?.labor,
+          total: dataSource.part_1?.total || dataSource.floor_1?.part_1?.total,
         },
         part2: {
-          materials: dataSource.part_2.material_cost,
-          labor: dataSource.part_2.labor,
-          total: dataSource.part_2.total,
+          materials:
+            dataSource.part_2?.material_cost ||
+            dataSource.floor_1?.part_2?.material_cost,
+          labor: dataSource.part_2?.labor || dataSource.floor_1?.part_2?.labor,
+          total: dataSource.part_2?.total || dataSource.floor_1?.part_2?.total,
         },
       };
       dataMaterials.value.cost = catchCost;
+
+      /* data volume catch */
+
+      catchVolume = {
+        part1: dataSource.part_1?.volume || dataSource.floor_1?.part_1.volume,
+        part2: dataSource.part_2?.volume || dataSource.floor_1?.part_2.volume,
+      };
+
+      dataMaterials.value.volume = catchVolume;
 
       break;
     case "plumbing":
@@ -312,21 +337,6 @@ onMounted(async () => {
       >
         <div class="box__overall-pricing">
           <ResumeQuotationCost :data-resumeQuotation="dataResumeQuotation" />
-          <!-- <ul class="w-full flex flex-row justify-between">
-            <li><p>Materials + labor</p></li>
-            <li class="w-max h-full flex flex-row items-center gap-4">
-              <div><p>2.400.000</p></div>
-              <div class="cta__expand-details grid place-items-center">
-                <div
-                  class="cta__work button__circle grid place-items-center cursor-pointer"
-                >
-                  <span
-                    class="basis--icon simple-line-icons--arrow-down"
-                  ></span>
-                </div>
-              </div>
-            </li>
-          </ul> -->
         </div>
 
         <div class="box__materials-glance">
@@ -334,90 +344,11 @@ onMounted(async () => {
             <MaterialQuotation :data-materials="dataMaterials" />
           </div>
         </div>
-
-        <!--  <div class="box__materials-instance">
-          <div
-            class="detail__structured-items w-full h-[12.5rem] flex flex-row"
-          >
-            <div class="items__structure-lab w-6/12 h-full">
-              <div
-                class="structure__title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
-              >
-                <p class="smaller_span">material</p>
-              </div>
-              <div
-                class="structure__materials_needed w-full h-[11rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
-              >
-                <div class="structure__single-material w-full py-2">
-                  <div
-                    class="structure__to-install w-full flex flex-row justify-between"
-                  >
-                    <p class="stick__cater-size">- 27 pillars</p>
-                    <p class="stick__cater-size">2*20*20</p>
-                  </div>
-                  <div class="unit__panel w-full flex flex-row justify-end">
-                    <p class="stick__min-size font-extralight">(m*cm*cm)</p>
-                  </div>
-                </div>
-                <div class="structure__single-material w-full py-2">
-                  <div
-                    class="structure__to-install w-full flex flex-row justify-between"
-                  >
-                    <p class="stick__cater-size">- 9 beams</p>
-                    <p class="stick__cater-size">2*20*20</p>
-                  </div>
-                  <div class="unit__panel w-full flex flex-row justify-end">
-                    <p class="stick__min-size font-extralight">(m*cm*cm)</p>
-                  </div>
-                </div>
-                <div class="structure__single-material w-full py-2">
-                  <div class="structure__organic-components">
-                    <p class="stick__min-size opacity-75 font-bold">
-                      - Sands, Rocks, Woods, Nails...included
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="account__volume-occupied w-2/12 h-full grid place-items-center border border-solid border-[var(--accent-color-2)]"
-            >
-              <p>08 m³</p>
-            </div>
-            <div
-              class="materials__investment w-4/12 h-full grid place-items-center border border-l-0 border-solid border-[var(--accent-color-2)]"
-            >
-              <p class="opacity-80">1.600.000</p>
-            </div>
-          </div>
-
-          <div
-            class="detail__labor w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
-          >
-            <div class="labor__label w-8/12 h-full flex flex-row items-center">
-              <p>Labor</p>
-            </div>
-            <div
-              class="labor__investment w-4/12 h-full flex flex-row items-center justify-end"
-            >
-              <p class="opacity-80">800.000</p>
-            </div>
-          </div>
-          <div
-            class="detail__final-cost w-full h-16 pt-1 px-2 flex flex-row justify-between items-center border border-solid border-[var(--accent-color-2)]"
-          >
-            <div class="total__label h-full">
-              <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
-            </div>
-            <div class="total__investment h-full">
-              <p class="font-bold opacity-65">2.400.000</p>
-              <p class="pl-1 font-bold opacity-65">XAF</p>
-            </div>
-          </div>
-        </div> -->
       </div>
 
-      <DeliveryQuotationTime :data-delivery="dataDelivery" />
+      <div class="record__block-delivery">
+        <DeliveryQuotationTime :data-delivery="dataDelivery" />
+      </div>
 
       <!-- v-if *foundation* or *roofing* -->
       <div v-if="extraBoxInfo" class="block__phase-work">
