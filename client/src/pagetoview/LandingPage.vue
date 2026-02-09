@@ -12,6 +12,8 @@ import {
 
 const props = defineProps({ userLanguage: String });
 
+const router = useRouter();
+
 /* const mission = reactive({
   0: {
     id: "mission-fr",
@@ -27,14 +29,36 @@ const props = defineProps({ userLanguage: String });
 
 /* const indexLang = ref(0); */
 
-const indexLang = reactive({ val: 0 });
+/* const indexLang = reactive({ val: 0 }); */
 
-onUpdated(() => {
-  /*  console.log("userLanguage", props.userLanguage); */
-  if (props.userLanguage) {
+const indexLang = computed(() => {
+  return props.userLanguage === "FR" ? 0 : 1;
+});
+
+/* onUpdated(() => {
+   if (props.userLanguage) {
     indexLang.val = props.userLanguage === "FR" ? 0 : 1;
   }
-});
+}); */
+
+const handleRoute = (route, projectId, hashId) => {
+  const catchProjectId = projectId || "";
+  const catchHashId = hashId || "";
+
+  switch (route) {
+    case "contact":
+      router.push({ path: "/contact" });
+      break;
+    case "home":
+      router.push({ path: "/" }); // have to introduce **hashId**
+      break;
+    case "project":
+      router.push({ path: `/project/${catchProjectId}` }); // check if it is working both without and with *projectId*
+      break;
+    default:
+      throw new Error("Error --handleRoute Fn-- in -- *LandingPage* component");
+  }
+};
 </script>
 <template>
   <main id="landingpage">
@@ -44,7 +68,7 @@ onUpdated(() => {
         <div class="hero__description h-max flex flex-col gap-7">
           <div class="hero_text w-[58%] h-full pt-20 flex flex-col gap-4">
             <h1
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               class="hero__value-proposal text-[var(--background-secondary)]"
             >
               Consolidez la prochaine étape vers
@@ -66,16 +90,17 @@ onUpdated(() => {
             <p
               class="hero__subvalue-proposal font-light text-[var(--background-primary)] opacity-80"
             >
-              {{ hero[indexLang.val].subValueProposal }}
+              {{ hero[indexLang].subValueProposal }}
             </p>
           </div>
           <div class="hero__cta-button relative w-max h-max">
             <div class="cta__button--depth"></div>
             <a
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >OBTENEZ UN AVIS GRATUIT</a
             >
             <a
@@ -83,6 +108,7 @@ onUpdated(() => {
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >GET GUIDANCE FREE</a
             >
           </div>
@@ -105,16 +131,17 @@ onUpdated(() => {
           <div class="mission__text">
             <h3 class="mission__title pt-5">MISSION</h3>
             <p class="mission__value font-extralight pt-4">
-              {{ mission[indexLang.val].vision }}
+              {{ mission[indexLang].vision }}
             </p>
           </div>
           <div class="mission__cta-button relative w-max h-max">
             <div class="cta__button--depth"></div>
             <a
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >EN CONNAITRE PLUS</a
             >
             <a
@@ -122,6 +149,7 @@ onUpdated(() => {
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >KNOW BETTER</a
             >
           </div>
@@ -147,7 +175,7 @@ onUpdated(() => {
             </div>
             <div class="project__text w-2/3">
               <h4 class="project__title pt-1">{{ projects[key].name }}</h4>
-              <p v-if="!indexLang.val" class="smaller__p pt-3">
+              <p v-if="!indexLang" class="smaller__p pt-3">
                 {{ projects[key].benefit.fr }}
               </p>
               <p v-else class="smaller__p">{{ projects[key].benefit.en }}</p>
@@ -156,20 +184,18 @@ onUpdated(() => {
                 <a
                   href="#"
                   class="cta__button-secondary"
-                  v-if="!indexLang.val"
+                  v-if="!indexLang"
+                  @click="() => handleRoute('project', `${projects[key].id}`)"
                   >{{ projects[key].button.fr }}</a
                 >
-                <a href="#" class="cta__button-secondary" v-else>{{
-                  projects[key].button.en
-                }}</a>
+                <a
+                  href="#"
+                  class="cta__button-secondary"
+                  v-else
+                  @click="() => handleRoute('project', `${projects[key].id}`)"
+                  >{{ projects[key].button.en }}</a
+                >
               </div>
-            </div>
-          </div>
-          <div
-            class="project__box-delivery w-full h-full absolute top-2 right-1 z-10"
-          >
-            <div :id="`duration_${key}`" class="box__duration">
-              <span>{{ projects[key].duration }}</span>
             </div>
           </div>
           <div
@@ -190,13 +216,13 @@ onUpdated(() => {
             class="service__card"
           >
             <div class="service__title text-[var(--highlight-text)]">
-              <h5 v-if="!indexLang.val" class="font-bold">
+              <h5 v-if="!indexLang" class="font-bold">
                 {{ services[key].title.fr }}
               </h5>
               <h5 v-else>{{ services[key].title.en }}</h5>
             </div>
             <div class="service__text bg-[var(--accent-color-1)] p-2">
-              <span v-if="!indexLang.val" class="smaller__span">
+              <span v-if="!indexLang" class="smaller__span">
                 {{ services[key].offer.fr }}
               </span>
               <span v-else class="smaller__span">{{
@@ -211,10 +237,11 @@ onUpdated(() => {
           <div class="services__cta-button relative w-max h-max">
             <div class="cta__button--depth"></div>
             <a
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >OBTENEZ UN AVIS GRATUIT</a
             >
             <a
@@ -222,6 +249,7 @@ onUpdated(() => {
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >GET GUIDANCE FREE</a
             >
           </div>
@@ -259,11 +287,11 @@ onUpdated(() => {
               <div
                 class="trust__text w-[75%] max-[520px]:items-center max-[520px]:gap-[0.675rem] flex flex-col gap-[1.125rem]"
               >
-                <h5 v-if="!indexLang.val" class="trust__title">
+                <h5 v-if="!indexLang" class="trust__title">
                   {{ trust[0].title.fr }}
                 </h5>
                 <h5 v-else class="trust__title">{{ trust[0].title.en }}</h5>
-                <p v-if="!indexLang.val" class="trust__description smaller__p">
+                <p v-if="!indexLang" class="trust__description smaller__p">
                   {{ trust[0].description.fr }}
                 </p>
                 <p v-else class="trust__description smaller__p">
@@ -291,12 +319,12 @@ onUpdated(() => {
               <div
                 class="trust__text w-[75%] max-[520px]:items-center max-[520px]:gap-[0.675rem] flex flex-col gap-[1.125rem]"
               >
-                <h5 v-if="!indexLang.val" class="trust__title">
+                <h5 v-if="!indexLang" class="trust__title">
                   {{ trust[1].title.fr }}
                 </h5>
                 <h5 v-else class="trust__title">{{ trust[1].title.en }}</h5>
 
-                <p v-if="!indexLang.val" class="trust__description smaller__p">
+                <p v-if="!indexLang" class="trust__description smaller__p">
                   {{ trust[1].description.fr }}
                 </p>
                 <p v-else class="trust__description smaller__p">
@@ -328,12 +356,12 @@ onUpdated(() => {
               <div
                 class="trust__text w-[75%] max-[520px]:items-center max-[520px]:gap-[0.675rem] flex flex-col gap-[1.125rem]"
               >
-                <h5 v-if="!indexLang.val" class="trust__title">
+                <h5 v-if="!indexLang" class="trust__title">
                   {{ trust[2].title.fr }}
                 </h5>
                 <h5 v-else class="trust__title">{{ trust[2].title.en }}</h5>
 
-                <p v-if="!indexLang.val" class="trust__description smaller__p">
+                <p v-if="!indexLang" class="trust__description smaller__p">
                   {{ trust[2].description.fr }}
                 </p>
                 <p v-else class="trust__description smaller__p">
@@ -349,18 +377,20 @@ onUpdated(() => {
           <div class="trust__cta-button relative w-max h-max">
             <div class="cta__button--depth"></div>
             <a
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               href="
         #"
               class="cta__button-primary"
-              >EN CONNAITRE PLUS</a
+              @click="() => handleRoute('project')"
+              >VOIR EXAMPLE PROJETS</a
             >
             <a
               v-else
               href="
         #"
               class="cta__button-primary"
-              >KNOW BETTER</a
+              @click="() => handleRoute('project')"
+              >LOOK SAMPLE PROJECTS</a
             >
           </div>
         </div>
@@ -379,7 +409,7 @@ onUpdated(() => {
 
         <div class="breathing_description">
           <h1
-            v-if="!indexLang.val"
+            v-if="!indexLang"
             class="breathing__ft-size text-[var(--accent-color-1)]"
           >
             Ravivez Votre Journée... Retournez à la maison sachant que les lieux
@@ -406,16 +436,17 @@ onUpdated(() => {
           <div class="reinforcement__text">
             <h3 class="reinforcement__title pt-5">COLLABORATION</h3>
             <p class="reinforcement__value font-extralight pt-4">
-              {{ reinforcement[indexLang.val].vision }}
+              {{ reinforcement[indexLang].vision }}
             </p>
           </div>
           <div class="reinforcement__cta-button relative w-max h-max">
             <div class="cta__button--depth"></div>
             <a
-              v-if="!indexLang.val"
+              v-if="!indexLang"
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >EN CONNAITRE PLUS</a
             >
             <a
@@ -423,6 +454,7 @@ onUpdated(() => {
               href="
         #"
               class="cta__button-primary"
+              @click="() => handleRoute('contact')"
               >KNOW BETTER</a
             >
           </div>
@@ -439,7 +471,7 @@ onUpdated(() => {
           <div
             class="farewell__text w-[78%] text-center text-[var(--highlight-text)] mx-auto opacity-65"
           >
-            <h2 v-if="!indexLang.val">
+            <h2 v-if="!indexLang">
               Pas besoin d'etre criard ou ventard. Si d'autres l'on construit
               ces lieux d'habitations plaisants. Pleins de joyeux matins et de
               paisible soirs. Pourquoi pas Vous ?
@@ -454,18 +486,20 @@ onUpdated(() => {
             <div class="farewell__cta-button relative w-max h-max z-10">
               <div class="cta__button--depth"></div>
               <a
-                v-if="!indexLang.val"
+                v-if="!indexLang"
                 href="
         #"
                 class="cta__button-primary"
-                >EN CONNAITRE PLUS</a
+                @click="() => handleRoute('project')"
+                >VOIR EXAMPLE PROJETS</a
               >
               <a
                 v-else
                 href="
         #"
                 class="cta__button-primary"
-                >KNOW BETTER</a
+                @click="() => handleRoute('project')"
+                >LOOK SAMPLE PROJECTS</a
               >
             </div>
           </div>

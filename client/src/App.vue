@@ -127,7 +127,7 @@ export default {
     <!-- i have set navbar invisible -- temporary -->
     <nav
       id="navbar"
-      class="navbar hidden flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
+      class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
     >
       <div class="logo__nav-container">
         <div class="logo__nav-icon"></div>

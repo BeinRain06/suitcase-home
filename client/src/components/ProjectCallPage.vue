@@ -77,6 +77,8 @@ const houseType = reactive({
 const initInfos = reactive({ 0: {}, 1: {}, 2: {}, 3: {} });
 
 onMounted(async () => {
+  console.log("route query projectId :", route.query.projectId);
+
   const projectId = route.query.projectId || "dexter_flip";
 
   const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];

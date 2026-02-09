@@ -53,17 +53,19 @@ onUpdated(() => {
 
 .projectmodalpage__wrap {
   /* set display none --temporary-- */
-  display: none;
+  /* display: none; */
 
   position: absolute;
   top: 0;
   left: -25%;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  height: calc(100vh - 3.125rem);
   background-color: hsla(300, 20%, 99%, 0.86);
   background-color: hsla(300, 20%, 99%, 0.96);
   /* opacity: 0.85; */
   visibility: hidden;
+  overflow-y: hidden;
   z-index: 0;
   transition: all 350ms ease-in-out;
 }
@@ -78,6 +80,7 @@ onUpdated(() => {
   background-color: hsla(300, 20%, 99%, 0.96);
   visibility: visible;
   /* opacity: 1; */
+  overflow-y: scroll;
   z-index: 35;
 }
 </style>

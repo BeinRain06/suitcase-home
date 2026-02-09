@@ -7,7 +7,7 @@ const routes = [
     component: () => import("../pagetoview/LandingPage.vue"),
   },
   {
-    path: "/project",
+    path: "/project/:projectId?",
     name: "project",
     component: () => import("../pagetoview/ProjectPage.vue"),
   },
