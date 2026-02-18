@@ -1,11 +1,24 @@
 <script setup>
-import { reactive, onMounted, onUpdated } from "vue";
+import { ref, reactive, onMounted, onUpdated } from "vue";
 import ProjectCallPage from "../components/ProjectCallPage.vue";
 import ProjectModalPage from "../components/ProjectModalPage.vue";
 
 const props = defineProps({ userLanguage: String });
 
 const indexLang = reactive({ val: 0 });
+
+const projectContainerRef = ref();
+const projectModalRef = ref();
+
+const handleModalPage = (objMsg) => {
+  if (objMsg.isModalPage) {
+    projectContainerRef.value.classList.add("activate__modal");
+    projectModalRef.value.classList.add("active__project-modal");
+  } else {
+    projectContainerRef.value.classList.remove("activate__modal");
+    projectModalRef.value.classList.remove("active__project-modal");
+  }
+};
 
 onMounted(() => {
   if (props.userLanguage) {
@@ -20,13 +33,19 @@ onUpdated(() => {
 });
 </script>
 <template>
-  <div class="project__container w-full">
+  <div class="project__container w-full" ref="projectContainerRef">
     <div class="projectcallpage__wrap w-hull h-full">
-      <ProjectCallPage :user-language="props.userLanguage" />
+      <ProjectCallPage
+        :user-language="props.userLanguage"
+        @update-modalpage="handleModalPage"
+      />
     </div>
     <!-- Modal page appearance -->
-    <div class="projectmodalpage__wrap">
-      <ProjectModalPage :user-language="props.userLanguage" />
+    <div class="projectmodalpage__wrap" ref="projectModalRef">
+      <ProjectModalPage
+        :user-language="props.userLanguage"
+        @update-modalpage="handleModalPage"
+      />
     </div>
   </div>
 </template>
@@ -36,7 +55,8 @@ onUpdated(() => {
 .project__container {
   position: relative;
   width: 100vw;
-  height: calc(100vh - 3.125rem);
+  height: max-content;
+  overflow-y: hidden;
   /* overflow-y: scroll;
   scroll-margin-block: auto;
   scroll-padding-top: auto; */
@@ -46,15 +66,13 @@ onUpdated(() => {
   position: relative;
   width: 100vw;
   height: auto;
+  overflow-y: auto;
   /* overflow-y: hidden;
   scroll-margin-block: 0;
   scroll-padding-top: 0; */
 }
 
 .projectmodalpage__wrap {
-  /* set display none --temporary-- */
-  /* display: none; */
-
   position: absolute;
   top: 0;
   left: -25%;
@@ -63,11 +81,11 @@ onUpdated(() => {
   height: calc(100vh - 3.125rem);
   background-color: hsla(300, 20%, 99%, 0.86);
   background-color: hsla(300, 20%, 99%, 0.96);
-  /* opacity: 0.85; */
+  opacity: 0.25;
   visibility: hidden;
   overflow-y: hidden;
   z-index: 0;
-  transition: all 350ms ease-in-out;
+  transition: all 250ms ease-in-out;
 }
 
 .projectmodalpage__wrap.active__project-modal {
@@ -78,9 +96,10 @@ onUpdated(() => {
   height: 100%;
   background-color: hsla(300, 20%, 99%, 0.86);
   background-color: hsla(300, 20%, 99%, 0.96);
+  opacity: 1;
   visibility: visible;
-  /* opacity: 1; */
   overflow-y: scroll;
   z-index: 35;
+  transition: all 500ms ease-in-out;
 }
 </style>

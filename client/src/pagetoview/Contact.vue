@@ -1,14 +1,19 @@
 <script setup>
-import { reactive, onMounted, onUpdated } from "vue";
+import { reactive, onUpdated, computed } from "vue";
+
 const props = defineProps({ userLanguage: String });
 
-const indexLang = reactive({ val: 0 });
+/* const indexLang = reactive({ val: 0 }); */
 
-onMounted(() => {
+const indexLang = computed(() => {
+  return props.userLanguage === "FR" ? 0 : 1;
+});
+
+/* onMounted(() => {
   if (props.userLanguage) {
     indexLang.val = props.userLanguage === "FR" ? 0 : 1;
   }
-});
+}); */
 
 onUpdated(() => {
   if (props.userLanguage) {
@@ -27,7 +32,7 @@ onUpdated(() => {
         </div>
         <div class="contact__form-group w-1/2 flex flex-col py-8 px-6">
           <div class="contact__form-title">
-            <p v-if="!indexLang.val" class="w-[80%] font-semibold opacity-60">
+            <p v-if="!indexLang" class="w-[80%] font-semibold opacity-60">
               Un Conseil, une Préoccupation, plus de détails...
             </p>
             <p v-else class="w-[80%] font-semibold opacity-60">
@@ -70,7 +75,7 @@ onUpdated(() => {
             >
               <div class="contact__form-validation relative w-max h-max">
                 <a
-                  v-if="!indexLang.val"
+                  v-if="!indexLang"
                   href="
         #"
                   class="cta__button-primary"

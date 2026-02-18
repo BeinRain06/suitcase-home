@@ -1,5 +1,7 @@
 <script>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
+import { useDisplayDataStore } from "./store-management/useDisplayDataStore";
+
 import LandingPage from "./pagetoview/LandingPage.vue";
 
 export default {
@@ -7,6 +9,8 @@ export default {
     LandingPage,
   },
   setup() {
+    const storeElt = useDisplayDataStore();
+
     const navlinksItems = reactive({
       0: {
         id: "home-link",
@@ -47,9 +51,11 @@ export default {
       selectLangRef,
       selectLang,
       itemsRef,
+      storeElt,
       setItemRef,
     };
   },
+
   methods: {
     /* getHome(id_home) {
       if (id_home) {
@@ -64,8 +70,11 @@ export default {
     getHome() {
       this.$router.push({ path: "/" });
     },
-    getProject() {
-      this.$router.push({ path: "/project" });
+    getProject(projectId) {
+      this.$router.push({
+        path: `/project/${projectId}`,
+        query: { value: "multiple" },
+      });
     },
     getContact() {
       this.$router.push({ path: "/contact" });
@@ -100,7 +109,7 @@ export default {
           this.getHome();
           break;
         case "1":
-          this.getProject();
+          this.getProject("danton_shield");
           break;
         case "2":
           this.getContact();
@@ -112,10 +121,27 @@ export default {
       }
     },
   },
+  computed: {
+    isNavbar() {
+      console.log("this storeElt isNavbar :", this.storeElt.isNavbar);
+      return this.storeElt.isNavbar;
+    },
+    isFooter() {
+      console.log("this storeElt isNavbar :", this.storeElt.isFooter);
+      return this.storeElt.isFooter;
+    },
+  },
+  updated() {
+    if (this.itemsRef) {
+      /* console.log("this itemRef 0:", this.itemsRef[0]); */
+      this.itemsRef[0]?.classList.add("active__navlink");
+    }
+    this.langSelected();
+  },
   mounted() {
     if (this.itemsRef) {
-      /*  console.log("this itemRef 0:", this.itemsRef[0]); */
-      this.itemsRef[0].classList.add("active__navlink");
+      /* console.log("this itemRef 0:", this.itemsRef[0]); */
+      this.itemsRef[0]?.classList.add("active__navlink");
     }
     this.langSelected();
   },
@@ -126,6 +152,7 @@ export default {
   <header>
     <!-- i have set navbar invisible -- temporary -->
     <nav
+      v-if="isNavbar"
       id="navbar"
       class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
     >
@@ -175,7 +202,7 @@ export default {
 
   <!-- i have set footer hidden -- temporary -->
 
-  <footer id="footer" class="w-full hidden mx-auto">
+  <footer v-if="isFooter" id="footer" class="w-full mx-auto">
     <div class="footer__container pt-20 pb-10 px-[1rem]">
       <div
         class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"

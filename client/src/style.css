@@ -145,7 +145,7 @@ label {
   font-size: var(--mid-size);
   font-weight: 300;
   line-height: 1.6;
-  opacity: 0.76;
+  opacity: 0.82;
 }
 
 span.smaller__span {
@@ -181,7 +181,7 @@ a.cta__button-primary {
   font-weight: 600;
   line-height: 1.5;
   border-radius: 1.5rem;
-  z-index: 3;
+  z-index: 5;
 }
 
 a.cta__button-secondary {
@@ -194,12 +194,13 @@ a.cta__button-secondary {
   line-height: 1.5;
   opacity: 0.5;
   border-bottom: 1px solid var(--highlight-text);
+  z-index: 5;
 }
 
 input::placeholder,
 textarea::placeholder {
   font-size: var(--mini-size);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 input {

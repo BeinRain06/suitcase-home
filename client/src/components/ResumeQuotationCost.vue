@@ -1,5 +1,7 @@
 <script setup>
-import { computed } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
+
+import { useProjectStore } from "../store-management/useProjectStore";
 
 const props = defineProps({
   dataResumeQuotation: {
@@ -11,6 +13,10 @@ const props = defineProps({
     },
   },
 });
+
+const projectStore = useProjectStore();
+
+const arrowUpDownRef = ref();
 
 const quotationType = computed(() => {
   return props.dataResumeQuotation.quotationType;
@@ -27,6 +33,60 @@ const activeLayerRoof = computed(() => {
 const totalCost = computed(() => {
   return props.dataResumeQuotation.totalCost;
 });
+
+const isBtnJoystickTrigerred = computed(() => {
+  return projectStore.$state.isBtnJoystickTrigerred;
+});
+
+const isBoxMaterialExpanded = computed(() => {
+  return projectStore.$state.isBoxMaterialExpanded;
+});
+
+const quotationTypeSelect = computed(() => {
+  return projectStore.$state.quotationTypeSelect;
+});
+
+watch(
+  quotationTypeSelect,
+  async (newQuotationTypeSelect, oldQuotationTypeSelect) => {
+    // watch react naturalle before component mount It is why we add **nextTick**
+    await nextTick();
+
+    oldQuotationTypeSelect = await oldQuotationTypeSelect;
+    newQuotationTypeSelect = await newQuotationTypeSelect;
+
+    const arrowUpDown = arrowUpDownRef.value;
+
+    if (arrowUpDown.getAttribute("quotation-type") === oldQuotationTypeSelect) {
+      arrowUpDown.classList.remove("anim__rotate-z");
+    }
+
+    if (arrowUpDown.getAttribute("quotation-type") === newQuotationTypeSelect) {
+      arrowUpDown.classList.add("anim__rotate-z");
+    }
+  },
+);
+
+watch(
+  [isBtnJoystickTrigerred, isBoxMaterialExpanded],
+  async (
+    [newBtnJoystickTrigerred, newBoxMaterialExpanded],
+    [oldBtnJoystickTrigerred, oldBoxMaterialExpanded],
+  ) => {
+    // watch react naturalle before component mount It is why we add **nextTick**
+    await nextTick();
+
+    newBtnJoystickTrigerred = await newBtnJoystickTrigerred;
+
+    newBoxMaterialExpanded = await newBoxMaterialExpanded;
+
+    const arrowUpDown = arrowUpDownRef.value;
+
+    if (!newBtnJoystickTrigerred && !newBoxMaterialExpanded) {
+      arrowUpDown?.classList.remove("anim__rotate-z");
+    }
+  },
+);
 </script>
 <template>
   <!-- foundation resume quotation -->
@@ -45,9 +105,15 @@ const totalCost = computed(() => {
         </div>
         <div class="cta__expand-details grid place-items-center">
           <div
+            id="arrow__up-downwrap"
             class="cta__work button__circle grid place-items-center cursor-pointer"
+            :quotation-type="props.dataResumeQuotation.quotationType"
+            ref="arrowUpDownRef"
           >
-            <span class="basis--icon simple-line-icons--arrow-down"></span>
+            <span
+              id="arrow__up-down"
+              class="basis--icon simple-line-icons--arrow-down"
+            ></span>
           </div>
         </div>
       </li>
@@ -63,9 +129,15 @@ const totalCost = computed(() => {
         </div>
         <div class="cta__expand-details grid place-items-center">
           <div
+            id="arrow__up-downwrap"
             class="cta__work button__circle grid place-items-center cursor-pointer"
+            :quotation-type="props.dataResumeQuotation.quotationType"
+            ref="arrowUpDownRef"
           >
-            <span class="basis--icon simple-line-icons--arrow-down"></span>
+            <span
+              id="arrow__up-down"
+              class="basis--icon simple-line-icons--arrow-down"
+            ></span>
           </div>
         </div>
       </li>
@@ -87,9 +159,15 @@ const totalCost = computed(() => {
         </div>
         <div class="cta__expand-details grid place-items-center">
           <div
+            id="arrow__up-downwrap"
             class="cta__work button__circle grid place-items-center cursor-pointer"
+            :quotation-type="props.dataResumeQuotation.quotationType"
+            ref="arrowUpDownRef"
           >
-            <span class="basis--icon simple-line-icons--arrow-down"></span>
+            <span
+              id="arrow__up-down"
+              class="basis--icon simple-line-icons--arrow-down"
+            ></span>
           </div>
         </div>
       </li>
@@ -105,9 +183,15 @@ const totalCost = computed(() => {
         </div>
         <div class="cta__expand-details grid place-items-center">
           <div
+            id="arrow__up-downwrap"
             class="cta__work button__circle grid place-items-center cursor-pointer"
+            :quotation-type="props.dataResumeQuotation.quotationType"
+            ref="arrowUpDownRef"
           >
-            <span class="basis--icon simple-line-icons--arrow-down"></span>
+            <span
+              id="arrow__up-down"
+              class="basis--icon simple-line-icons--arrow-down"
+            ></span>
           </div>
         </div>
       </li>
@@ -126,9 +210,15 @@ const totalCost = computed(() => {
         </div>
         <div class="cta__expand-details grid place-items-center">
           <div
+            id="arrow__up-downwrap"
             class="cta__work button__circle grid place-items-center cursor-pointer"
+            :quotation-type="props.dataResumeQuotation.quotationType"
+            ref="arrowUpDownRef"
           >
-            <span class="basis--icon simple-line-icons--arrow-down"></span>
+            <span
+              id="arrow__up-down"
+              class="basis--icon simple-line-icons--arrow-down"
+            ></span>
           </div>
         </div>
       </li>
@@ -140,15 +230,29 @@ p {
   font-size: var(--mid-size);
 }
 
+/* icon toggle  material anim  */
 .button__circle {
   width: 1rem;
   height: 1rem;
   padding: 0.25rem;
   color: var(--text-paragraph);
-  /* border: 1px solid var(--link--external-btn); */
-  border-radius: 100%;
+  background-color: transparent;
   opacity: 0.98;
+  transform: rotateZ(0deg) scale(1);
   outline: 2px solid var(--link--external-btn);
   outline-offset: -1px;
+  border-radius: 100%;
+
+  transition: all 850ms ease;
+}
+
+.button__circle.anim__rotate-z {
+  color: var(--background-secondary);
+  background-color: var(--link--external-btn);
+  transform: rotateZ(180deg) scale(1.15);
+  outline: 0 solid var(--background-secondary);
+  outline-offset: 0;
+
+  transition: all 1.5s ease;
 }
 </style>

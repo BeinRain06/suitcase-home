@@ -1,23 +1,80 @@
 <script setup>
-import { ref, reactive, onMounted, onUpdated, computed } from "vue";
-import { useRoute } from "vue-router";
+import { ref, reactive, onMounted, computed, nextTick, watch } from "vue";
+import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
 
 import MiniQuotation from "./MiniQuotation.vue";
-import { projects } from "../api-data/general-data-center-project";
+import { initInfoProject } from "../reusable-function/initInfoProjects";
+
+import { useProjectStore } from "../store-management/useProjectStore";
+
+const router = useRouter();
 
 const route = useRoute();
+
+const emit = defineEmits(["update-modalpage"]);
 
 const props = defineProps({
   userLanguage: String,
 });
 
-const indexLang = computed(() => {
-  return props.userLanguage === "FR" ? 0 : 1;
+const projectStore = useProjectStore();
+
+const halfResumeRef1 = ref();
+const halfResumeRef2 = ref();
+const lastQuotationType = ref("foundation");
+
+const numberBtnSlide = reactive({
+  0: {
+    id: "btn-slide-1",
+    text: "1",
+  },
+  1: {
+    id: "btn-slide-2",
+    text: "2",
+  },
+  2: {
+    id: "btn-slide-3",
+    text: "3",
+  },
 });
 
-const durationProject = reactive({ durationStage: "" });
+const isBtnJoystickTrigerred = computed(() => {
+  return projectStore.$state.isBtnJoystickTrigerred;
+});
 
-const home = reactive({ name: "", land_area: "", benefit: "" });
+const isBoxMaterialExpanded = computed(() => {
+  return projectStore.$state.isBoxMaterialExpanded;
+});
+
+const isActiveResume = reactive({ one: true, two: false });
+
+const isActiveProjectDisplay = reactive({
+  one: true,
+  two: true,
+  three: true,
+  four: true,
+});
+
+const isActiveBtnJoyStick = reactive({
+  one: false,
+  two: false,
+  three: false,
+  four: false,
+});
+
+const numbersBtnRef = ref({});
+
+const typeQuotation = ref(["foundation", "plumbing", "electricity", "roofing"]);
+
+const setItemRef = (el, key) => {
+  if (el) {
+    numbersBtnRef.value[key] = el;
+  }
+};
+
+const durationProject = ref({ durationStage: "" });
+
+const home = ref({ name: "", land_area: "", benefit: "" });
 
 const roomInProject = ref({
   bedroom: {
@@ -46,88 +103,416 @@ const roomInProject = ref({
   },
 });
 
-const houseType = reactive({
+const houseType = ref({
   one_floor: "true",
   level: "0",
 });
 
-/* const indexToSelect = computed(() => {
-  let defaultIndex = "0";
-  const projectId = route.query.projectId || "danton_shield";
+const initInfos = ref({
+  0: {},
+  1: {},
+  2: {},
+  3: {},
+});
 
-  switch (projectId) {
-    case "danton_shield":
-      defaultIndex = "0";
-      break;
-    case "merry_clap":
-      defaultIndex = "1";
-      break;
-    case "dexter_flip":
-      defaultIndex = "2";
-      break;
-    default:
-      throw new Error(
-        " Error - indexToSelectCatch computed var in --ProjectCallPage-- Component ",
-      );
+/* const isBtnSlider = ref(true); */
+
+const btnSliderRef = ref();
+
+const indexLang = computed(() => {
+  return props.userLanguage === "FR" ? 0 : 1;
+});
+
+const goBackHome = () => {
+  router.push({ name: "home" });
+};
+
+const handleSwitchPage = () => {
+  emit("update-modalpage", { isModalPage: true });
+};
+
+const handleShiftResume = (e) => {
+  //desactivate any selected Joystick Button
+  projectStore.$patch({
+    isBtnJoystickTrigerred: false,
+    isBoxMaterialExpanded: false,
+  });
+
+  const targetElt = e.target;
+
+  isActiveResume.one = false;
+  isActiveResume.two = false;
+
+  // button reaction & displayed box container
+  if (
+    targetElt.id === "cta-resume-one" ||
+    e.currentTarget.getAttribute("data-cta-resume") === "cta-resume-one"
+  ) {
+    if (targetElt.id === "cta-resume-one") {
+      isActiveResume.one = true;
+      isActiveResume.two = false;
+
+      projectStore.$patch({
+        isBtnJoystickTrigerred: false,
+        isBoxMaterialExpanded: false,
+      });
+    }
+
+    halfResumeRef1.value.classList.add("activeproject__resume");
+    halfResumeRef2.value.classList.remove("activeproject__resume");
+  } else if (
+    targetElt.id === "cta-resume-two" ||
+    e.currentTarget.getAttribute("data-cta-resume") === "cta-resume-two"
+  ) {
+    if (targetElt.id === "cta-resume-two") {
+      isActiveResume.one = false;
+      isActiveResume.two = true;
+
+      projectStore.$patch({
+        isBtnJoystickTrigerred: false,
+        isBoxMaterialExpanded: false,
+      });
+    }
+
+    halfResumeRef2.value.classList.add("activeproject__resume");
+    halfResumeRef1.value.classList.remove("activeproject__resume");
   }
+};
 
-  return defaultIndex;
-}); */
+const controlProjectToDisplay = (indexSelect, isExpanded) => {
+  if (isExpanded) {
+    Object.keys(isActiveBtnJoyStick).forEach((key, index) => {
+      if (index !== indexSelect) {
+        isActiveBtnJoyStick[key] = false;
+        isActiveProjectDisplay[key] = false;
+      } else {
+        isActiveBtnJoyStick[key] = true;
+        isActiveProjectDisplay[key] = true;
+      }
+    });
+  } else {
+    Object.keys(isActiveBtnJoyStick).forEach((key, index) => {
+      if (index === indexSelect.one || index === indexSelect.two) {
+        isActiveBtnJoyStick[key] = false;
+        isActiveProjectDisplay[key] = true;
+      }
+    });
+  }
+};
 
-const initInfos = reactive({ 0: {}, 1: {}, 2: {}, 3: {} });
+const switchProjectToView = (quotationType, statusExpanded) => {
+  if (statusExpanded) {
+    switch (quotationType) {
+      case "foundation":
+        controlProjectToDisplay(0, statusExpanded);
 
-onMounted(async () => {
-  console.log("route query projectId :", route.query.projectId);
-
-  const projectId = route.query.projectId || "dexter_flip";
-
-  const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
-
-  typeQuotation.forEach((type, index) => {
-    switch (projectId) {
-      case "danton_shield":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 0,
-        };
-        durationProject.durationStage = projects[0].duration_stage;
-        home.name = projects[0].name;
-        home.land_area = projects[0].area.land;
-        home.benefit = projects[0].benefit;
-        roomInProject.value = projects[0].compartment;
         break;
-      case "merry_clap":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 1,
-        };
-        durationProject.durationStage = projects[1].duration_stage;
-        home.name = projects[1].name;
-        home.land_area = projects[1].area.land;
-        home.benefit = projects[1].benefit;
-        roomInProject.value = projects[1].compartment;
+      case "plumbing":
+        controlProjectToDisplay(1, statusExpanded);
+
         break;
-      case "dexter_flip":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 2,
-        };
-        durationProject.durationStage = projects[2].duration_stage;
-        home.name = projects[2].name;
-        home.land_area = projects[2].area.land;
-        home.benefit = projects[2].benefit;
-        roomInProject.value = projects[2].compartment;
-        houseType.one_floor = false;
+      case "electricity":
+        controlProjectToDisplay(2, statusExpanded);
+
+        break;
+      case "roofing":
+        controlProjectToDisplay(3, statusExpanded);
         break;
       default:
         throw new Error(
-          "Error occured while affecting --indexLink-- ,   LifeCycle onMounted(() => {...}), --ProjectModalPage component-- ",
+          "Error --handleProjectDisplay Fn if-- ProjectCallpage Component",
         );
     }
+  } else {
+    console.log("TRIAL BEAR--");
+    switch (quotationType) {
+      case "foundation":
+        controlProjectToDisplay({ one: 0, two: 1 }, statusExpanded);
+        break;
+      case "plumbing":
+        controlProjectToDisplay({ one: 0, two: 1 }, statusExpanded);
+        break;
+      case "electricity":
+        controlProjectToDisplay({ one: 2, two: 3 }, statusExpanded);
+        break;
+      case "roofing":
+        controlProjectToDisplay({ one: 2, two: 3 }, statusExpanded);
+        break;
+      default:
+        throw new Error(
+          "Error --handleProjectDisplay Fn else-- ProjectCallpage Component",
+        );
+    }
+  }
+};
+
+const handleJoystickPlay = async (e) => {
+  console.log("e.target --handleJoystickPlay Fn--:", e.currentTarget);
+
+  const indexTarget = e.currentTarget.getAttribute("data-index");
+
+  let quotationType;
+
+  typeQuotation.value.map((item, index) => {
+    if (index === +indexTarget) {
+      quotationType = item;
+      return;
+    }
   });
+
+  handleShiftResume(e);
+
+  /* handle show/hide > box materials < --in MiniQuotation-- */
+
+  /* by  playing *isBtnJoystickTrigerred* and *isBoxMaterialExpanded* global Var */
+
+  if (lastQuotationType.value !== quotationType) {
+    switchProjectToView(lastQuotationType.value, false);
+  }
+
+  await projectStore.$patch({
+    isBtnJoystickTrigerred: true,
+    isBoxMaterialExpanded: true,
+    quotationTypeSelect: quotationType,
+  });
+
+  switchProjectToView(quotationType, true);
+};
+
+const handleProjectDisplay = async () => {
+  /* NOTE: work in collaboration with --handleResumeDisplay Fn-- in **<MiniQuotation/>** */
+
+  //goal activate/not btnJoystcick and project to display
+
+  const isBoxExpanded = await projectStore.$state.isBoxMaterialExpanded;
+
+  const quotationTypeSelection = await projectStore.$state.quotationTypeSelect;
+
+  if (isBoxExpanded) {
+    switch (quotationTypeSelection) {
+      case "foundation":
+        controlProjectToDisplay(0, isBoxExpanded);
+        break;
+      case "plumbing":
+        controlProjectToDisplay(1, isBoxExpanded);
+        break;
+      case "electricity":
+        controlProjectToDisplay(2, isBoxExpanded);
+        break;
+      case "roofing":
+        controlProjectToDisplay(3, isBoxExpanded);
+        break;
+      default:
+        throw new Error("Error --handleProjectDisplay Fn if statement--");
+    }
+  } else {
+    switch (quotationTypeSelection) {
+      case "foundation":
+        controlProjectToDisplay({ one: 0, two: 1 }, isBoxExpanded);
+        break;
+      case "plumbing":
+        controlProjectToDisplay({ one: 0, two: 1 }, isBoxExpanded);
+        break;
+      case "electricity":
+        controlProjectToDisplay({ one: 2, two: 3 }, isBoxExpanded);
+        break;
+      case "roofing":
+        controlProjectToDisplay({ one: 2, two: 3 }, isBoxExpanded);
+        break;
+      default:
+        throw new Error("Error --handleProjectDisplay Fn else statement--");
+    }
+  }
+};
+
+const arrowSlideIndexNumber = (targetElt, typeArrow) => {
+  const carriedInfo = {
+    indexNumber: -1,
+    childrenArray: [],
+  };
+  let lastIndexNumber;
+  const parentElt = targetElt.parentElement;
+  const childrenNodeList = parentElt.querySelectorAll("p");
+  const childrenArray = [...childrenNodeList];
+  carriedInfo.childrenArray = childrenArray;
+
+  childrenArray.map((item, index) => {
+    if (item.classList.contains("active__number-play")) {
+      lastIndexNumber = index;
+      return;
+    }
+  });
+
+  if (typeArrow === "forward") {
+    if (lastIndexNumber === 2) return;
+
+    // hide and highlight last and new targeted element number
+    childrenArray[lastIndexNumber].classList.remove("active__number-play");
+    childrenArray[lastIndexNumber + 1].classList.add("active__number-play");
+
+    carriedInfo.indexNumber = lastIndexNumber + 1;
+  } else {
+    if (lastIndexNumber === 0) return;
+    // hide and highlight last and new targeted element number
+    childrenArray[lastIndexNumber].classList.remove("active__number-play");
+    childrenArray[lastIndexNumber - 1].classList.add("active__number-play");
+
+    carriedInfo.indexNumber = lastIndexNumber - 1;
+  }
+
+  return carriedInfo;
+};
+
+const handleArrowSlide = (e, typeArrow) => {
+  /* console.log("e target :", e.currentTarget); */
+
+  /* **numberMagicShift** = padding-inline/2 + widthBoxNumber + (gapBetweenNumber - padding-inline/2); */
+  let computedStyle;
+  let computedStyleNumber;
+  let leftVal = null; // purpose manipulate left
+  const numberMagicShift = 56; // 56px
+  const marginError = 1; // 1px
+  let projectId;
+  const numbersArray = ["1", "2", "3"];
+
+  const targetElt = e.currentTarget;
+  targetElt.classList.add("arrow__slide-anim");
+
+  if (typeArrow === "forward") {
+    const prevElt = targetElt.previousElementSibling;
+
+    computedStyle = window.getComputedStyle(prevElt);
+
+    if (computedStyle.left === "-85px") return;
+
+    computedStyleNumber = parseFloat(computedStyle.left);
+
+    leftVal =
+      computedStyleNumber -
+      numberMagicShift +
+      marginError * carriedInfo.indexNumber;
+
+    const tagNumber = carriedInfo.childrenArray[carriedInfo.indexNumber];
+
+    if (tagNumber.innerText === "1") projectId = "danton_shield";
+
+    if (tagNumber.innerText === "2") projectId = "merry_clap";
+
+    if (tagNumber.innerText === "3") projectId = "dexter_flip";
+
+    prevElt.style.left = `${leftVal}px`;
+  } else if (typeArrow === "backward") {
+    const carriedInfo = arrowSlideIndexNumber(targetElt, "backward");
+
+    const nextElt = targetElt.nextElementSibling;
+    computedStyle = window.getComputedStyle(nextElt);
+
+    if (computedStyle.left === "24px") return;
+
+    computedStyleNumber = parseFloat(computedStyle.left);
+
+    leftVal =
+      computedStyleNumber +
+      numberMagicShift -
+      marginError * (carriedInfo.indexNumber + 1);
+
+    const tagNumber = carriedInfo.childrenArray[carriedInfo.indexNumber];
+
+    if (tagNumber.innerText === "1") projectId = "danton_shield";
+
+    if (tagNumber.innerText === "2") projectId = "merry_clap";
+
+    if (tagNumber.innerText === "3") projectId = "dexter_flip";
+
+    nextElt.style.left = `${leftVal}px`;
+  }
+
+  //remove anim arrow before ending
+  targetElt.classList.remove("arrow__slide-anim");
+
+  //moving to the next route
+  router.push({
+    name: "project",
+    params: { projectId: `${projectId}` },
+    query: { value: "multiple" },
+  });
+};
+
+watch(
+  [isBtnJoystickTrigerred, isBoxMaterialExpanded],
+  async (
+    [newBtnJoystickTrigerred, newBoxMaterialExpanded],
+    [oldBtnJoystickTrigerred, oldBoxMaterialExpanded],
+  ) => {
+    // watch react naturalle before component mount It is why we add **nextTick**
+    await nextTick();
+
+    newBtnJoystickTrigerred = await newBtnJoystickTrigerred;
+
+    newBoxMaterialExpanded = await newBoxMaterialExpanded;
+
+    if (!newBtnJoystickTrigerred && !newBoxMaterialExpanded) {
+      Object.keys(isActiveBtnJoyStick).forEach((key, index) => {
+        isActiveBtnJoyStick[key] = false;
+        isActiveProjectDisplay[key] = true;
+      });
+    }
+  },
+);
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.projectId !== from.params.projectId) {
+    const projectParams = to.params.projectId;
+
+    const projectId = projectParams;
+
+    const {
+      initInformation,
+      durationOfProject,
+      homeIn,
+      roomEntireProject,
+      houseCallType,
+    } = initInfoProject(projectId, "main-page");
+
+    initInfos.value = initInformation;
+    durationProject.value = durationOfProject;
+    home.value = homeIn;
+    roomInProject.value = roomEntireProject;
+    houseType.value = houseCallType;
+  }
+});
+
+onMounted(async () => {
+  if (numbersBtnRef.value) {
+    const numberHighlight = numbersBtnRef.value[0];
+    numberHighlight.classList.add("active__number-play");
+  }
+
+  const catchArrayQuery = route.query.value;
+
+  if (catchArrayQuery === "single") {
+    btnSliderRef.value.classList.remove("active__slide-box");
+  } else {
+    btnSliderRef.value.classList.add("active__slide-box");
+  }
+
+  const catchArrayParams = route.params.projectId;
+
+  const projectId = catchArrayParams[0] || "danton_shield";
+
+  const {
+    initInformation,
+    durationOfProject,
+    homeIn,
+    roomEntireProject,
+    houseCallType,
+  } = initInfoProject(projectId, "main-page");
+
+  initInfos.value = initInformation;
+  durationProject.value = durationOfProject;
+  home.value = homeIn;
+  roomInProject.value = roomEntireProject;
+  houseType.value = houseCallType;
 });
 </script>
 <template>
@@ -136,22 +521,33 @@ onMounted(async () => {
       <div
         class="project__btn-display w-full flex flex-row justify-between pt-4 px-4"
       >
-        <div class="project__cta-backward">
+        <div class="project__cta-backward cursor-pointer" @click="goBackHome">
           <span class="basis--icon guidance--right-arrow"></span>
         </div>
-        <!-- only appear when navlink projec is clicked -->
-        <div class="cta__slide-projects w-30 h-16 pr-2">
+        <!-- only appear when navlink project is clicked -->
+        <div ref="btnSliderRef" class="cta__slide-projects w-26 h-12 px-2">
           <div
-            class="cta__slide-content w-full h-full flex flex-row justify-center items-center gap-2"
+            class="cta__slide-content relative w-full h-full flex flex-row justify-between items-center gap-0 overflow-hidden"
           >
             <div
-              class="cta__project-backward w-full h-full grid place-items-center"
+              class="cta__project-backward w-6 h-full grid place-items-center cursor-pointer z-10"
+              @click="(e) => handleArrowSlide(e, 'backward')"
             >
               <span class="basis--icon simple-line-icons--arrow-left"></span>
             </div>
-            <div class="cta__numbers-play"><p>1</p></div>
+            <div class="cta__numbers-play">
+              <p
+                class="cta__number-play"
+                :key="value.id"
+                v-for="(value, key) in numberBtnSlide"
+                :ref="(el) => setItemRef(el, key)"
+              >
+                {{ value.text }}
+              </p>
+            </div>
             <div
-              class="cta__project-forward w-full h-full grid place-items-center"
+              class="cta__project-forward w-6 h-full grid place-items-center cursor-pointer z-10"
+              @click="(e) => handleArrowSlide(e, 'forward')"
             >
               <span
                 class="rotate__right basis--icon simple-line-icons--arrow-left"
@@ -329,40 +725,83 @@ onMounted(async () => {
                     </div>
                   </div>
                 </div>
-                <div class="project__items-quotation w-full pt-1">
-                  <div class="project__item-container">
-                    <div class="project__item-animation">
-                      <MiniQuotation
-                        :quotation-info="initInfos[0]"
-                        :user-language="props.userLanguage"
-                      />
+                <div class="project__items-container">
+                  <div
+                    id="half__quotation-one"
+                    class="project__items-quotation activeproject__resume"
+                    ref="halfResumeRef1"
+                  >
+                    <div
+                      id="project__item-first"
+                      :class="{
+                        'project__item-container activeproject__display':
+                          isActiveProjectDisplay.one,
+                        'project__item-container': !isActiveProjectDisplay.one,
+                      }"
+                    >
+                      <div class="project__item-animation">
+                        <MiniQuotation
+                          :quotation-info="initInfos[0]"
+                          :user-language="props.userLanguage"
+                          @updatebtn-background="handleProjectDisplay"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      id="project__item-second"
+                      :class="{
+                        'project__item-container activeproject__display':
+                          isActiveProjectDisplay.two,
+                        'project__item-container': !isActiveProjectDisplay.two,
+                      }"
+                    >
+                      <div class="project__item-animation">
+                        <MiniQuotation
+                          :quotation-info="initInfos[1]"
+                          :user-language="props.userLanguage"
+                          @updatebtn-background="handleProjectDisplay"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <!-- hidden temporary -->
-                  <div class="project__item-container hidden">
-                    <div class="project__item-animation">
-                      <MiniQuotation
-                        :quotation-info="initInfos[1]"
-                        :user-language="props.userLanguage"
-                      />
+
+                  <div
+                    id="half__quotation-two"
+                    class="project__items-quotation"
+                    ref="halfResumeRef2"
+                  >
+                    <div
+                      id="project__item-third"
+                      :class="{
+                        'project__item-container activeproject__display':
+                          isActiveProjectDisplay.three,
+                        'project__item-container':
+                          !isActiveProjectDisplay.three,
+                      }"
+                    >
+                      <div class="project__item-animation">
+                        <MiniQuotation
+                          :quotation-info="initInfos[2]"
+                          :user-language="props.userLanguage"
+                          @updatebtn-background="handleProjectDisplay"
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <!-- hidden temporary -->
-                  <div class="project__item-container hidden">
-                    <div class="project__item-animation">
-                      <MiniQuotation
-                        :quotation-info="initInfos[2]"
-                        :user-language="props.userLanguage"
-                      />
-                    </div>
-                  </div>
-                  <!-- hidden temporary -->
-                  <div class="project__item-container hidden">
-                    <div class="project__item-animation">
-                      <MiniQuotation
-                        :quotation-info="initInfos[3]"
-                        :user-language="props.userLanguage"
-                      />
+                    <div
+                      id="project__item-fourth"
+                      :class="{
+                        'project__item-container activeproject__display':
+                          isActiveProjectDisplay.four,
+                        'project__item-container': !isActiveProjectDisplay.four,
+                      }"
+                    >
+                      <div class="project__item-animation">
+                        <MiniQuotation
+                          :quotation-info="initInfos[3]"
+                          :user-language="props.userLanguage"
+                          @updatebtn-background="handleProjectDisplay"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -376,12 +815,26 @@ onMounted(async () => {
                     class="cta_half-quotation w-max px-2 flex flex-row gap-5"
                   >
                     <div
-                      class="cta__quotation-resume active_resume h-max pb-[1px] opacity-80"
+                      id="cta-resume-one"
+                      :class="{
+                        'active_resume cta__quotation-resume  h-max pb-[1px] opacity-80 cursor-pointer':
+                          isActiveResume.one,
+                        'cta__quotation-resume  h-max pb-[1px] opacity-80 cursor-pointer':
+                          !isActiveResume.one,
+                      }"
+                      @click.stop.prevent="(e) => handleShiftResume(e)"
                     >
                       1
                     </div>
                     <div
-                      class="cta__quotation-resume h-max pb-[1px] opacity-80"
+                      id="cta-resume-two"
+                      :class="{
+                        'active_resume cta__quotation-resume  h-max pb-[1px] opacity-80 cursor-pointer':
+                          isActiveResume.two,
+                        'cta__quotation-resume  h-max pb-[1px] opacity-80 cursor-pointer':
+                          !isActiveResume.two,
+                      }"
+                      @click.stop.prevent="(e) => handleShiftResume(e)"
                     >
                       2
                     </div>
@@ -389,26 +842,70 @@ onMounted(async () => {
                   <div class="cta__choices-quotationdisplay">
                     <div class="cta__grid-display">
                       <div id="cta__play-numberone" class="cta__play-number">
-                        <div id="cta__domain-one" class="cta__domain">
+                        <div
+                          id="cta__domain-one"
+                          :class="{
+                            'cta__domain activeplay__joystick':
+                              isActiveBtnJoyStick.one,
+                            cta__domain: !isActiveBtnJoyStick.one,
+                          }"
+                          data-index="0"
+                          data-cta-resume="cta-resume-one"
+                          @click.stop.prevent="(e) => handleJoystickPlay(e)"
+                        >
                           <p>A</p>
                         </div>
                       </div>
                       <div id="cta__play-numbertwo" class="cta__play-number">
-                        <div id="cta__domain-two" class="cta__domain">
+                        <div
+                          id="cta__domain-two"
+                          :class="{
+                            'cta__domain activeplay__joystick':
+                              isActiveBtnJoyStick.two,
+                            cta__domain: !isActiveBtnJoyStick.two,
+                          }"
+                          data-index="1"
+                          data-cta-resume="cta-resume-one"
+                          @click.stop.prevent="(e) => handleJoystickPlay(e)"
+                        >
                           <p>B</p>
                         </div>
                       </div>
                       <div id="cta__play-numberthree" class="cta__play-number">
-                        <div id="cta__domain-three" class="cta__domain">
+                        <div
+                          id="cta__domain-three"
+                          :class="{
+                            'cta__domain activeplay__joystick':
+                              isActiveBtnJoyStick.three,
+                            cta__domain: !isActiveBtnJoyStick.three,
+                          }"
+                          data-index="2"
+                          data-cta-resume="cta-resume-two"
+                          @click.stop.prevent="(e) => handleJoystickPlay(e)"
+                        >
                           <p>C</p>
                         </div>
                       </div>
                       <div id="cta__play-numberfour" class="cta__play-number">
-                        <div id="cta__domain-four" class="cta__domain">
+                        <div
+                          id="cta__domain-four"
+                          :class="{
+                            'cta__domain activeplay__joystick':
+                              isActiveBtnJoyStick.four,
+                            cta__domain: !isActiveBtnJoyStick.four,
+                          }"
+                          data-index="3"
+                          data-cta-resume="cta-resume-two"
+                          @click.stop.prevent="(e) => handleJoystickPlay(e)"
+                        >
                           <p>D</p>
                         </div>
                       </div>
-                      <div id="cta__play-linkall" class="cta__play-viewall">
+                      <div
+                        id="cta__play-linkall"
+                        class="cta__play-viewall cursor-pointer"
+                        @click="handleSwitchPage"
+                      >
                         <span
                           class="smaller__span size__scale-88 w-max mt-4 px-2 text-[var(--text-paragraph)] bg-[var(--background-secondary)] rounded-full"
                           >view all</span
@@ -458,6 +955,22 @@ onMounted(async () => {
   transform: skewY(3deg);
 }
 
+/* slide-projects box  visibility */
+.cta__slide-projects {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 1s ease;
+}
+
+.cta__slide-projects.active__slide-box {
+  opacity: 1;
+  visibility: visible;
+}
+
+.arrow__slide-anim {
+  animation: arrow-slide-anim 350ms ease backwards;
+}
+
 /* project specification */
 .project__rooms-standard {
   width: 80%;
@@ -491,6 +1004,72 @@ onMounted(async () => {
   opacity: 0.8;
 }
 
+/* project cards anim display (resume 1, resume 2) */
+
+.project__items-container {
+  position: relative;
+  width: 100%;
+  min-height: 30.625rem;
+  padding-top: 0.25rem;
+}
+
+#half__quotation-one.project__items-quotation.activeproject__resume,
+#half__quotation-two.project__items-quotation.activeproject__resume {
+  position: relative;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: visible;
+  opacity: 1;
+  z-index: 3;
+  transition: all 860ms ease-in-out 300ms;
+}
+
+#half__quotation-one.project__items-quotation {
+  position: absolute;
+  left: -110%;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0.12;
+  z-index: 1;
+  transition: all 650ms ease-in-out;
+}
+
+#half__quotation-two.project__items-quotation {
+  position: absolute;
+  left: 110%;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0.12;
+  z-index: 1;
+  transition: all 650ms ease-in-out;
+}
+
+/* responsible hide/show the entire box if the other box icon arrow-up-down side is clicked */
+.project__item-container .project__item-animation {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  display: none;
+  visibility: hidden;
+  transition:
+    height 1.5s ease-in-out 450ms,
+    position 350ms ease;
+}
+
+.project__item-container.activeproject__display .project__item-animation {
+  width: 100%;
+  height: max-content;
+  visibility: visible;
+  position: relative;
+  display: grid;
+  transition:
+    position 350ms ease,
+    height 1.5s ease-in-out 450ms;
+}
+
 /* cta choice quotation display */
 .cta__quotation-resume {
   color: inherit;
@@ -505,6 +1084,7 @@ onMounted(async () => {
   border-radius: 1.5rem;
 }
 
+/* cta play joytick --style-- */
 .cta__grid-display {
   width: 10rem;
   height: 6rem;
@@ -546,13 +1126,83 @@ onMounted(async () => {
   grid-row: 2 / span 1;
 }
 
+/* cta play joystick --anim-- */
 .cta__domain {
   width: 1.5rem;
   height: 1.5rem;
-  /*  padding: 0.25rem; */
+  color: inherit;
+  background-color: transparent;
   border: 1px solid var(--accent-color-2);
   border-radius: 50%;
   display: grid;
   place-items: center;
+  transition: all 1s ease 1.4s;
+  cursor: pointer;
+}
+
+.cta__domain.activeplay__joystick {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--background-primary);
+  background-color: var(--link--external-btn);
+  border: 1px solid transparent;
+  border-radius: 44%;
+  display: grid;
+  place-items: center;
+  transition: all 1s ease 1.6s;
+  cursor: pointer;
+}
+
+/* cta slider 1,2.3 buttons */
+
+.cta__numbers-play {
+  position: absolute;
+  left: 24px;
+  width: 150px;
+  height: 42px;
+  padding-inline: 11px; /*padding-inline*/
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 36px; /*gapBetweenNumber*/
+  overflow: hidden;
+  transition: all 350ms linear;
+}
+
+.cta__number-play {
+  width: 20px; /*widthBoxNumber*/
+  height: 100%;
+  color: inherit;
+  background-color: transparent;
+  opacity: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--accent-color-2);
+  border-radius: 28%;
+  transition: all 1s ease-in-out;
+}
+
+.cta__number-play.active__number-play {
+  width: 20px; /*widthBoxNumber*/
+  height: 100%;
+  color: var(--background-primary);
+  background-color: var(--link--external-btn);
+  opacity: 48;
+  display: grid;
+  place-items: center;
+  border: 2px solid transparent;
+  border-radius: 28%;
+}
+
+@keyframes arrow-slide-anim {
+  0% {
+    opacity: 0.98;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

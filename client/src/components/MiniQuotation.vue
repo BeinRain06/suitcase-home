@@ -1,5 +1,7 @@
 <script setup>
-import { ref, reactive, onMounted, onUpdated, computed } from "vue";
+import { ref, onMounted, computed, watch, nextTick, onBeforeUpdate } from "vue";
+
+import { useProjectStore } from "../store-management/useProjectStore";
 
 import TitleMiniQuotation from "./TitleMiniQuotation.vue";
 import DeliveryQuotationTime from "./DeliveryQuotationTime.vue";
@@ -23,20 +25,31 @@ const props = defineProps({
   userLanguage: String,
 });
 
+const emit = defineEmits(["updatebtn-background"]);
+
+const projectStore = useProjectStore();
+
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
 });
 
-const extraBoxInfo = computed(() => {
-  if (
-    props.quotationInfo.quotationType === "foundation" ||
-    props.quotationInfo.quotationType === "roofing"
-  ) {
-    return true;
-  } else {
-    return false;
-  }
+const isBtnJoystickTrigerred = computed(() => {
+  return projectStore.$state.isBtnJoystickTrigerred;
 });
+
+const isBoxMaterialExpanded = computed(() => {
+  return projectStore.$state.isBoxMaterialExpanded;
+});
+
+const quotationTypeSelect = computed(() => {
+  return projectStore.$state.quotationTypeSelect;
+});
+
+const extraBoxInfos = ref(true);
+
+const boxAnimRef = ref();
+
+const recordWorkRef = ref();
 
 const dataFetched = ref(null);
 
@@ -128,6 +141,39 @@ const dataMaterials = ref({
   activeFloor: activeFloor.value,
   activeLayer: activeLayer.value,
 });
+
+const handleResumeDisplay = async (e) => {
+  const evalExp =
+    e.target.id === "arrow__up-down" || e.target.id === "arrow__up-downwrap";
+
+  if (!evalExp) return;
+
+  let targetIcon;
+
+  targetIcon = e.target;
+
+  // set the right targetIcon div container
+  if (evalExp && e.target.id === "arrow__up-down") {
+    targetIcon = e.target.parentElement;
+  }
+
+  if (e.target.closest("#mini__main")) {
+    targetIcon.classList.toggle("anim__rotate-z");
+
+    const quotationType = props.quotationInfo.quotationType;
+
+    const isBoxExpanded = projectStore.$state.isBoxMaterialExpanded;
+
+    await projectStore.$patch({
+      isBoxMaterialExpanded: !isBoxExpanded,
+      quotationTypeSelect: quotationType,
+    });
+
+    await nextTick();
+
+    emit("updatebtn-background");
+  }
+};
 
 const dataToComponents = (dataSource, quotationType) => {
   let catchCost = {};
@@ -313,124 +359,129 @@ const dataToFetch = () => {
   dataFetched.value = dataSource;
 };
 
+watch(
+  [isBoxMaterialExpanded, quotationTypeSelect],
+  async (
+    [newBoxMaterialExpanded, newQuotationTypeSelect],
+    [oldBoxMaterialExpanded, oldQuotationTypeSelect],
+  ) => {
+    /* watch react naturalle before compnent mount/ It is why we add **nextTick** */
+    await nextTick();
+
+    newQuotationTypeSelect = await newQuotationTypeSelect;
+
+    newBoxMaterialExpanded = await newBoxMaterialExpanded;
+
+    const evalQuotationType1 =
+      recordWorkRef.value.getAttribute("quotation-type") ===
+        oldQuotationTypeSelect &&
+      boxAnimRef.value.getAttribute("quotation-type") ===
+        oldQuotationTypeSelect;
+
+    const evalQuotationType2 =
+      recordWorkRef.value.getAttribute("quotation-type") ===
+        newQuotationTypeSelect &&
+      boxAnimRef.value.getAttribute("quotation-type") ===
+        newQuotationTypeSelect;
+
+    if (evalQuotationType1) {
+      recordWorkRef.value.classList.remove("active__overall-work");
+      boxAnimRef.value.classList.remove("active__materials-anim");
+    }
+
+    if (evalQuotationType2) {
+      if (newBoxMaterialExpanded) {
+        recordWorkRef.value.classList.add("active__overall-work");
+        boxAnimRef.value.classList.add("active__materials-anim");
+      } else {
+        recordWorkRef.value.classList.remove("active__overall-work");
+        boxAnimRef.value.classList.remove("active__materials-anim");
+      }
+    }
+
+    // remove/add -- ExtraInfo box -- (in the html)
+    const evalExtraBoxInfo =
+      newQuotationTypeSelect === "plumbing" ||
+      newQuotationTypeSelect === "electricity";
+
+    if (evalExtraBoxInfo) {
+      extraBoxInfos.value = false;
+    } else {
+      extraBoxInfos.value = true;
+    }
+  },
+);
+
+watch(
+  [isBtnJoystickTrigerred, isBoxMaterialExpanded],
+  async (
+    [newBtnJoystickTrigerred, newBoxMaterialExpanded],
+    [oldBtnJoystickTrigerred, oldBoxMaterialExpanded],
+  ) => {
+    // watch react naturally before component mount It is why we add **nextTick**
+    await nextTick();
+
+    newBtnJoystickTrigerred = await newBtnJoystickTrigerred;
+
+    newBoxMaterialExpanded = await newBoxMaterialExpanded;
+
+    if (!newBtnJoystickTrigerred && !newBoxMaterialExpanded) {
+      recordWorkRef.value.classList.remove("active__overall-work");
+      boxAnimRef.value.classList.remove("active__materials-anim");
+    }
+  },
+);
+
+onBeforeUpdate(() => {
+  const quotationType = props.quotationInfo.quotationType;
+
+  if (quotationType === "foundation" || quotationType === "roofing") {
+    extraBoxInfos.value = true;
+  } else {
+    extraBoxInfos.value = false;
+  }
+});
+
 onMounted(async () => {
   const quotationInfoCatch = await props.quotationInfo; // This line is important! to made ready for use *quotationInfo* props to the component.
 
   dataToFetch(); // if for some way dataFetch eems to not be giving -- also use  --await--
 });
-
-onUpdated(() => {
-  if (props.userLanguage) {
-    indexLang.val = props.userLanguage === "FR" ? 0 : 1;
-  }
-});
 </script>
 <template>
-  <div class="item__quotation w-full h-full">
+  <div
+    class="item__quotation w-full h-full"
+    :quotation-type="props.quotationInfo.quotationType"
+  >
     <TitleMiniQuotation :data-title="dataTitle" />
-    <!-- <div
-      class="label__quotation w-max pb-1 text-[var(--link--external-btn)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
-    >
-      <p>A</p>
-      <p>-</p>
-      <p>Foundation And Structure</p>
-    </div> -->
     <div class="record__quotation w-full pt-4">
       <div class="record__designation w-full flex flex-row justify-between">
         <h4>Designation</h4>
         <h4>Cost</h4>
       </div>
       <div
-        class="record__overwall-work w-full h-92 pt-1 mt-4 flex flex-col justify-center"
+        class="record__overall-work flex flex-col justify-start"
+        :quotation-type="props.quotationInfo.quotationType"
+        ref="recordWorkRef"
       >
         <div
+          id="mini__main"
           class="box__overall-pricing w-full px-2 flex flex-row justify-between bg-[var(--background-secondary)]"
         >
-          <ResumeQuotationCost :data-resumeQuotation="dataResumeQuotation" />
+          <ResumeQuotationCost
+            :data-resumeQuotation="dataResumeQuotation"
+            @click="async (e) => handleResumeDisplay(e)"
+          />
         </div>
 
         <div class="box__materials-glance">
-          <MaterialQuotation :data-materials="dataMaterials" />
-
-          <!-- <div
-            class="detail__structured-items w-full h-[12.5rem] flex flex-row"
+          <div
+            class="box__materials-animation"
+            ref="boxAnimRef"
+            :quotation-type="props.quotationInfo.quotationType"
           >
-            <div class="items__structure-lab w-6/12 h-full">
-              <div
-                class="structure__title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
-              >
-                <p class="smaller_span">material</p>
-              </div>
-              <div
-                class="structure__materials_needed w-full h-[11rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
-              >
-                <div class="structure__single-material w-full py-2">
-                  <div
-                    class="structure__to-install w-full flex flex-row justify-between"
-                  >
-                    <p class="stick__cater-size">- 27 pillars</p>
-                    <p class="stick__cater-size">2*20*20</p>
-                  </div>
-                  <div class="unit__panel w-full flex flex-row justify-end">
-                    <p class="stick__min-size font-extralight">(m*cm*cm)</p>
-                  </div>
-                </div>
-                <div class="structure__single-material w-full py-2">
-                  <div
-                    class="structure__to-install w-full flex flex-row justify-between"
-                  >
-                    <p class="stick__cater-size">- 9 beams</p>
-                    <p class="stick__cater-size">2*20*20</p>
-                  </div>
-                  <div class="unit__panel w-full flex flex-row justify-end">
-                    <p class="stick__min-size font-extralight">(m*cm*cm)</p>
-                  </div>
-                </div>
-                <div class="structure__single-material w-full py-2">
-                  <div class="structure__organic-components">
-                    <p class="stick__min-size opacity-75 font-bold">
-                      - Sands, Rocks, Woods, Nails...included
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="account__volume-occupied w-2/12 h-full grid place-items-center border border-solid border-[var(--accent-color-2)]"
-            >
-              <p>08 m³</p>
-            </div>
-            <div
-              class="materials__investment w-4/12 h-full grid place-items-center border border-l-0 border-solid border-[var(--accent-color-2)]"
-            >
-              <p class="opacity-80">1.600.000</p>
-            </div>
-          </div> -->
-
-          <!-- <div
-            class="detail__labor w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
-          >
-            <div class="labor__label w-8/12 h-full flex flex-row items-center">
-              <p>Labor</p>
-            </div>
-            <div
-              class="labor__investment w-4/12 h-full flex flex-row items-center justify-end"
-            >
-              <p class="opacity-80">800.000</p>
-            </div>
+            <MaterialQuotation :data-materials="dataMaterials" />
           </div>
- -->
-          <!-- <div
-            class="detail__final-cost w-full h-16 pt-1 px-2 flex flex-row justify-between items-center border border-solid border-[var(--accent-color-2)]"
-          >
-            <div class="total__label h-full">
-              <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
-            </div>
-            <div class="total__investment h-full">
-              <p class="font-bold opacity-65">2.400.000</p>
-              <p class="pl-1 font-bold opacity-65">XAF</p>
-            </div>
-          </div> -->
         </div>
       </div>
 
@@ -439,8 +490,9 @@ onUpdated(() => {
       </div>
 
       <!-- v-if *foundation* or *roofing* -->
-      <div v-if="extraBoxInfo" class="block__phase-work">
+      <div class="block__phase-work">
         <div
+          v-show="extraBoxInfos"
           id="cta__msg-reminder"
           class="cta__phase-todisplay relative w-full h-12"
         >
@@ -531,7 +583,6 @@ p {
   height: 1rem;
   padding: 0.25rem;
   color: var(--text-paragraph);
-  /* border: 1px solid var(--link--external-btn); */
   border-radius: 100%;
   opacity: 0.98;
   outline: 2px solid var(--link--external-btn);
@@ -555,5 +606,46 @@ p {
 .phase__two.active__phase {
   opacity: 1;
   visibility: visible;
+}
+
+/* animation box materials */
+
+.record__overall-work {
+  position: relative;
+  width: 100%;
+  height: max-content;
+  padding: 0.25rem 0 1.25rem;
+  margin-top: 1rem;
+}
+
+.record__overall-work.active__overall-work {
+  position: relative;
+  width: 100%;
+  height: 23rem; /* we expand box */
+  padding: 0.25rem 0 0;
+  margin-top: 1rem;
+}
+
+.box__materials-animation {
+  width: 100%;
+  position: absolute;
+  height: 0;
+  /* height: max-content; */
+  padding: 0.25rem 0;
+  display: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 850ms ease;
+}
+
+.box__materials-animation.active__materials-anim {
+  position: relative;
+  width: 100%;
+  height: max-content;
+  display: grid;
+  padding: 0;
+  visibility: visible;
+  opacity: 1;
+  transition: all 1s ease;
 }
 </style>

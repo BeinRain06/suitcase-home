@@ -105,3 +105,63 @@ this.$refs.selectLangRef; } }
 const finalValue= callElement.value
 </script>
 ```
+
+### Create A Slider Button From Number 1 to Number 3
+
+This slider after reflection and trial took me **03 hours** to finally figure out the right **formula** that will made me slide from Number **1** to Number **3** using `arrow-right` or `arrow-left` click.
+
+**Parent child Box Content** (`child Box Content`,)
+
+- position = relative; width = 104px; height:48px; padding-inline: 0.5rem;
+
+<br/>
+
+**child Box Content** (`arrow-left`, `gut-arrow-number`, `arrow-right`)
+
+- position = relative; width = 100%; height:48px; overflow-hidden; with flex in x-axis
+
+`arrow-left` - width = 24px; height: 42px;
+`arrow-right` - width = 24px; height: 42px;
+`gut-arrow-number` - width = 11px;
+
+<br/>
+
+**Box Numbers** (`1`, `2`, `3`) --in--> **child Box Content**
+
+`class="cta__numbers-play" in *ProjectCallPage*`
+
+**Function Logic:** handleArrowSlide Fn
+
+- position = absolute; left: 24px //width of arrow; width = 150px; height:42px; padding-inline: 11px; with flex in x-axis; gap: 36px //gapBetweenNumber; overflow: hidden; then add transition
+
+**Box Number** (`1`) 0r (`2`) or (`3`)
+
+- width: 20px //widthBoxNumber; height: 100%; border: 1px solid var(--accent-color-2);border-radius: 28%; with grid display, place-items-center;
+
+#### The Formula
+
+Goal: Manipulate **left** position
+
+> **numberMagicShift** = padding-inline/2 + widthBoxNumber + (gapBetweenNumber - padding-inline/2);
+
+> marginError = 1px;
+
+> indexNumber (--clicked--) = 0 0r 1 0r 2 (0 <- click "1", 1 <- click "2", 2 <- click "3")
+
+1. Clicking `arrow-right` (`>`)
+
+> **formula:** **left** = Exleft - numberMagicShift + (marginError\*indexNumber);
+
+> **edge condition:** **left** === -85px ? Yes => return
+
+<br/>
+
+N.B: **edge number** is calculated manually and depend of the quantity of button we display (--here is 03 buttons--)
+
+2. Clicking `arrow-left` (`<`)
+
+> **formula:** **left** = Exleft + numberMagicShift - marginError\*indexNumber + 1;
+
+> **edge condition:** **left** === -85px ? Yes => return
+
+<br/>

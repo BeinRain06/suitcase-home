@@ -1,64 +1,38 @@
 <script setup>
-import { reactive, onMounted, onUpdated } from "vue";
+import { ref, onMounted, onUpdated } from "vue";
 import { useRoute } from "vue-router";
 
 import MiniModalQuotation from "./MiniModalQuotation.vue";
+import { initInfoProject } from "../reusable-function/initInfoProjects";
 
 const route = useRoute();
+
+const emit = defineEmits(["update-modalpage"]);
 
 const props = defineProps({
   userLanguage: String,
 });
 
-const initInfos = reactive({ 0: {}, 1: {}, 2: {}, 3: {} });
+const initInfos = ref({ 0: {}, 1: {}, 2: {}, 3: {} });
+
+const handleSwitchPage = () => {
+  emit("update-modalpage", { isModalPage: false });
+};
 
 onMounted(() => {
-  /* This has to be done dynamically (not yet proper route redirection)
+  const catchArrayParams = route.params.projectId;
 
-  const projectId = route.query.projectId; */
+  const projectId = catchArrayParams[0] || "danton_shield";
 
-  const projectId = route.query.projectId || "dexter_flip";
-
-  const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
-
-  typeQuotation.forEach((type, index) => {
-    switch (projectId) {
-      case "danton_shield":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 0,
-        };
-        break;
-      case "merry_clap":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 1,
-        };
-        break;
-      case "dexter_flip":
-        initInfos[index] = {
-          projectId: projectId,
-          quotationType: type,
-          indexToSelect: 2,
-        };
-        break;
-      default:
-        throw new Error(
-          "Error occured while affecting --indexLink-- ,   LifeCycle onMounted(() => {...}), --ProjectModalPage component-- ",
-        );
-    }
-  });
-
-  /* console.log("initInfos :", initInfos); */
+  initInfos.value = initInfoProject(projectId, "modal-page");
 });
 </script>
 <template>
   <section id="project__modal" class="project__modal w-full">
     <div class="project__modal-container w-full flex flex-col gap-4">
       <div
-        class="cta__modal-close w-full h-24 px-4 flex flex-row items-center justify-end"
+        class="cta__modal-close w-full h-24 px-4 flex flex-row items-center justify-end cursor-pointer"
+        @click="handleSwitchPage"
       >
         <div class="cta__modalbtn-close">x</div>
       </div>

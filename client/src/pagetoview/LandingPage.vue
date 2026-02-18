@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onUpdated } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import {
   hero,
@@ -41,19 +41,21 @@ const indexLang = computed(() => {
   }
 }); */
 
-const handleRoute = (route, projectId, hashId) => {
+const handleRoute = async (route, projectId, queryValue) => {
   const catchProjectId = projectId || "";
-  const catchHashId = hashId || "";
-
+  const catchQueryValue = queryValue || "";
   switch (route) {
     case "contact":
-      router.push({ path: "/contact" });
+      await router.push({ path: "/contact" });
       break;
     case "home":
-      router.push({ path: "/" }); // have to introduce **hashId**
+      await router.push({ path: "/" }); // have to introduce **hashId**
       break;
     case "project":
-      router.push({ path: `/project/${catchProjectId}` }); // check if it is working both without and with *projectId*
+      await router.push({
+        path: `/project/${catchProjectId}`,
+        query: { value: `${catchQueryValue}` },
+      }); // check if it is working both without and with *projectId*
       break;
     default:
       throw new Error("Error --handleRoute Fn-- in -- *LandingPage* component");
@@ -98,17 +100,17 @@ const handleRoute = (route, projectId, hashId) => {
             <a
               v-if="!indexLang"
               href="
-        #"
+        #hero"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >OBTENEZ UN AVIS GRATUIT</a
             >
             <a
               v-else
               href="
-        #"
+        #hero"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >GET GUIDANCE FREE</a
             >
           </div>
@@ -139,17 +141,17 @@ const handleRoute = (route, projectId, hashId) => {
             <a
               v-if="!indexLang"
               href="
-        #"
+        #mission"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >EN CONNAITRE PLUS</a
             >
             <a
               v-else
               href="
-        #"
+        #mission"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >KNOW BETTER</a
             >
           </div>
@@ -182,17 +184,23 @@ const handleRoute = (route, projectId, hashId) => {
 
               <div class="project__cta-button pt-4 pb-1">
                 <a
-                  href="#"
+                  :href="`#${projects[key].id}`"
                   class="cta__button-secondary"
                   v-if="!indexLang"
-                  @click="() => handleRoute('project', `${projects[key].id}`)"
+                  @click.stop.prevent="
+                    async () =>
+                      handleRoute('project', `${projects[key].id}`, 'single')
+                  "
                   >{{ projects[key].button.fr }}</a
                 >
                 <a
                   href="#"
                   class="cta__button-secondary"
                   v-else
-                  @click="() => handleRoute('project', `${projects[key].id}`)"
+                  @click.stop.prevent="
+                    () =>
+                      handleRoute('project', `${projects[key].id}`, 'single')
+                  "
                   >{{ projects[key].button.en }}</a
                 >
               </div>
@@ -239,17 +247,17 @@ const handleRoute = (route, projectId, hashId) => {
             <a
               v-if="!indexLang"
               href="
-        #"
+        #services"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >OBTENEZ UN AVIS GRATUIT</a
             >
             <a
               v-else
               href="
-        #"
+        #services"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >GET GUIDANCE FREE</a
             >
           </div>
@@ -379,17 +387,19 @@ const handleRoute = (route, projectId, hashId) => {
             <a
               v-if="!indexLang"
               href="
-        #"
+        #trust"
               class="cta__button-primary"
-              @click="() => handleRoute('project')"
+              @click.stop.prevent="
+                async () => handleRoute('project', 'danton_shield', 'multiple')
+              "
               >VOIR EXAMPLE PROJETS</a
             >
             <a
               v-else
               href="
-        #"
+        #trust"
               class="cta__button-primary"
-              @click="() => handleRoute('project')"
+              @click.stop.prevent="async () => handleRoute('project')"
               >LOOK SAMPLE PROJECTS</a
             >
           </div>
@@ -444,17 +454,17 @@ const handleRoute = (route, projectId, hashId) => {
             <a
               v-if="!indexLang"
               href="
-        #"
+        #reinforcement"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >EN CONNAITRE PLUS</a
             >
             <a
               v-else
               href="
-        #"
+        #reinforcement"
               class="cta__button-primary"
-              @click="() => handleRoute('contact')"
+              @click.stop.prevent="async () => handleRoute('contact')"
               >KNOW BETTER</a
             >
           </div>
@@ -488,17 +498,20 @@ const handleRoute = (route, projectId, hashId) => {
               <a
                 v-if="!indexLang"
                 href="
-        #"
+        #farewell"
                 class="cta__button-primary"
-                @click="() => handleRoute('project')"
+                @click.stop.prevent="
+                  async () =>
+                    handleRoute('project', 'danton_shield', 'multiple')
+                "
                 >VOIR EXAMPLE PROJETS</a
               >
               <a
                 v-else
-                href="
-        #"
+                href="#farewell
+        "
                 class="cta__button-primary"
-                @click="() => handleRoute('project')"
+                @click.stop.prevent="async () => handleRoute('project')"
                 >LOOK SAMPLE PROJECTS</a
               >
             </div>
@@ -545,7 +558,7 @@ const handleRoute = (route, projectId, hashId) => {
   padding: 0 3.5rem;
   margin: 0 auto;
   background: linear-gradient(20deg, hsl(345, 72%, 24%), hsl(32, 30%, 37%) 87%);
-  z-index: 3;
+  z-index: 2;
 }
 
 .hero__image-container {
