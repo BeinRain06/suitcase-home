@@ -1,5 +1,13 @@
 <script setup>
-import { ref, onMounted, computed, watch, nextTick, onBeforeUpdate } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  computed,
+  watch,
+  nextTick,
+  onBeforeUpdate,
+} from "vue";
 
 import { useProjectStore } from "../store-management/useProjectStore";
 
@@ -51,7 +59,13 @@ const boxAnimRef = ref();
 
 const recordWorkRef = ref();
 
+const phaseOneRef = ref();
+
+const phaseTwoRef = ref();
+
 const dataFetched = ref(null);
+
+const isActivePhase = reactive({ one: false, two: true });
 
 const activeLayer = ref({ foundation: 0, roof: 0 }); // foundation or roof materials weren't all stacking in our designed card (html &css). We create an object boolean: 0 or 1 to display th entire materials.
 
@@ -173,6 +187,53 @@ const handleResumeDisplay = async (e) => {
 
     emit("updatebtn-background");
   }
+};
+
+const handlePhaseChange = async (direction_phase) => {
+  console.log("aaaaa");
+  const quotationType = props.quotationInfo.quotationType;
+
+  if (quotationType === "foundation") {
+    switch (direction_phase) {
+      case "back-phase-one":
+        isActivePhase.two = false;
+        isActivePhase.one = true;
+        activeLayer.value.foundation = 1;
+        break;
+      case "move-phase-two":
+        isActivePhase.two = true;
+        isActivePhase.one = false;
+        activeLayer.value.foundation = 0;
+        break;
+      default:
+        throw new Error(
+          "Error catching switch --handlePhaseChange Fn --if statement",
+        );
+    }
+  } else if (quotationType === "roofing") {
+    switch (direction_phase) {
+      case "back-phase-one":
+        isActivePhase.two = false;
+        isActivePhase.one = true;
+        activeLayer.value.roof = 1;
+        break;
+      case "move-phase-two":
+        isActivePhase.two = true;
+        isActivePhase.one = false;
+        activeLayer.value.roof = 0;
+        break;
+      default:
+        throw new Error(
+          "Error catching switch --handlePhaseChange Fn --else statement",
+        );
+    }
+  }
+
+  await nextTick();
+
+  console.log("isActivePhase --handlePhaseChange Fn--: ", isActivePhase);
+
+  console.log("activeLayer --handlePhaseChange Fn--: ", activeLayer);
 };
 
 const dataToComponents = (dataSource, quotationType) => {
@@ -496,7 +557,13 @@ onMounted(async () => {
           id="cta__msg-reminder"
           class="cta__phase-todisplay relative w-full h-12"
         >
-          <div class="phase__one active__phase">
+          <div
+            :class="{
+              'phase__two active__phase': isActivePhase.two,
+              phase__two: !isActivePhase.two,
+            }"
+            ref="phaseTwoRef"
+          >
             <div
               v-if="!indexLang"
               class="pointer__phase-box w-full flex flex-row justify-between"
@@ -505,7 +572,10 @@ onMounted(async () => {
                 <p class="stick__cater-size opacity-70">Suivant</p>
                 <div class="icon__arrow-right"></div>
               </div>
-              <div class="cta__next-phase">
+              <div
+                class="cta__next-phase cursor-pointer"
+                @click="() => handlePhaseChange('back-phase-one')"
+              >
                 <div class="icon__player-right"></div>
                 <p class="stick__cater-size opacity-75">Phase 2</p>
               </div>
@@ -518,13 +588,22 @@ onMounted(async () => {
                 <p class="stick__cater-size opacity-70">Next</p>
                 <div class="icon__arrow-right"></div>
               </div>
-              <div class="cta__next-phase">
+              <div
+                class="cta__next-phase cursor-pointer"
+                @click="() => handlePhaseChange('back-phase-one')"
+              >
                 <div class="icon__player-right"></div>
                 <p class="stick__cater-size opacity-75">Phase 2</p>
               </div>
             </div>
           </div>
-          <div class="phase__two">
+          <div
+            :class="{
+              'phase__one active__phase': isActivePhase.one,
+              phase__one: !isActivePhase.one,
+            }"
+            ref="phaseOneRef"
+          >
             <div
               v-if="!indexLang"
               class="pointer__phase-box w-full flex flex-row justify-between"
@@ -533,7 +612,10 @@ onMounted(async () => {
                 <p class="stick__cater-size opacity-70">Precedent</p>
                 <div class="icon__arrow-right"></div>
               </div>
-              <div class="cta__next-phase">
+              <div
+                class="cta__next-phase cursor-pointer"
+                @click="() => handlePhaseChange('move-phase-two')"
+              >
                 <div class="icon__player-right"></div>
                 <p class="stick__cater-size opacity-75">Phase 1</p>
               </div>
@@ -546,7 +628,10 @@ onMounted(async () => {
                 <p class="stick__cater-size opacity-70">Previous</p>
                 <div class="icon__arrow-right"></div>
               </div>
-              <div class="cta__next-phase">
+              <div
+                class="cta__next-phase cursor-pointer"
+                @click="() => handlePhaseChange('move-phase-two')"
+              >
                 <div class="icon__player-right"></div>
                 <p class="stick__cater-size opacity-75">Phase 1</p>
               </div>
@@ -598,14 +683,43 @@ p {
   transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
-  opacity: 0;
+  opacity: 0.65;
   visibility: hidden;
+  /* transition: all 1s ease; */
 }
 
 .phase__one.active__phase,
 .phase__two.active__phase {
   opacity: 1;
   visibility: visible;
+}
+
+.phase__one .pointer__phase-box,
+.phase__two .pointer__phase-box {
+  box-shadow: 0px 1px 2px #afafaf;
+  padding: 0.25rem 0.35rem;
+  border-radius: 0.25rem;
+  z-index: 1;
+  animation: anim-phase-cycle-one 1s ease forwards;
+
+  /* transform: rotateX(0deg);
+  opacity: 0.1; */
+}
+
+.phase__one.active__phase .pointer__phase-box {
+  position: relative;
+  opacity: 1;
+  z-index: 5;
+  animation: anim-phase-cycle 1s ease forwards;
+  /* transform: rotateX(360deg);
+  transition: all 850ms ease-in-out 200ms; */
+}
+
+.phase__two.active__phase .pointer__phase-box {
+  position: relative;
+  opacity: 1;
+  z-index: 5;
+  animation: anim-phase-cycle 1s ease forwards;
 }
 
 /* animation box materials */
@@ -647,5 +761,22 @@ p {
   visibility: visible;
   opacity: 1;
   transition: all 1s ease;
+}
+
+@keyframes anim-phase-cycle {
+  0% {
+    transform: rotateX(45deg);
+    opacity: 0;
+  }
+
+  70% {
+    transform: rotateX(270deg);
+    opacity: 0.65;
+  }
+
+  100% {
+    transform: rotateX(360deg);
+    opacity: 1;
+  }
 }
 </style>

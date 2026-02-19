@@ -87,17 +87,24 @@ const quotationType = computed(() => {
 });
 
 const materialTemplate = computed(() => {
-  /* console.log("materialTemplate Call :", props.dataMaterials.materialTemplate); */
+  console.log(
+    "materialTemplate --computed-- :",
+    props.dataMaterials.materialTemplate,
+  );
 
   return props.dataMaterials.materialTemplate;
 });
 
 const cost = computed(() => {
-  /*   console.log("cost call:", ) */
+  /* console.log("cost --computed--:", props.dataMaterials.cost); */
   return props.dataMaterials.cost;
 });
 
 const activeLayerFoundation = computed(() => {
+  console.log(
+    "activeLayerFoundation --computed-- :",
+    props.dataMaterials.activeLayer.foundation,
+  );
   return props.dataMaterials.activeLayer.foundation;
 });
 
@@ -259,10 +266,10 @@ const surface = computed(() => {
               class="structure__to-install w-full flex flex-row justify-between"
             >
               <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.needOne.fr }}
+                {{ materialTemplate.part2.needOne.fr }}
               </p>
               <p v-else class="stick__cater-size">
-                {{ materialTemplate.needOne.en }}
+                {{ materialTemplate.part2.needOne.en }}
               </p>
             </div>
           </div>
@@ -271,10 +278,10 @@ const surface = computed(() => {
               class="structure__to-install w-full flex flex-row justify-between"
             >
               <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.needTwo.fr }}
+                {{ materialTemplate.part2.needTwo.fr }}
               </p>
               <p v-else class="stick__cater-size">
-                {{ materialTemplate.needTwo.en }}
+                {{ materialTemplate.part2.needTwo.en }}
               </p>
             </div>
           </div>
@@ -394,7 +401,7 @@ const surface = computed(() => {
             </div>
           </div>
           <div class="need__pinpointed-element w-full py-2">
-            <div
+            <!-- <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
               <p v-if="!indexLang" class="stick__cater-size">
@@ -403,8 +410,9 @@ const surface = computed(() => {
               <p v-else class="stick__cater-size">
                 {{ materialTemplate.part2.needOne.en }}
               </p>
-            </div>
-            <div
+            </div> -->
+
+            <!-- <div
               class="structure__to-install w-full flex flex-row justify-between"
             >
               <p v-if="!indexLang" class="stick__cater-size">
@@ -413,7 +421,7 @@ const surface = computed(() => {
               <p v-else class="stick__cater-size">
                 {{ materialTemplate.part2.needTwo.en }}
               </p>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -454,26 +462,6 @@ const surface = computed(() => {
               class="structure__to-install w-full flex flex-row justify-between"
             >
               <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part1.needOne.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part1.needOne.en }}
-              </p>
-            </div>
-            <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part1.needTwo.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part1.needTwo.en }}
-              </p>
-            </div>
-            <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
                 {{ materialTemplate.part2.needOne.fr }}
               </p>
               <p v-else class="stick__cater-size">
@@ -490,6 +478,27 @@ const surface = computed(() => {
                 {{ materialTemplate.part2.needTwo.en }}
               </p>
             </div>
+            <!--  <div
+              class="structure__to-install w-full flex flex-row justify-between"
+            >
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.part2.needOne.fr }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.part2.needOne.en }}
+              </p>
+            </div> -->
+
+            <!-- <div
+              class="structure__to-install w-full flex flex-row justify-between"
+            >
+              <p v-if="!indexLang" class="stick__cater-size">
+                {{ materialTemplate.part2.needTwo.fr }}
+              </p>
+              <p v-else class="stick__cater-size">
+                {{ materialTemplate.part2.needTwo.en }}
+              </p>
+            </div> -->
           </div>
           <div class="need__pinpointed-element w-full py-2">
             <div
