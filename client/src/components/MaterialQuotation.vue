@@ -66,9 +66,6 @@ const props = defineProps({
     },
     surface: String,
     volume: { part1: String, part2: String },
-    activeFloor: {
-      floor_0: Boolean,
-    },
     activeLayer: {
       foundation: String,
       roof: String,
@@ -87,10 +84,10 @@ const quotationType = computed(() => {
 });
 
 const materialTemplate = computed(() => {
-  console.log(
-    "materialTemplate --computed-- :",
+  /* console.log(
+    "materialTemplate --computed--:",
     props.dataMaterials.materialTemplate,
-  );
+  ); */
 
   return props.dataMaterials.materialTemplate;
 });
@@ -101,10 +98,10 @@ const cost = computed(() => {
 });
 
 const activeLayerFoundation = computed(() => {
-  console.log(
+  /* console.log(
     "activeLayerFoundation --computed-- :",
     props.dataMaterials.activeLayer.foundation,
-  );
+  ); */
   return props.dataMaterials.activeLayer.foundation;
 });
 
@@ -146,25 +143,25 @@ const surface = computed(() => {
             >
               <!--when  needOne String -->
               <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part1.needOne?.fr || "" }}
+                {{ materialTemplate.part1?.needOne?.fr || "" }}
               </p>
               <p v-else class="stick__cater-size">
-                {{ materialTemplate.part1.needOne?.en || "" }}
+                {{ materialTemplate.part1?.needOne?.en || "" }}
               </p>
               <!-- when needOne Object -->
               <p v-if="!indexLang" class="stick__cater-size w-1/2 text-left">
-                {{ materialTemplate.part1.needOne?.qty.fr || "" }}
+                {{ materialTemplate.part1?.needOne?.qty?.fr || "" }}
               </p>
               <p v-else class="stick__cater-size w-1/2 text-left">
-                {{ materialTemplate.part1.needOne?.qty.en || "" }}
+                {{ materialTemplate.part1?.needOne?.qty?.en || "" }}
               </p>
               <p class="stick__cater-size w-1/2 text-right">
-                {{ materialTemplate.part1.needOne?.dimensions || "" }}
+                {{ materialTemplate.part1?.needOne?.dimensions || "" }}
               </p>
             </div>
             <div class="unit__panel w-full flex flex-row justify-end">
               <p class="stick__min-size font-extralight">
-                {{ materialTemplate.part1.needOne?.units || "" }}
+                {{ materialTemplate.part1?.needOne?.units || "" }}
               </p>
             </div>
           </div>
@@ -174,25 +171,25 @@ const surface = computed(() => {
             >
               <!--when  needTwo String -->
               <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part1.needTwo?.fr || "" }}
+                {{ materialTemplate.part1?.needTwo?.fr || "" }}
               </p>
               <p v-else class="stick__cater-size">
-                {{ materialTemplate.part1.needTwo?.en || "" }}
+                {{ materialTemplate.part1?.needTwo?.en || "" }}
               </p>
               <!-- when needTwo Object -->
               <p v-if="!indexLang" class="stick__cater-size w-1/2 text-left">
-                {{ materialTemplate.part1.needTwo?.qty.fr || "" }}
+                {{ materialTemplate.part1?.needTwo?.qty?.fr || "" }}
               </p>
               <p v-else class="stick__cater-size w-1/2 text-left">
-                {{ materialTemplate.part1.needTwo?.qty.en || "" }}
+                {{ materialTemplate.part1?.needTwo?.qty?.en || "" }}
               </p>
               <p class="stick__cater-size w-1/2 text-right">
-                {{ materialTemplate.part1.needTwo?.dimensions || "" }}
+                {{ materialTemplate.part1?.needTwo?.dimensions || "" }}
               </p>
             </div>
             <div class="unit__panel w-full flex flex-row justify-end">
               <p class="stick__min-size font-extralight">
-                {{ materialTemplate.part1.needTwo?.units || "" }}
+                {{ materialTemplate.part1?.needTwo?.units || "" }}
               </p>
             </div>
           </div>

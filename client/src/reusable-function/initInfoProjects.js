@@ -15,11 +15,10 @@ const houseCallType = { one_floor: "true", level: "0" };
 
 let roomEntireProject = {};
 
-export const initInfoProject = (projectId, isCallPage) => {
+export const initInfoProject = (projectId, isCallPage, isActiveFloor) => {
   const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
 
   if (isCallPage === "main-page") {
-    console.log("projectId -- initInfoProject--:", projectId);
     typeQuotation.forEach((type, index) => {
       switch (projectId) {
         case "danton_shield":
@@ -27,6 +26,7 @@ export const initInfoProject = (projectId, isCallPage) => {
             projectId: projectId,
             quotationType: type,
             indexToSelect: 0,
+            activeFloor: isActiveFloor,
           };
           durationOfProject.durationStage = projects[0].duration_stage;
           homeIn.name = projects[0].name;
@@ -39,6 +39,7 @@ export const initInfoProject = (projectId, isCallPage) => {
             projectId: projectId,
             quotationType: type,
             indexToSelect: 1,
+            activeFloor: isActiveFloor,
           };
           durationOfProject.durationStage = projects[1].duration_stage;
           homeIn.name = projects[1].name;
@@ -51,6 +52,7 @@ export const initInfoProject = (projectId, isCallPage) => {
             projectId: projectId,
             quotationType: type,
             indexToSelect: 2,
+            activeFloor: isActiveFloor,
           };
           durationOfProject.durationStage = projects[2].duration_stage;
           homeIn.name = projects[2].name;

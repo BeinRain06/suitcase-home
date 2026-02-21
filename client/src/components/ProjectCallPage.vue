@@ -1,5 +1,13 @@
 <script setup>
-import { ref, reactive, onMounted, computed, nextTick, watch } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  computed,
+  onBeforeUpdate,
+  nextTick,
+  watch,
+} from "vue";
 import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
 
 import MiniQuotation from "./MiniQuotation.vue";
@@ -108,6 +116,12 @@ const houseType = ref({
   level: "0",
 });
 
+const activeFloor = ref({ floor_0: true }); // true --active floor 0, false --active floor 1
+
+const activeFloorWatch = computed(() => {
+  return activeFloor.value.floor_0;
+});
+
 const initInfos = ref({
   0: {},
   1: {},
@@ -125,6 +139,30 @@ const indexLang = computed(() => {
 
 const goBackHome = () => {
   router.push({ name: "home" });
+};
+
+const handleFloorChange = async (e) => {
+  const targetElt = e.currentTarget;
+
+  const projectIdArr = route.params.projectId;
+
+  if (projectIdArr[0] !== "dexter_flip") return;
+
+  if (targetElt.id === "floor_0") {
+    activeFloor.value.floor_0 = true;
+    houseType.value.level = "0";
+
+    // update data to fetch
+    /*  dataToFetch("0"); */
+  } else {
+    activeFloor.value.floor_0 = false;
+    houseType.value.level = "1";
+
+    // update data to fetch
+    /* dataToFetch("1"); */
+  }
+
+  await nextTick();
 };
 
 const handleSwitchPage = () => {
@@ -379,6 +417,8 @@ const handleArrowSlide = (e, typeArrow) => {
   targetElt.classList.add("arrow__slide-anim");
 
   if (typeArrow === "forward") {
+    const carriedInfo = arrowSlideIndexNumber(targetElt, "forward");
+
     const prevElt = targetElt.previousElementSibling;
 
     computedStyle = window.getComputedStyle(prevElt);
@@ -427,6 +467,15 @@ const handleArrowSlide = (e, typeArrow) => {
     nextElt.style.left = `${leftVal}px`;
   }
 
+  //remove the second layer floor appearance
+  if (projectId !== "dexter_flip") {
+    activeFloor.value.floor_0 = true;
+    houseType.value.one_floor = true;
+  } else {
+    activeFloor.value.floor_0 = false;
+    houseType.value.one_floor = false;
+  }
+
   //remove anim arrow before ending
   targetElt.classList.remove("arrow__slide-anim");
 
@@ -460,11 +509,47 @@ watch(
   },
 );
 
+watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
+  // watch react naturally before component mount It is why we add **nextTick**
+  await nextTick();
+
+  newActiveFloor = await newActiveFloor;
+
+  oldActiveFloor = await oldActiveFloor;
+
+  if (newActiveFloor !== oldActiveFloor) {
+    const projectIdArr = route.params.projectId;
+
+    if (projectIdArr[0] !== "dexter_flip") return;
+
+    const projectId = projectIdArr[0];
+
+    const isFloor_0 = newActiveFloor ? "0" : "1";
+
+    /* dataToFetch(isFloor_0); */
+    const {
+      initInformation,
+      durationOfProject,
+      homeIn,
+      roomEntireProject,
+      houseCallType,
+    } = initInfoProject(projectId, "main-page", isFloor_0);
+
+    initInfos.value = initInformation;
+    durationProject.value = durationOfProject;
+    home.value = homeIn;
+    roomInProject.value = roomEntireProject;
+    houseType.value = houseCallType;
+  }
+});
+
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.projectId !== from.params.projectId) {
     const projectParams = to.params.projectId;
 
     const projectId = projectParams;
+
+    const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1";
 
     const {
       initInformation,
@@ -472,7 +557,7 @@ onBeforeRouteUpdate(async (to, from) => {
       homeIn,
       roomEntireProject,
       houseCallType,
-    } = initInfoProject(projectId, "main-page");
+    } = initInfoProject(projectId, "main-page", isActiveFloor);
 
     initInfos.value = initInformation;
     durationProject.value = durationOfProject;
@@ -483,6 +568,8 @@ onBeforeRouteUpdate(async (to, from) => {
 });
 
 onMounted(async () => {
+  /* console.log("initInfos --onMounted :", initInformation); */
+
   if (numbersBtnRef.value) {
     const numberHighlight = numbersBtnRef.value[0];
     numberHighlight.classList.add("active__number-play");
@@ -500,13 +587,17 @@ onMounted(async () => {
 
   const projectId = catchArrayParams[0] || "danton_shield";
 
+  const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1";
+
+  /* console.log("isActiveFloor --onMounted:", isActiveFloor); */
+
   const {
     initInformation,
     durationOfProject,
     homeIn,
     roomEntireProject,
     houseCallType,
-  } = initInfoProject(projectId, "main-page");
+  } = initInfoProject(projectId, "main-page", isActiveFloor);
 
   initInfos.value = initInformation;
   durationProject.value = durationOfProject;
@@ -714,14 +805,32 @@ onMounted(async () => {
                   <h5>Floor</h5>
 
                   <div class="cta__floors w-max flex flex-row gap-2">
-                    <div class="cta__floor-quotation w-4">
-                      <span class="smaller__span">0</span>
+                    <div
+                      id="floor_0"
+                      class="cta__floor-quotation w-4 cursor-pointer"
+                      @click="(e) => handleFloorChange(e)"
+                    >
+                      <span
+                        :class="{
+                          '': activeFloor.floor_0,
+                          smaller__span: !activeFloor.floor_0,
+                        }"
+                        >0</span
+                      >
                     </div>
                     <div
                       v-if="!houseType.one_floor"
-                      class="cta__floor-quotation active__floor w-4"
+                      id="floor_1"
+                      class="cta__floor-quotation active__floor w-4 cursor-pointer"
+                      @click="(e) => handleFloorChange(e)"
                     >
-                      <span>1</span>
+                      <span
+                        :class="{
+                          '': !activeFloor.floor_0,
+                          smaller__span: activeFloor.floor_0,
+                        }"
+                        >1</span
+                      >
                     </div>
                   </div>
                 </div>
