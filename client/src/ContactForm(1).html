@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0d0d0f;
+        --surface: #141417;
+        --border-idle: #2a2a32;
+        --border-green: #22c55e;
+        --border-red: #ef4444;
+        --glow-green: rgba(34, 197, 94, 0.18);
+        --glow-red: rgba(239, 68, 68, 0.18);
+        --text: #f0eff4;
+        --muted: #6b6a78;
+        --accent: #a78bfa;
+        --font-display: "Syne", sans-serif;
+        --font-body: "Instrument Sans", sans-serif;
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background-image:
+          radial-gradient(
+            ellipse 80% 60% at 50% -20%,
+            rgba(167, 139, 250, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 40% 40% at 80% 80%,
+            rgba(34, 197, 94, 0.04) 0%,
+            transparent 50%
+          );
+      }
+
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: var(--surface);
+        border: 1px solid var(--border-idle);
+        border-radius: 20px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(167, 139, 250, 0.03) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+
+      .card-header {
+        margin-bottom: 2.2rem;
+      }
+
+      .card-tag {
+        display: inline-block;
+        font-family: var(--font-display);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+      }
+
+      h1 {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1.1;
+        color: var(--text);
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      .subtitle {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* FIELD */
+      .field {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+        transition: color 0.3s var(--ease-smooth);
+      }
+
+      .field.is-valid label {
+        color: var(--border-green);
+      }
+      .field.is-invalid label {
+        color: var(--border-red);
+      }
+
+      /* INPUT WRAPPER */
+      .input-wrap {
+        position: relative;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1.5px solid var(--border-idle);
+        border-radius: 10px;
+        padding: 0.85rem 2.8rem 0.85rem 1rem;
+        font-family: var(--font-body);
+        font-size: 0.95rem;
+        color: var(--text);
+        outline: none;
+        resize: none;
+        /* Smooth border + shadow transition */
+        transition:
+          border-color 0.35s var(--ease-smooth),
+          box-shadow 0.35s var(--ease-smooth),
+          background 0.35s var(--ease-smooth);
+      }
+
+      textarea {
+        min-height: 140px;
+        padding-right: 1rem;
+        line-height: 1.65;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--muted);
+        opacity: 0.5;
+      }
+
+      /* State: valid */
+      .field.is-valid input,
+      .field.is-valid textarea {
+        border-color: var(--border-green);
+        box-shadow:
+          0 0 0 3px var(--glow-green),
+          0 2px 12px rgba(34, 197, 94, 0.08);
+        background: rgba(34, 197, 94, 0.03);
+      }
+
+      /* State: invalid */
+      .field.is-invalid input,
+      .field.is-invalid textarea {
+        border-color: var(--border-red);
+        box-shadow:
+          0 0 0 3px var(--glow-red),
+          0 2px 12px rgba(239, 68, 68, 0.08);
+        background: rgba(239, 68, 68, 0.03);
+      }
+
+      /* Status icon */
+      .status-icon {
+        position: absolute;
+        right: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .status-icon svg {
+        width: 18px;
+        height: 18px;
+        opacity: 0;
+        transform: scale(0.5) rotate(-20deg);
+        transition:
+          opacity 0.3s var(--ease-smooth),
+          transform 0.4s var(--ease-spring);
+      }
+
+      .field.is-valid .icon-check {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+      .field.is-invalid .icon-x {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+
+      /* Typing indicator dots */
+      .typing-dots {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .typing-dots.active {
+        opacity: 1;
+      }
+      .typing-dots span {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--muted);
+        animation: bounce 1s infinite ease-in-out;
+      }
+      .typing-dots span:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .typing-dots span:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes bounce {
+        0%,
+        80%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        40% {
+          transform: translateY(-4px);
+          opacity: 1;
+        }
+      }
+
+      /* Error message */
+      .error-msg {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition:
+          max-height 0.4s var(--ease-smooth),
+          opacity 0.35s var(--ease-smooth),
+          transform 0.35s var(--ease-spring);
+      }
+
+      .error-msg.visible {
+        max-height: 60px;
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .error-msg p {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        color: var(--border-red);
+        margin-top: 0.45rem;
+        padding-left: 0.2rem;
+      }
+
+      .error-msg p::before {
+        content: "↳";
+        font-size: 0.85rem;
+        opacity: 0.7;
+      }
+
+      /* Char counter */
+      .counter {
+        display: flex;
+        justify-content: flex-end;
+        font-size: 0.74rem;
+        color: var(--muted);
+        margin-top: 0.4rem;
+        font-variant-numeric: tabular-nums;
+        transition: color 0.3s;
+      }
+      .counter.over {
+        color: var(--border-red);
+      }
+      .counter.ok {
+        color: var(--border-green);
+      }
+
+      /* Shake animation for instant red feedback */
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-4px);
+        }
+        40% {
+          transform: translateX(4px);
+        }
+        60% {
+          transform: translateX(-3px);
+        }
+        80% {
+          transform: translateX(3px);
+        }
+      }
+      .field.shake input,
+      .field.shake textarea {
+        animation: shake 0.4s var(--ease-smooth);
+      }
+
+      /* Submit button */
+      .submit-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.95rem;
+        background: var(--accent);
+        border: none;
+        border-radius: 10px;
+        color: #0d0d0f;
+        font-family: var(--font-display);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          opacity 0.2s,
+          transform 0.15s var(--ease-spring);
+      }
+      .submit-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Divider line accent */
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border-idle),
+          transparent
+        );
+        margin: 1.5rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-tag">✦ Get in touch</span>
+          <h1>Let's <span>Talk.</span></h1>
+          <p class="subtitle">
+            Fill in the form — we'll get back to you within 24h.
+          </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- USERNAME -->
+        <div class="field" :class="fieldClass(name)">
+          <label for="name">Username</label>
+          <div class="input-wrap">
+            <input
+              id="name"
+              v-model="name.value"
+              type="text"
+              placeholder="e.g. johnwick"
+              autocomplete="off"
+              @input="onInput(name)"
+              @blur="onBlur(name)"
+            />
+            <div class="status-icon">
+              <!-- typing dots shown while debounce pending -->
+              <div class="typing-dots" :class="{ active: name.typing }">
+                <span></span><span></span><span></span>
+              </div>
+              <!-- check -->
+              <svg
+                class="icon-check"
+                v-if="!name.typing"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  stroke="#22c55e"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M6 10l3 3 5-5"
+                  stroke="#22c55e"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <!-- x -->
+              <svg
+                class="icon-x"
+                v-if="!name.typing"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M7 7l6 6M13 7l-6 6"
+                  stroke="#ef4444"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <transition name="err">
+            <div class="error-msg" :class="{ visible: name.showError }">
+              <p>Username must be at least 6 characters.</p>
+            </div>
+          </transition>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="field" :class="fieldClass(email)">
+          <label for="email">Email address</label>
+          <div class="input-wrap">
+            <input
+              id="email"
+              v-model="email.value"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="off"
+              @input="onInput(email)"
+              @blur="onBlur(email)"
+            />
+            <div class="status-icon">
+              <div class="typing-dots" :class="{ active: email.typing }">
+                <span></span><span></span><span></span>
+              </div>
+              <svg
+                class="icon-check"
+                v-if="!email.typing"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  stroke="#22c55e"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M6 10l3 3 5-5"
+                  stroke="#22c55e"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <svg
+                class="icon-x"
+                v-if="!email.typing"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  stroke="#ef4444"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M7 7l6 6M13 7l-6 6"
+                  stroke="#ef4444"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <transition name="err">
+            <div class="error-msg" :class="{ visible: email.showError }">
+              <p>Please enter a valid email address.</p>
+            </div>
+          </transition>
+        </div>
+
+        <!-- MESSAGE -->
+        <div class="field" :class="fieldClass(message)">
+          <label for="message">Your message</label>
+          <div class="input-wrap">
+            <textarea
+              id="message"
+              v-model="message.value"
+              placeholder="Write at least 150 characters, up to 350…"
+              @input="onInput(message)"
+              @blur="onBlur(message)"
+            ></textarea>
+          </div>
+          <div class="counter" :class="counterClass">
+            {{ wordCount }} / 350 chars
+          </div>
+          <transition name="err">
+            <div class="error-msg" :class="{ visible: message.showError }">
+              <p>{{ messageError }}</p>
+            </div>
+          </transition>
+        </div>
+
+        <button class="submit-btn" type="button">Send message →</button>
+      </div>
+    </div>
+
+    <script>
+      const { createApp, reactive, computed } = Vue;
+
+      const EMAIL_REGEX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+      const DEBOUNCE_MS = 5000; // 5 seconds after user stops typing
+
+      function countChars(str) {
+        return str.length;
+      }
+
+      function makeField() {
+        return {
+          value: "",
+          touched: false, // has the user ever typed?
+          blurred: false, // has the field lost focus?
+          typing: false, // debounce pending (dots visible)
+          validated: false, // debounce fired at least once
+          valid: false,
+          showError: false,
+          _timer: null,
+        };
+      }
+
+      createApp({
+        setup() {
+          const name = reactive(makeField());
+          const email = reactive(makeField());
+          const message = reactive(makeField());
+
+          /* ── Validators ─────────────────────────────── */
+          function validateName(f) {
+            f.valid = f.value.trim().length >= 6;
+          }
+
+          function validateEmail(f) {
+            f.valid = EMAIL_REGEX.test(f.value.trim());
+          }
+
+          function validateMessage(f) {
+            const cc = countChars(f.value);
+            f.valid = cc >= 150 && cc <= 350;
+          }
+
+          const validators = new Map([
+            [name, validateName],
+            [email, validateEmail],
+            [message, validateMessage],
+          ]);
+
+          /* ── Core logic ─────────────────────────────── */
+          function onInput(f) {
+            f.touched = true;
+            f.typing = true;
+            f.showError = false;
+
+            // Clear previous timer
+            clearTimeout(f._timer);
+
+            f._timer = setTimeout(() => {
+              f.typing = false;
+              f.validated = true;
+              validators.get(f)(f);
+              // Show error only after debounce + invalid
+              f.showError = !f.valid;
+            }, DEBOUNCE_MS);
+          }
+
+          // Blur: validate immediately (no waiting)
+          function onBlur(f) {
+            f.blurred = true;
+            clearTimeout(f._timer);
+            f.typing = false;
+            if (f.touched) {
+              f.validated = true;
+              validators.get(f)(f);
+              f.showError = !f.valid;
+            }
+          }
+
+          /* ── CSS class helper ───────────────────────── */
+          function fieldClass(f) {
+            if (!f.validated || f.typing) return "";
+            return f.valid ? "is-valid" : "is-invalid";
+          }
+
+          /* ── Char count / counter class ─────────────── */
+          const wordCount = computed(() => countChars(message.value));
+
+          const counterClass = computed(() => {
+            if (!message.validated || message.typing) return "";
+            if (wordCount.value > 350) return "over";
+            if (wordCount.value >= 150) return "ok";
+            return "over"; // too few words also styled red
+          });
+
+          const messageError = computed(() => {
+            const cc = wordCount.value;
+            if (cc < 150)
+              return `Too short — ${150 - cc} more character${150 - cc > 1 ? "s" : ""} needed.`;
+            if (cc > 350)
+              return `Too long — please remove ${cc - 350} character${cc - 350 > 1 ? "s" : ""}.`;
+            return "";
+          });
+
+          return {
+            name,
+            email,
+            message,
+            onInput,
+            onBlur,
+            fieldClass,
+            wordCount,
+            counterClass,
+            messageError,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>

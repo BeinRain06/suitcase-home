@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact Form</title>
+<!-- Vue 3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+<!-- EmailJS — replace YOUR_PUBLIC_KEY, YOUR_SERVICE_ID, YOUR_TEMPLATE_ID below -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+
+<style>
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Design tokens ──────────────────────────────────── */
+:root {
+  --bg:           #0d0d0f;
+  --surface:      #141417;
+  --border-idle:  #2a2a32;
+  --border-green: #22c55e;
+  --border-red:   #ef4444;
+  --glow-green:   rgba(34,197,94,0.18);
+  --glow-red:     rgba(239,68,68,0.18);
+  --text:         #f0eff4;
+  --muted:        #6b6a78;
+  --accent:       #a78bfa;
+  --accent-dim:   rgba(167,139,250,0.12);
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'Instrument Sans', sans-serif;
+  --ease-spring:  cubic-bezier(0.34,1.56,0.64,1);
+  --ease-smooth:  cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ─── Page ───────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(167,139,250,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(34,197,94,0.04) 0%, transparent 50%);
+}
+
+/* ─── Card ───────────────────────────────────────────── */
+.card {
+  width: 100%;
+  max-width: 540px;
+  background: var(--surface);
+  border: 1px solid var(--border-idle);
+  border-radius: 20px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(167,139,250,0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ─── Header ─────────────────────────────────────────── */
+.card-header { margin-bottom: 2rem; }
+.card-tag {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+h1 span { color: var(--accent); }
+.subtitle {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── Divider ────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-idle), transparent);
+  margin: 1.5rem 0;
+}
+
+/* ─── Field ──────────────────────────────────────────── */
+.field { margin-bottom: 1.5rem; }
+
+label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s var(--ease-smooth);
+}
+.field.is-valid   label { color: var(--border-green); }
+.field.is-invalid label { color: var(--border-red); }
+
+/* ─── Inputs ─────────────────────────────────────────── */
+.input-wrap { position: relative; }
+
+input, textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid var(--border-idle);
+  border-radius: 10px;
+  padding: 0.85rem 2.8rem 0.85rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  outline: none;
+  resize: none;
+  transition:
+    border-color 0.35s var(--ease-smooth),
+    box-shadow   0.35s var(--ease-smooth),
+    background   0.35s var(--ease-smooth),
+    opacity      0.3s  var(--ease-smooth);
+}
+textarea {
+  min-height: 140px;
+  padding-right: 1rem;
+  line-height: 1.65;
+}
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.5; }
+input:disabled, textarea:disabled { opacity: 0.38; cursor: not-allowed; }
+
+.field.is-valid input,
+.field.is-valid textarea {
+  border-color: var(--border-green);
+  box-shadow: 0 0 0 3px var(--glow-green), 0 2px 12px rgba(34,197,94,0.08);
+  background: rgba(34,197,94,0.03);
+}
+.field.is-invalid input,
+.field.is-invalid textarea {
+  border-color: var(--border-red);
+  box-shadow: 0 0 0 3px var(--glow-red), 0 2px 12px rgba(239,68,68,0.08);
+  background: rgba(239,68,68,0.03);
+}
+
+/* ─── Status icon ────────────────────────────────────── */
+.status-icon {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.status-icon svg {
+  width: 18px; height: 18px;
+  opacity: 0;
+  transform: scale(0.5) rotate(-20deg);
+  transition: opacity 0.3s var(--ease-smooth), transform 0.4s var(--ease-spring);
+}
+.field.is-valid   .icon-check { opacity: 1; transform: scale(1) rotate(0deg); }
+.field.is-invalid .icon-x     { opacity: 1; transform: scale(1) rotate(0deg); }
+
+/* ─── Typing dots ────────────────────────────────────── */
+.typing-dots {
+  display: flex; align-items: center; gap: 3px;
+  opacity: 0; transition: opacity 0.2s;
+}
+.typing-dots.active { opacity: 1; }
+.typing-dots span {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: bounce 1s infinite ease-in-out;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce {
+  0%,80%,100% { transform: translateY(0); opacity: 0.4; }
+  40%          { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ─── Error message ──────────────────────────────────── */
+.error-msg {
+  overflow: hidden;
+  max-height: 0; opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    max-height 0.4s var(--ease-smooth),
+    opacity    0.35s var(--ease-smooth),
+    transform  0.35s var(--ease-spring);
+}
+.error-msg.visible { max-height: 60px; opacity: 1; transform: translateY(0); }
+.error-msg p {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--border-red);
+  margin-top: 0.45rem;
+  padding-left: 0.2rem;
+}
+.error-msg p::before { content: '↳'; font-size: 0.85rem; opacity: 0.7; }
+
+/* ─── Char counter ───────────────────────────────────── */
+.counter {
+  display: flex; justify-content: flex-end;
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s;
+}
+.counter.over { color: var(--border-red); }
+.counter.ok   { color: var(--border-green); }
+
+/* ─── Shake ──────────────────────────────────────────── */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-4px); }
+  40%     { transform: translateX(4px); }
+  60%     { transform: translateX(-3px); }
+  80%     { transform: translateX(3px); }
+}
+
+/* ─────────────────────────────────────────────────────── */
+/*  RECIPIENT TAGS                                         */
+/* ─────────────────────────────────────────────────────── */
+.recipients-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid var(--border-idle);
+  border-radius: 10px;
+  padding: 0.5rem 2.8rem 0.5rem 0.6rem;
+  cursor: text;
+  position: relative;
+  transition:
+    border-color 0.35s var(--ease-smooth),
+    box-shadow   0.35s var(--ease-smooth),
+    background   0.35s var(--ease-smooth);
+}
+.recipients-wrap.wrap-valid {
+  border-color: var(--border-green);
+  box-shadow: 0 0 0 3px var(--glow-green), 0 2px 12px rgba(34,197,94,0.08);
+  background: rgba(34,197,94,0.03);
+}
+.recipients-wrap.wrap-invalid {
+  border-color: var(--border-red);
+  box-shadow: 0 0 0 3px var(--glow-red), 0 2px 12px rgba(239,68,68,0.08);
+  background: rgba(239,68,68,0.03);
+}
+.recipients-wrap.wrap-disabled {
+  opacity: 0.38;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* pill / tag */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--accent-dim);
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem 0.18rem 0.65rem;
+  font-size: 0.8rem;
+  color: var(--accent);
+  animation: tagIn 0.25s var(--ease-spring) both;
+  overflow: hidden;
+  max-width: 300px;
+  transition: max-width 0.2s var(--ease-smooth), padding 0.2s, opacity 0.2s;
+}
+@keyframes tagIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.tag.removing {
+  max-width: 0;
+  padding: 0;
+  opacity: 0;
+  border-width: 0;
+}
+
+.tag-remove {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted);
+  display: flex; align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+  line-height: 1;
+  font-size: 0.85rem;
+}
+.tag-remove:hover { color: var(--border-red); }
+
+/* inline input inside tag box */
+.tag-input {
+  flex: 1 1 140px;
+  min-width: 140px;
+  background: none;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.3rem 0.3rem;
+  font-size: 0.88rem;
+  color: var(--text);
+  outline: none;
+  border-radius: 0;
+  opacity: 1 !important;
+}
+.tag-input::placeholder { color: var(--muted); opacity: 0.5; }
+
+/* check icon inside wrap */
+.wrap-status-icon {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.wrap-status-icon svg {
+  width: 18px; height: 18px;
+  opacity: 0;
+  transform: scale(0.5) rotate(-20deg);
+  transition: opacity 0.3s var(--ease-smooth), transform 0.4s var(--ease-spring);
+}
+.recipients-wrap.wrap-valid .wrap-status-icon svg { opacity: 1; transform: scale(1) rotate(0deg); }
+
+.recipients-hint {
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  padding-left: 0.2rem;
+}
+.recipients-hint kbd {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border-idle);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+/* ─────────────────────────────────────────────────────── */
+/*  SUBMIT BUTTON                                          */
+/* ─────────────────────────────────────────────────────── */
+.submit-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.95rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  color: #0d0d0f;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: opacity 0.2s, transform 0.15s var(--ease-spring), background 0.3s;
+}
+.submit-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+.submit-btn:active:not(:disabled) { transform: translateY(0); }
+.submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ─── Spinner ────────────────────────────────────────── */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(13,13,15,0.3);
+  border-top-color: #0d0d0f;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Send error bar ─────────────────────────────────── */
+.send-error {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: var(--border-red);
+  font-size: 0.85rem;
+  animation: slideUp 0.35s var(--ease-spring) both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────── */
+/*  SUCCESS SCREEN                                         */
+/* ─────────────────────────────────────────────────────── */
+.success-screen {
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.success-icon-wrap {
+  margin: 0 auto 1.5rem;
+  width: 80px; height: 80px;
+  background: rgba(34,197,94,0.07);
+  border: 1.5px solid rgba(34,197,94,0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.5s 0.05s var(--ease-spring) both;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.success-icon-wrap svg { width: 38px; height: 38px; }
+.success-icon-wrap svg circle {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawCircle 0.5s 0.3s var(--ease-smooth) forwards;
+}
+.success-icon-wrap svg path {
+  stroke-dasharray: 35;
+  stroke-dashoffset: 35;
+  animation: drawCheck 0.35s 0.75s var(--ease-smooth) forwards;
+}
+@keyframes drawCircle { to { stroke-dashoffset: 0; } }
+@keyframes drawCheck  { to { stroke-dashoffset: 0; } }
+
+.success-title {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+  animation: fadeUp 0.4s 0.4s var(--ease-smooth) both;
+}
+.success-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 340px;
+  margin: 0 auto 0.5rem;
+  animation: fadeUp 0.4s 0.5s var(--ease-smooth) both;
+}
+.success-sub strong { color: var(--border-green); font-weight: 500; }
+
+/* recipients summary list */
+.sent-to-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+  margin: 0.8rem auto 1.6rem;
+  max-width: 380px;
+  animation: fadeUp 0.4s 0.6s var(--ease-smooth) both;
+}
+.sent-to-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(34,197,94,0.08);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.78rem;
+  color: var(--border-green);
+}
+
+.back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.6rem;
+  background: none;
+  border: 1.5px solid var(--border-idle);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.25s, color 0.25s, transform 0.15s var(--ease-spring);
+  animation: fadeUp 0.4s 0.7s var(--ease-smooth) both;
+}
+.back-home:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+.back-home:active { transform: translateY(0); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── View transition ────────────────────────────────── */
+.vt-enter-active { transition: opacity 0.35s var(--ease-smooth), transform 0.38s var(--ease-smooth); }
+.vt-leave-active { transition: opacity 0.22s var(--ease-smooth), transform 0.22s var(--ease-smooth); position: absolute; width: calc(100% - 5rem); }
+.vt-enter-from   { opacity: 0; transform: translateY(14px); }
+.vt-leave-to     { opacity: 0; transform: translateY(-10px); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="card">
+    <transition name="vt" mode="out-in">
+
+      <!-- ══════════════════════════════════════════
+           FORM VIEW
+      ══════════════════════════════════════════ -->
+      <div v-if="!sent" key="form">
+
+        <div class="card-header">
+          <span class="card-tag">✦ Get in touch</span>
+          <h1>Let's <span>Talk.</span></h1>
+          <p class="subtitle">Fill in the form — we'll get back to you within 24h.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- USERNAME -->
+        <div class="field" :class="fieldClass(name)">
+          <label for="name">Username</label>
+          <div class="input-wrap">
+            <input
+              id="name"
+              v-model="name.value"
+              type="text"
+              placeholder="e.g. johnwick"
+              autocomplete="off"
+              :disabled="sending"
+              @input="onInput(name)"
+              @blur="onBlur(name)"
+            />
+            <div class="status-icon">
+              <div class="typing-dots" :class="{ active: name.typing }">
+                <span></span><span></span><span></span>
+              </div>
+              <svg class="icon-check" v-if="!name.typing" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="#22c55e" stroke-width="1.5"/>
+                <path d="M6 10l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="icon-x" v-if="!name.typing" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="#ef4444" stroke-width="1.5"/>
+                <path d="M7 7l6 6M13 7l-6 6" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="error-msg" :class="{ visible: name.showError }">
+            <p>Username must be at least 6 characters.</p>
+          </div>
+        </div>
+
+        <!-- SENDER EMAIL -->
+        <div class="field" :class="fieldClass(senderEmail)">
+          <label for="senderEmail">Your email</label>
+          <div class="input-wrap">
+            <input
+              id="senderEmail"
+              v-model="senderEmail.value"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="off"
+              :disabled="sending"
+              @input="onInput(senderEmail)"
+              @blur="onBlur(senderEmail)"
+            />
+            <div class="status-icon">
+              <div class="typing-dots" :class="{ active: senderEmail.typing }">
+                <span></span><span></span><span></span>
+              </div>
+              <svg class="icon-check" v-if="!senderEmail.typing" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="#22c55e" stroke-width="1.5"/>
+                <path d="M6 10l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="icon-x" v-if="!senderEmail.typing" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="#ef4444" stroke-width="1.5"/>
+                <path d="M7 7l6 6M13 7l-6 6" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="error-msg" :class="{ visible: senderEmail.showError }">
+            <p>Please enter a valid email address.</p>
+          </div>
+        </div>
+
+        <!-- RECIPIENTS TAG INPUT -->
+        <div class="field">
+          <label>Send to</label>
+          <div
+            class="recipients-wrap"
+            :class="wrapClass"
+            @click="focusTagInput"
+          >
+            <!-- Pills -->
+            <span
+              v-for="(tag, i) in recipients"
+              :key="tag.id"
+              class="tag"
+              :class="{ removing: tag.removing }"
+            >
+              {{ tag.email }}
+              <button
+                class="tag-remove"
+                type="button"
+                :disabled="sending"
+                @click.stop="removeTag(i)"
+                aria-label="Remove"
+              >✕</button>
+            </span>
+
+            <!-- Inline input -->
+            <input
+              ref="tagInputRef"
+              v-model="tagDraft"
+              class="tag-input"
+              type="text"
+              placeholder="Add email & press Enter or ,"
+              :disabled="sending"
+              @keydown="onTagKeydown"
+              @blur="commitDraftOnBlur"
+              @paste.prevent="onTagPaste"
+              autocomplete="off"
+            />
+
+            <!-- Green check icon when at least 1 valid recipient -->
+            <div class="wrap-status-icon">
+              <svg viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="9" stroke="#22c55e" stroke-width="1.5"/>
+                <path d="M6 10l3 3 5-5" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <p class="recipients-hint">
+            Type an address and press <kbd>Enter</kbd> or <kbd>,</kbd> — add as many as you need.
+          </p>
+          <div class="error-msg" :class="{ visible: recipientsError }">
+            <p>Add at least one valid recipient email.</p>
+          </div>
+        </div>
+
+        <!-- MESSAGE -->
+        <div class="field" :class="fieldClass(message)">
+          <label for="message">Your message</label>
+          <div class="input-wrap">
+            <textarea
+              id="message"
+              v-model="message.value"
+              placeholder="Write at least 150 characters, up to 350…"
+              :disabled="sending"
+              @input="onInput(message)"
+              @blur="onBlur(message)"
+            ></textarea>
+          </div>
+          <div class="counter" :class="counterClass">
+            {{ charCount }} / 350 chars
+          </div>
+          <div class="error-msg" :class="{ visible: message.showError }">
+            <p>{{ messageError }}</p>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <button
+          class="submit-btn"
+          type="button"
+          :disabled="sending || !formReady"
+          @click="submitForm"
+        >
+          <template v-if="!sending">
+            Send message →
+          </template>
+          <template v-else>
+            <span class="spinner"></span>
+            Your message is being transferred…
+          </template>
+        </button>
+
+        <!-- SEND ERROR -->
+        <div v-if="sendError" class="send-error">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="9" stroke="#ef4444" stroke-width="1.5"/>
+            <path d="M10 6v4.5M10 13v.5" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          {{ sendError }}
+        </div>
+
+      </div><!-- /form -->
+
+      <!-- ══════════════════════════════════════════
+           SUCCESS SCREEN
+      ══════════════════════════════════════════ -->
+      <div v-else key="success" class="success-screen">
+
+        <!-- Animated check circle -->
+        <div class="success-icon-wrap">
+          <svg viewBox="0 0 44 44" fill="none">
+            <circle cx="22" cy="22" r="20" stroke="#22c55e" stroke-width="1.8"/>
+            <path d="M13 22l6 6 12-12" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <p class="success-title">Message Sent!</p>
+        <p class="success-sub">Your message was successfully delivered to:</p>
+
+        <!-- Recipient summary pills -->
+        <div class="sent-to-list">
+          <span v-for="addr in sentAddresses" :key="addr" class="sent-to-pill">
+            ✓ {{ addr }}
+          </span>
+        </div>
+
+        <!-- Back home -->
+        <a class="back-home" href="/" @click.prevent="goHome">
+          ← Back home
+        </a>
+
+      </div><!-- /success -->
+
+    </transition>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ⚙  EMAILJS CONFIG  — fill these in
+   ═══════════════════════════════════════════════════════
+
+   1. Sign up at https://www.emailjs.com  (free tier: 200 emails/mo)
+   2. Create an Email Service (Gmail, Outlook, etc.) → copy SERVICE_ID
+   3. Create an Email Template with these variables:
+        {{from_name}}   → Username field
+        {{from_email}}  → Sender's email (set as Reply-To)
+        {{to_email}}    → Comma-joined recipients (set as "To Email")
+        {{message}}     → The message body
+   4. Go to Account → API Keys → copy your Public Key
+*/
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════ */
+const { createApp, reactive, ref, computed } = Vue;
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+const DEBOUNCE_MS = 5000;
+let _uid = 0;
+
+function countChars(str) { return str.length; }
+
+function makeField() {
+  return {
+    value: '', touched: false, blurred: false,
+    typing: false, validated: false,
+    valid: false, showError: false, _timer: null,
+  };
+}
+
+/* ═══════════════════════════════════════════════════════
+   APP
+   ═══════════════════════════════════════════════════════ */
+createApp({
+  setup() {
+
+    /* ─── Text fields ─────────────────────────────── */
+    const name        = reactive(makeField());
+    const senderEmail = reactive(makeField());
+    const message     = reactive(makeField());
+
+    /* ─── Recipient tags ──────────────────────────── */
+    const recipients    = ref([]);   // [{ id, email, removing }]
+    const tagDraft      = ref('');
+    const tagInputRef   = ref(null);
+    const recipientsError = ref(false);
+
+    /* ─── Submit states ───────────────────────────── */
+    const sending      = ref(false);
+    const sent         = ref(false);
+    const sendError    = ref('');
+    const sentAddresses = ref([]);   // list shown on success screen
+
+    /* ════════════════════════════════════════════════
+       FIELD VALIDATION
+    ════════════════════════════════════════════════ */
+    function validateName(f)    { f.valid = f.value.trim().length >= 6; }
+    function validateEmail(f)   { f.valid = EMAIL_REGEX.test(f.value.trim()); }
+    function validateMessage(f) {
+      const cc = countChars(f.value);
+      f.valid = cc >= 150 && cc <= 350;
+    }
+
+    const validators = new Map([
+      [name,        validateName],
+      [senderEmail, validateEmail],
+      [message,     validateMessage],
+    ]);
+
+    /* Debounced: validate after user stops typing for 5s */
+    function onInput(f) {
+      f.touched = true;
+      f.typing  = true;
+      f.showError = false;
+      clearTimeout(f._timer);
+      f._timer = setTimeout(() => {
+        f.typing    = false;
+        f.validated = true;
+        validators.get(f)(f);
+        f.showError = !f.valid;
+      }, DEBOUNCE_MS);
+    }
+
+    /* Immediate: validate as soon as field loses focus */
+    function onBlur(f) {
+      f.blurred = true;
+      clearTimeout(f._timer);
+      f.typing = false;
+      if (f.touched) {
+        f.validated = true;
+        validators.get(f)(f);
+        f.showError = !f.valid;
+      }
+    }
+
+    function fieldClass(f) {
+      if (!f.validated || f.typing) return '';
+      return f.valid ? 'is-valid' : 'is-invalid';
+    }
+
+    /* Char count computed values */
+    const charCount = computed(() => countChars(message.value));
+
+    const counterClass = computed(() => {
+      if (!message.validated || message.typing) return '';
+      if (charCount.value > 350) return 'over';
+      if (charCount.value >= 150) return 'ok';
+      return 'over';
+    });
+
+    const messageError = computed(() => {
+      const cc = charCount.value;
+      if (cc < 150) return `Too short — ${150 - cc} more character${150 - cc !== 1 ? 's' : ''} needed.`;
+      if (cc > 350) return `Too long — please remove ${cc - 350} character${cc - 350 !== 1 ? 's' : ''}.`;
+      return '';
+    });
+
+    /* ════════════════════════════════════════════════
+       RECIPIENT TAG LOGIC
+    ════════════════════════════════════════════════ */
+
+    /* Click anywhere on the wrap → focus the inline input */
+    function focusTagInput() {
+      tagInputRef.value?.focus();
+    }
+
+    /**
+     * Attempt to convert tagDraft into a pill.
+     * Returns true if committed, false if invalid/empty.
+     */
+    function commitDraft() {
+      const val = tagDraft.value.trim().replace(/,+$/, '');
+      if (!val) return false;
+      if (!EMAIL_REGEX.test(val)) return false;
+
+      // Deduplicate
+      const dup = recipients.value.some(r => r.email.toLowerCase() === val.toLowerCase());
+      if (!dup) {
+        recipients.value.push({ id: ++_uid, email: val, removing: false });
+      }
+
+      tagDraft.value = '';
+      recipientsError.value = false;
+      return true;
+    }
+
+    /* Called on blur of the inline input (don't show error, just quietly try) */
+    function commitDraftOnBlur() {
+      commitDraft();
+    }
+
+    /* Remove a tag with a smooth exit animation */
+    function removeTag(index) {
+      const tag = recipients.value[index];
+      if (!tag) return;
+      tag.removing = true;
+      setTimeout(() => recipients.value.splice(index, 1), 220);
+    }
+
+    /* Enter / comma / Tab → commit; Backspace on empty → remove last */
+    function onTagKeydown(e) {
+      if (['Enter', ',', 'Tab'].includes(e.key) && tagDraft.value.trim()) {
+        e.preventDefault();
+        commitDraft();
+        return;
+      }
+      if (e.key === 'Backspace' && tagDraft.value === '' && recipients.value.length) {
+        removeTag(recipients.value.length - 1);
+      }
+    }
+
+    /* Paste a comma/space/semicolon separated list */
+    function onTagPaste(e) {
+      const text = e.clipboardData?.getData('text') || '';
+      text.split(/[\s,;]+/).forEach(part => {
+        const t = part.trim();
+        if (!EMAIL_REGEX.test(t)) return;
+        const dup = recipients.value.some(r => r.email.toLowerCase() === t.toLowerCase());
+        if (!dup) recipients.value.push({ id: ++_uid, email: t, removing: false });
+      });
+      tagDraft.value = '';
+      recipientsError.value = false;
+    }
+
+    /* CSS classes for the recipients wrapper */
+    const wrapClass = computed(() => {
+      if (sending.value) return 'wrap-disabled';
+      if (recipientsError.value) return 'wrap-invalid';
+      if (recipients.value.length > 0) return 'wrap-valid';
+      return '';
+    });
+
+    /* ════════════════════════════════════════════════
+       FORM READINESS
+    ════════════════════════════════════════════════ */
+
+    /*
+      The submit button is ENABLED only when all four
+      conditions are simultaneously true:
+        1. name ≥ 6 chars
+        2. senderEmail is a valid email
+        3. message is 150–350 chars
+        4. at least one recipient tag exists
+    */
+    const formReady = computed(() =>
+      name.valid &&
+      senderEmail.valid &&
+      message.valid &&
+      recipients.value.length > 0
+    );
+
+    /* ════════════════════════════════════════════════
+       SUBMIT
+    ════════════════════════════════════════════════ */
+    async function submitForm() {
+
+      /* 1. Force-validate all text fields (covers edge case
+            where user never blurred a field) */
+      [name, senderEmail, message].forEach(f => {
+        clearTimeout(f._timer);
+        f.typing    = false;
+        f.validated = true;
+        validators.get(f)(f);
+        f.showError = !f.valid;
+      });
+
+      /* 2. Commit any unconfirmed draft in the tag input */
+      commitDraft();
+
+      /* 3. Guard: recipients must have at least one valid entry */
+      if (!recipients.value.length) {
+        recipientsError.value = true;
+      }
+
+      /* 4. Abort if anything is still invalid */
+      if (!formReady.value) return;
+
+      /* 5. Prepare data */
+      sendError.value = '';
+      sending.value   = true;
+
+      const toEmails = recipients.value.map(r => r.email).join(', ');
+
+      /*
+        EmailJS templateParams keys must match your template
+        variable names exactly ({{from_name}}, {{from_email}},
+        {{to_email}}, {{message}}).
+      */
+      const templateParams = {
+        from_name:  name.value.trim(),
+        from_email: senderEmail.value.trim(),
+        to_email:   toEmails,       // EmailJS forwards to all addresses
+        message:    message.value,
+      };
+
+      try {
+        /* 6. Send via EmailJS */
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams,
+          EMAILJS_PUBLIC_KEY
+        );
+
+        /* 7. Success — store recipients for the success screen */
+        sentAddresses.value = recipients.value.map(r => r.email);
+        sending.value = false;
+        sent.value    = true;
+
+        /* 8. Wipe all form data */
+        resetAll();
+
+      } catch (err) {
+        /* 9. Network / EmailJS error */
+        sending.value   = false;
+        sendError.value = 'Something went wrong. Please try again in a moment.';
+        console.error('[EmailJS]', err);
+      }
+    }
+
+    /* ─── Wipe all fields and recipients ──────────── */
+    function resetAll() {
+      [name, senderEmail, message].forEach(f => Object.assign(f, makeField()));
+      recipients.value      = [];
+      tagDraft.value        = '';
+      recipientsError.value = false;
+      sendError.value       = '';
+    }
+
+    /* ─── "Back home" button ──────────────────────── */
+    function goHome() {
+      /*
+        In a real Vue Router project use:
+          import { useRouter } from 'vue-router'
+          const router = useRouter()
+          router.push('/')
+
+        Here we simply flip `sent` back to false, which
+        resets to the normal form view — equivalent to
+        what Vue Router would do when navigating away and
+        back to this route (the component re-mounts fresh).
+      */
+      sent.value          = false;
+      sentAddresses.value = [];
+      resetAll();
+    }
+
+    return {
+      /* fields */
+      name, senderEmail, message,
+      /* recipients */
+      recipients, tagDraft, tagInputRef,
+      recipientsError, wrapClass,
+      /* computed */
+      charCount, counterClass, messageError, formReady,
+      /* submit */
+      sending, sent, sendError, sentAddresses,
+      /* methods */
+      onInput, onBlur, fieldClass,
+      focusTagInput, onTagKeydown,
+      commitDraftOnBlur, removeTag, onTagPaste,
+      submitForm, goHome,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

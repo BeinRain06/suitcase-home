@@ -165,3 +165,18 @@ N.B: **edge number** is calculated manually and depend of the quantity of button
 > **edge condition:** **left** === -85px ? Yes => return
 
 <br/>
+
+### Couple Methods To Submit Form content Contact Page in Direction of Exiting Emails
+
+There are many available methods to send form content to real email address. Some use back-end logic , some use can be implement with REST API or Via Browser Function logic (no backend needed).
+
+Here below i just list the technique when you have no backend , as for sending email on the backend changes based on the back-end environment you use (NodeJs, Python, PHP, Transactional Email APIs, serverless/edge functions, Self-Hosted SMTP Relay):
+
+**Browser Side (no backend)**
+
+- EmailJS
+- Formspree
+- Web3Forms
+- Basin
+- Netlify Forms (if hosted on Netlify)
+- Vercel Edge Functions with built-in mailer
