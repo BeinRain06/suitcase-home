@@ -166,7 +166,54 @@ N.B: **edge number** is calculated manually and depend of the quantity of button
 
 <br/>
 
-### Couple Methods To Submit Form content Contact Page in Direction of Exiting Emails
+### Simplest Method 2 To Submit Form data Contact Page in Direction to your Gmail MailBox
+
+Three steps are required:
+
+1. **Create a new Google Sheet**
+
+   Go to google sheet, a new sheet will open or if not creae a new one.
+
+   fill aligned cell in a row( or in a column) with the different **name** of the attribute you will be sending from your contact page form (e.g: **name**, **email**, **message**)
+
+   here an image how to fill your google sheet document
+
+<br/>
+
+![Google Sheet Fill Form](./src/assets/Google-Sheets-fill-row.png)
+
+2. **Write a dedicated Function in App Script**
+
+   In the sheet, go to the **tab** -> **extensions** , then select **App Script**. Write a script like the one in the picture below.
+   For more information you have created a **specific** conversation for that in Gemini AI.
+
+   Here is an image how the function must be implemented
+
+<br/>
+
+![Google AppSript Example Fn](./src/assets/Google-AppScript.png)
+
+**Important :** Go to [script.google.com]("https://script.google.com/home") and see all the email project
+s App Script you have **created**.
+
+When making Call ot the function you write:
+
+> _for e.g :_ // Method POST Email
+> sendDataMail(formatMailObj, thisURL.value)
+
+3. **Connect Your Contact Page to Your Google App Script**
+
+   This need to take the **URL** received above as deploying the function as a **Web App** in App Script, then connect this url to a Fn into our Contact page that will send data document form asynchronouly and the App script will proceed to its interpretation and end issuing a mail in direction of your Mail Box taking the data curently transmitted in your current sheet you were working on.
+
+   Here is an image how to create that function with vue js.
+
+<br/>
+
+![Submit Form Contact Page Fn](./src/assets/Local-Contact-Form-Submit-Function.png)
+
+<br/>
+
+### Couple Methods 2 To Submit Form data Contact Page in Direction of Existing Emails
 
 There are many available methods to send form content to real email address. Some use back-end logic , some use can be implement with REST API or Via Browser Function logic (no backend needed).
 

@@ -11,6 +11,8 @@ import {
 import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
 
 import MiniQuotation from "./MiniQuotation.vue";
+import HouseCues from "../some-svg-components/HouseCues.vue";
+
 import { initInfoProject } from "../reusable-function/initInfoProjects";
 
 import { useProjectStore } from "../store-management/useProjectStore";
@@ -649,8 +651,8 @@ onMounted(async () => {
       </div>
       <!-- project show layout -->
       <div class="project__layout w-full px-[3%] flex flex-col gap-4">
-        <div class="project__title">
-          <h2>{{ home.name }}</h2>
+        <div class="project__title mb-1">
+          <h2 class="opacity-68">{{ home.name }}</h2>
         </div>
         <div
           class="project__spec-layout w-full flex flex-row justify-between gap-12"
@@ -659,14 +661,23 @@ onMounted(async () => {
           <div class="project__description w-1/2">
             <div class="project__specification">
               <div class="project__land-area py-1">
-                <div class="project__space">
-                  <h4>{{ home.land_area }}</h4>
+                <div
+                  class="project__space w-40 h-max flex flex-row items-center gap-2"
+                >
+                  <div class="icon__land w-7 h-full">
+                    <HouseCues icon-sketch="land" />
+                  </div>
+                  <h4 class="opacity-65">{{ home.land_area }}</h4>
                 </div>
               </div>
               <div class="project__rooms-in py-6">
                 <div class="project__rooms-standard">
-                  <div class="room__item">
-                    <div class="icon__room"></div>
+                  <div
+                    class="room__item w-max h-10 flex flex-row items-center gap-2"
+                  >
+                    <div class="icon__room w-6 h-6">
+                      <HouseCues icon-sketch="bedroom" />
+                    </div>
                     <div class="project__numbers-rooms">
                       <span v-if="!indexLang" class="smaller__span">{{
                         roomInProject.bedroom.fr
@@ -676,8 +687,12 @@ onMounted(async () => {
                       }}</span>
                     </div>
                   </div>
-                  <div class="room__item">
-                    <div class="icon__room"></div>
+                  <div
+                    class="room__item w-max h-10 flex flex-row items-center gap-2"
+                  >
+                    <div class="icon__room w-6 h-6">
+                      <HouseCues icon-sketch="kitchen" />
+                    </div>
                     <div class="project__numbers-rooms">
                       <span v-if="!indexLang" class="smaller__span">{{
                         roomInProject.kitchen.fr
@@ -687,8 +702,12 @@ onMounted(async () => {
                       }}</span>
                     </div>
                   </div>
-                  <div class="room__item">
-                    <div class="icon__room"></div>
+                  <div
+                    class="room__item w-max h-10 flex flex-row items-center gap-2"
+                  >
+                    <div class="icon__room w-6 h-6">
+                      <HouseCues icon-sketch="diningRoom" />
+                    </div>
                     <div class="project__numbers-rooms">
                       <span v-if="!indexLang" class="smaller__span">{{
                         roomInProject.diningroom.fr
@@ -698,8 +717,12 @@ onMounted(async () => {
                       }}</span>
                     </div>
                   </div>
-                  <div class="room__item">
-                    <div class="icon__room"></div>
+                  <div
+                    class="room__item w-max h-10 flex flex-row items-center gap-2"
+                  >
+                    <div class="icon__room w-6 h-6">
+                      <HouseCues icon-sketch="livingRoom" />
+                    </div>
                     <div class="project__numbers-rooms">
                       <span v-if="!indexLang" class="smaller__span">{{
                         roomInProject.livingroom.fr
@@ -709,8 +732,12 @@ onMounted(async () => {
                       }}</span>
                     </div>
                   </div>
-                  <div class="room__item">
-                    <div class="icon__room"></div>
+                  <div
+                    class="room__item w-max h-10 flex flex-row items-center gap-2"
+                  >
+                    <div class="icon__room w-6 h-6">
+                      <HouseCues icon-sketch="toilet" />
+                    </div>
                     <div class="project__numbers-rooms">
                       <span v-if="!indexLang" class="smaller__span">{{
                         roomInProject.toilet.fr
@@ -721,8 +748,12 @@ onMounted(async () => {
                     </div>
                   </div>
                 </div>
-                <div class="project__key-element">
-                  <div class="icon__room"></div>
+                <div
+                  class="project__key-element w-max h-10 flex flex-row items-center"
+                >
+                  <div class="icon__room w-6 h-6">
+                    <HouseCues icon-sketch="keyPlace" />
+                  </div>
                   <div class="project__numbers-rooms pl-4">
                     <span v-if="!indexLang" class="smaller__span">{{
                       roomInProject.keyelement.fr
@@ -790,7 +821,7 @@ onMounted(async () => {
                 class="project__minibox-title w-max py-6 px-1 flex flex-row gap-1"
               >
                 <div class="icon_quotation"></div>
-                <div class="minibox__title flex flex-row">
+                <div class="minibox__title flex flex-row opacity-65">
                   <h4>Quotation</h4>
                   <h4 v-if="!houseType.one_floor" class="size__scale-88">
                     niveau {{ houseType.level }}
@@ -1016,7 +1047,7 @@ onMounted(async () => {
                         @click="handleSwitchPage"
                       >
                         <span
-                          class="smaller__span size__scale-88 w-max mt-4 px-2 text-[var(--text-paragraph)] bg-[var(--background-secondary)] rounded-full"
+                          class="smaller__span size__scale-88 w-max mt-4 px-3 text-[var(--text-paragraph)] bg-[var(--highlight-background)] rounded-full"
                           >view all</span
                         >
                       </div>
@@ -1107,10 +1138,10 @@ onMounted(async () => {
 
 .project__delivery {
   color: var(--background-primary);
-  background-color: var(--link--external-btn);
+  background-color: var(--accent-color-3);
   box-shadow: 0px 1px 4px var(--text-paragraph);
   border-radius: 0.25rem;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 /* project cards anim display (resume 1, resume 2) */
@@ -1182,15 +1213,19 @@ onMounted(async () => {
 /* cta choice quotation display */
 .cta__quotation-resume {
   color: inherit;
+  font-size: var(--regular-size);
   border: 1px solid transparent;
   border-radius: 0;
+  box-shadow: 0px 0px 0px 0px transparent;
   transition: all 300ms ease-in-out;
 }
 
 .cta__quotation-resume.active_resume {
   color: var(--title-color);
+  font-size: var(--regular-size);
   border-bottom: 1px solid var(--title-color);
   border-radius: 1.5rem;
+  box-shadow: 0px 2px 10px 1px var(--highlight-text);
 }
 
 /* cta play joytick --style-- */
@@ -1297,7 +1332,7 @@ onMounted(async () => {
   height: 100%;
   color: var(--background-primary);
   background-color: var(--link--external-btn);
-  opacity: 48;
+  opacity: 0.64;
   display: grid;
   place-items: center;
   border: 2px solid transparent;

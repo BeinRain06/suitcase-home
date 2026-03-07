@@ -4,9 +4,12 @@ import { useDisplayDataStore } from "./store-management/useDisplayDataStore";
 
 import LandingPage from "./pagetoview/LandingPage.vue";
 
+import LoadingPage from "./components/LoadingPage.vue";
+
 export default {
   components: {
     LandingPage,
+    LoadingPage,
   },
   setup() {
     const storeElt = useDisplayDataStore();
@@ -15,14 +18,17 @@ export default {
       0: {
         id: "home-link",
         text: "Home",
+        ref: null,
       },
       1: {
         id: "projects-link",
         text: "Projects",
+        ref: null,
       },
       2: {
         id: "contact-link",
         text: "Contact",
+        ref: null,
       },
     });
 
@@ -37,11 +43,23 @@ export default {
 
     const itemsRef = ref({});
 
+    const itemsRefMenu = ref({});
+
+    const checkMenuRef = ref(null);
+
+    const middleBarRef = ref(null);
+
+    const modalMenuRef = ref(null);
+
     /* navlink reference indexing (use a Fn) */
 
-    const setItemRef = (el, key) => {
+    const setItemRef = (el, key, typeMedia) => {
       if (el) {
-        itemsRef.value[key] = el;
+        if (typeMedia === "desktop") {
+          itemsRef.value[key] = el;
+        } else {
+          itemsRefMenu.value[key] = el;
+        }
       }
     };
 
@@ -51,6 +69,10 @@ export default {
       selectLangRef,
       selectLang,
       itemsRef,
+      itemsRefMenu,
+      checkMenuRef,
+      middleBarRef,
+      modalMenuRef,
       storeElt,
       setItemRef,
     };
@@ -71,6 +93,17 @@ export default {
       this.$router.push({ path: "/" });
     },
     getProject(projectId) {
+      this.storeElt.$patch({ isLoading: true });
+
+      //option API syntax NextTick : await nextTick after data has been updated and execute internal next Fn further () => {return}
+      this.$nextTick(() => {
+        return;
+      });
+
+      setTimeout(() => {
+        this.storeElt.$patch({ isLoading: false });
+      }, 3000);
+
       this.$router.push({
         path: `/project/${projectId}`,
         query: { value: "multiple" },
@@ -90,18 +123,23 @@ export default {
       console.log("selectLang :", this.selectLang);
     },
 
-    handleNavigationPath(e, key) {
+    async handleNavigationPath(e, key) {
       console.log("e target :", e.target);
 
       console.log("this itemsRef :", this.itemsRef);
 
-      const itemsNav = this.itemsRef;
+      const itemsNavDesktop = this.itemsRef;
 
-      Object.keys(itemsNav).forEach((ex_key) =>
-        itemsNav[ex_key].classList.remove("active__navlink"),
-      );
+      const itemsNavMobile = this.itemsRefMenu;
 
-      itemsNav[key].classList.add("active__navlink");
+      await Object.keys(itemsNavDesktop).forEach((ex_key) => {
+        itemsNavDesktop[ex_key].classList.remove("active__navlink");
+        itemsNavMobile[ex_key].classList.remove("active__navlink");
+      });
+
+      itemsNavDesktop[key].classList.add("active__navlink");
+
+      itemsNavMobile[key].classList.add("active__navlink");
 
       /* push to the new Route */
       switch (key) {
@@ -119,6 +157,37 @@ export default {
             "There is a problem switching navlink route in navbar",
           );
       }
+
+      // close Menu
+
+      //option API syntax NextTick : await nextTick after data has been updated and execute no internal next Fn further () => {return}
+      this.$nextTick(() => {
+        return;
+      });
+
+      this.handleMenu(e);
+    },
+    handleMenu(e) {
+      console.log("e target :", e.target);
+
+      if (
+        e.currentTarget.classList.contains("icon_menu_close") ||
+        e.currentTarget.classList.contains("modal_menu_link")
+      ) {
+        this.checkMenuRef.checked = !this.checkMenuRef.checked;
+      }
+
+      console.log("checkMenuRef:", this.checkMenuRef);
+
+      console.log("middleBarRef:", this.middleBarRef);
+
+      if (this.checkMenuRef.checked) {
+        this.middleBarRef.classList.add("active_menu");
+        this.modalMenuRef.classList.add("active_menu");
+      } else {
+        this.middleBarRef.classList.remove("active_menu");
+        this.modalMenuRef.classList.remove("active_menu");
+      }
     },
   },
   computed: {
@@ -130,140 +199,221 @@ export default {
       console.log("this storeElt isNavbar :", this.storeElt.isFooter);
       return this.storeElt.isFooter;
     },
+    isLoading() {
+      console.log("this storeElt isLoading :", this.storeElt.isLoading);
+      return this.storeElt.isLoading;
+    },
+  },
+
+  // watch route when router back to higkight the first navlink ("Home")
+  watch: {
+    $route(to, from) {
+      if (to.name === "home") {
+        this.itemsRef[0]?.classList.add("active__navlink");
+      } else if (to.name === "contact") {
+        this.itemsRef[2]?.classList.add("active__navlink");
+      }
+    },
   },
   updated() {
-    if (this.itemsRef) {
-      /* console.log("this itemRef 0:", this.itemsRef[0]); */
-      this.itemsRef[0]?.classList.add("active__navlink");
-    }
     this.langSelected();
   },
   mounted() {
-    if (this.itemsRef) {
-      /* console.log("this itemRef 0:", this.itemsRef[0]); */
+    if (this.itemsRef && this.itemsRefMenu) {
+      console.log("this itemRef 0:", this.itemsRef[0]);
       this.itemsRef[0]?.classList.add("active__navlink");
+      this.itemsRefMenu[0]?.classList.add("active__navlink");
     }
+
     this.langSelected();
   },
 };
 </script>
 
 <template>
-  <header>
-    <!-- i have set navbar invisible -- temporary -->
-    <nav
-      v-if="isNavbar"
-      id="navbar"
-      class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
-    >
-      <div class="logo__nav-container">
-        <div class="logo__nav-icon"></div>
-        <div class="logo_nav-name">
-          <h5>SuitCase Home</h5>
-        </div>
-      </div>
-
-      <ul
-        class="navlinks__desktop-container w-[40%] h-full flex flex-row justify-end items-center gap-[1.5em]"
-      >
-        <li
-          class="navlink__item cursor-pointer z-20"
-          :key="value.id"
-          v-for="(value, key) in navlinksItems"
-          :ref="(el) => setItemRef(el, key)"
-          @click="(e) => handleNavigationPath(e, key)"
+  <transition name="vt" mode-out="out-in">
+    <div v-if="!isLoading" class="w-full" key="principal">
+      <header>
+        <!-- i have set navbar invisible -- temporary -->
+        <nav
+          v-if="isNavbar"
+          id="navbar"
+          class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
         >
-          {{ value.text }}
-        </li>
+          <div class="logo__nav-container">
+            <div class="logo__nav-icon"></div>
+            <div class="logo_nav-name">
+              <h5>SuitCase Home</h5>
+            </div>
+          </div>
 
-        <li
-          class="navlink__item-language w-[3.5rem] flex flex-row justify-center z-20"
-        >
-          <select
-            name="language"
-            id="language-selected"
-            class="cursor-pointer flex-shrink-0"
-            ref="selectLangRef"
-            @change="langSelected"
+          <ul
+            class="navlinks__desktop-container w-[40%] h-full hidden min-[620px]:flex flex-row justify-end items-center gap-[1.5em]"
           >
-            <option value="FR" class="option__language">
-              {{ navlinkLanguage.fr }}
-            </option>
-            <option value="EN" class="option__language">
-              {{ navlinkLanguage.en }}
-            </option>
-          </select>
-        </li>
-      </ul>
-    </nav>
-  </header>
-  <!-- introduce component routed -->
-  <router-view :user-language="selectLang"></router-view>
+            <li
+              class="navlink__item cursor-pointer z-20"
+              :key="value.id"
+              v-for="(value, key) in navlinksItems"
+              :ref="(el) => setItemRef(el, key, 'desktop')"
+              @click="(e) => handleNavigationPath(e, key)"
+            >
+              {{ value.text }}
+            </li>
 
-  <!-- i have set footer hidden -- temporary -->
+            <li
+              class="navlink__item-language w-[3.5rem] flex flex-row justify-center z-20"
+            >
+              <select
+                name="language"
+                id="language-selected"
+                class="cursor-pointer flex-shrink-0"
+                ref="selectLangRef"
+                @change="langSelected"
+              >
+                <option value="FR" class="option__language">
+                  {{ navlinkLanguage.fr }}
+                </option>
+                <option value="EN" class="option__language">
+                  {{ navlinkLanguage.en }}
+                </option>
+              </select>
+            </li>
+          </ul>
 
-  <footer v-if="isFooter" id="footer" class="w-full mx-auto">
-    <div class="footer__container pt-20 pb-10 px-[1rem]">
-      <div
-        class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"
-      >
-        <div class="footer__upper-left w-[36%]">
-          <div class="footer__logo-container">
-            <div class="footer__logo-icon"></div>
-            <div class="footer__brand-name"><h3>SuitCase Home</h3></div>
+          <!-- Menu Mobile -->
+          <div class="menu_wrap block min-[620px]:hidden">
+            <div
+              class="menu_content relative w-8 h-8 flex justify-center items-center rounded border border-solid border-[var(--accent-color-3)]"
+            >
+              <div
+                class="middle_bar relative h-[1px] w-[72%] bg-[var(--text-paragraph)] z-0"
+                ref="middleBarRef"
+              ></div>
+              <div
+                class="input_check_wrap absolute w-4/5 h-4/5 opacity-0 mx-auto z-10"
+                @click="handleMenu"
+              >
+                <input
+                  type="checkbox"
+                  name="checkbox"
+                  class="check_menu w-full h-full rounded cursor-pointer"
+                  ref="checkMenuRef"
+                />
+              </div>
+            </div>
+            <div class="modal_menu" ref="modalMenuRef">
+              <div class="modal_close w-full">
+                <div
+                  class="icon_menu_close w-full h-6 cursor-pointer flex flex-row justify-end"
+                  @click="handleMenu"
+                >
+                  x
+                </div>
+              </div>
+              <ul class="modal_menu_links flex flex-col space-y-6">
+                <li
+                  class="modal_menu_link z-10"
+                  :key="value.id"
+                  v-for="(value, key) in navlinksItems"
+                  :ref="(el) => setItemRef(el, key, 'mobile')"
+                  @click="(e) => handleNavigationPath(e, key)"
+                >
+                  <div
+                    class="holder_navlink inline-flex items-center justify-end tansition-all duration-300 ease-in-out hover:text-[var(--link--external-btn)] cursor-pointer"
+                  >
+                    <div>
+                      <p class="nav_p_link cursor-pointer">
+                        {{ value.text }}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <!-- introduce component routed -->
+      <router-view :user-language="selectLang"></router-view>
+
+      <!-- i have set footer hidden -- temporary -->
+
+      <footer v-if="isFooter" id="footer" class="w-full mx-auto">
+        <div class="footer__container pt-20 pb-10 px-[1rem]">
+          <div
+            class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"
+          >
+            <div class="footer__upper-left w-[36%]">
+              <div class="footer__logo-container">
+                <div class="footer__logo-icon"></div>
+                <div class="footer__brand-name"><h3>SuitCase Home</h3></div>
+              </div>
+            </div>
+            <div class="footer__upper-right w-[64%] h-full grid grid-cols-3">
+              <div class="footer_item">
+                <h4 class="footer__item-title pb-1">Home</h4>
+                <ul class="footer__item-context">
+                  <li class="footer__item-link">Mission</li>
+                  <li class="footer__item-link">Trust</li>
+                  <li class="footer__item-link">services</li>
+                </ul>
+              </div>
+              <div class="footer_item">
+                <h4 class="footer__item-title pb-1">Projects</h4>
+                <ul class="footer__item-context">
+                  <li class="footer__item-link">Project One</li>
+                  <li class="footer__item-link">Project Two</li>
+                  <li class="footer__item-link">Project Three</li>
+                </ul>
+              </div>
+              <div class="footer_item">
+                <h4 class="footer__item-title pb-1">Contact</h4>
+                <ul class="footer__item-context">
+                  <li class="footer__item-link">Contact</li>
+                  <li class="footer__item-link footer__number">
+                    <span class="smaller__span">Tel1: +237 6-90-62-52-48</span>
+                  </li>
+                  <li class="footer__item-link footer__number">
+                    <span class="smaller__span">Tel2: +237 6-97-49-90-25</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div
+            class="footer__lower h-8 flex flex-row justify-between items-center"
+          >
+            <div
+              class="footer__lower-left h-full flex flex-row items-center space-x-2"
+            >
+              <div><span class="smaller__span">Suitcase home.</span></div>
+              <div>
+                <span class="smaller__span pr-1">&copy;</span>
+                <span class="smaller__span">2025 All right reserved.</span>
+              </div>
+            </div>
+            <div class="footer__lower-right">
+              <span class="smaller__span pr-[0.25rem]">Terms Of Services</span>
+            </div>
           </div>
         </div>
-        <div class="footer__upper-right w-[64%] h-full grid grid-cols-3">
-          <div class="footer_item">
-            <h4 class="footer__item-title pb-1">Home</h4>
-            <ul class="footer__item-context">
-              <li class="footer__item-link">Mission</li>
-              <li class="footer__item-link">Trust</li>
-              <li class="footer__item-link">services</li>
-            </ul>
-          </div>
-          <div class="footer_item">
-            <h4 class="footer__item-title pb-1">Projects</h4>
-            <ul class="footer__item-context">
-              <li class="footer__item-link">Project One</li>
-              <li class="footer__item-link">Project Two</li>
-              <li class="footer__item-link">Project Three</li>
-            </ul>
-          </div>
-          <div class="footer_item">
-            <h4 class="footer__item-title pb-1">Contact</h4>
-            <ul class="footer__item-context">
-              <li class="footer__item-link">Contact</li>
-              <li class="footer__item-link footer__number">
-                <span class="smaller__span">Tel1: +237 6-90-62-52-48</span>
-              </li>
-              <li class="footer__item-link footer__number">
-                <span class="smaller__span">Tel2: +237 6-97-49-90-25</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer__lower h-8 flex flex-row justify-between items-center">
-        <div
-          class="footer__lower-left h-full flex flex-row items-center space-x-2"
-        >
-          <div><span class="smaller__span">Suitcase home.</span></div>
-          <div>
-            <span class="smaller__span pr-1">&copy;</span>
-            <span class="smaller__span">2025 All right reserved.</span>
-          </div>
-        </div>
-        <div class="footer__lower-right">
-          <span class="smaller__span pr-[0.25rem]">Terms Of Services</span>
-        </div>
-      </div>
+      </footer>
     </div>
-  </footer>
+
+    <!-- when Loading is played -->
+    <div v-else key="loading" class="absolute top-0 left-0 w-full h-full">
+      <LoadingPage />
+    </div>
+  </transition>
 </template>
 
 <style scoped>
 /* utilities */
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 ul {
   list-style: none;
 }
@@ -274,7 +424,8 @@ ul {
   margin: 0 auto;
 }
 
-li.navlink__item {
+li.navlink__item,
+li.modal_menu_link {
   width: max(6.45rem, 8%);
   color: inherit;
   background-color: transparent;
@@ -284,7 +435,8 @@ li.navlink__item {
   transition: all 1s ease;
 }
 
-li.navlink__item.active__navlink {
+li.navlink__item.active__navlink,
+li.modal_menu_link.active__navlink {
   /* do something */
   color: var(--background-primary);
   background-color: hsla(32, 30%, 37%, 0.65);
@@ -307,5 +459,124 @@ li.navlink__item.active__navlink {
 li.footer_number {
   cursor: default;
   text-decoration: none;
+}
+
+/* ── View transition ──────────────────────────────── */
+.vt-enter-active {
+  transition:
+    opacity 0.45s var(--ease-smooth),
+    transform 0.4s var(--ease-smooth);
+}
+.vt-leave-active {
+  transition:
+    opacity 0.45s var(--ease-smooth),
+    transform 0.45s var(--ease-smooth);
+  position: absolute;
+  width: calc(100% - 5rem);
+}
+.vt-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.vt-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+@media screen and (min-width: 140px) {
+  /* Menu Mobile */
+  .middle_bar {
+    transition: all 1s ease;
+  }
+
+  .middle_bar::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--text-paragraph);
+    transition: all 1s ease;
+  }
+
+  .middle_bar::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--text-paragraph);
+    transition: all 1s ease;
+  }
+
+  .input_check_wrap {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* activate menu */
+
+  .middle_bar.active_menu {
+    transform: rotate(135deg);
+  }
+
+  .middle_bar.active_menu::before {
+    top: 0;
+    /* transform: rotate(45deg); */
+    transform: rotate(90deg);
+  }
+
+  .middle_bar.active_menu::after {
+    top: 0;
+    /* transform: rotate(135deg); */
+    transform: rotate(90deg);
+  }
+
+  .modal_menu {
+    position: absolute;
+    top: 3.5rem;
+    left: 0;
+    /*  transform: scale(0.45) translateX(-50%); */
+    transform: translateX(-100%);
+    width: max(260px, 90%);
+    height: 18.75rem;
+    padding: 1.125rem 0.9rem;
+    color: var(--accent-color-1);
+    background-color: var(--accent-color-4);
+    visibility: invisible;
+    opacity: 0;
+    border-radius: 50%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 310ms linear;
+  }
+
+  .modal_menu.active_menu {
+    position: absolute;
+    top: 4.15rem;
+    left: 50%;
+    /* transform: scale(1) translateX(-50%); */
+    transform: translateX(-50%);
+    width: max(260px, 90%);
+    height: 18.75rem;
+    padding: 1.125rem 0.9rem;
+    visibility: visible;
+    opacity: 0.99;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 300ms linear;
+  }
+}
+
+@media screen and (min-width: 1160px) {
 }
 </style>

@@ -660,7 +660,9 @@ onBeforeUpdate(async () => {
   >
     <TitleMiniQuotation :data-title="dataTitle" />
     <div class="record__quotation w-full pt-4">
-      <div class="record__designation w-full flex flex-row justify-between">
+      <div
+        class="record__designation w-full flex flex-row justify-between opacity-70"
+      >
         <h4>Designation</h4>
         <h4>Cost</h4>
       </div>
@@ -671,7 +673,7 @@ onBeforeUpdate(async () => {
       >
         <div
           id="mini__main"
-          class="box__overall-pricing w-full px-2 flex flex-row justify-between bg-[var(--background-secondary)]"
+          class="box__overall-pricing w-full px-2 flex flex-row justify-between text-[var(--background-primary)] bg-[var(--accent-color-4)] rounded"
         >
           <ResumeQuotationCost
             :data-resumeQuotation="dataResumeQuotation"
@@ -712,32 +714,48 @@ onBeforeUpdate(async () => {
               v-if="!indexLang"
               class="pointer__phase-box w-full flex flex-row justify-between"
             >
-              <div class="pointer__phase-toshow">
-                <p class="stick__cater-size opacity-70">Suivant</p>
-                <div class="icon__arrow-right"></div>
+              <div
+                class="pointer__phase-toshow w-max flex flex-row gap-[2px] text-[var(--title-color)] opacity-70"
+              >
+                <p class="stick__cater-size">Afficher Suivant</p>
+                <div class="icon__arrow-right">
+                  <span class="basis--icon mingcute--arrows-right-line"></span>
+                </div>
               </div>
               <div
                 class="cta__next-phase cursor-pointer"
                 @click="() => handlePhaseChange('back-phase-one')"
               >
                 <div class="icon__player-right"></div>
-                <p class="stick__cater-size opacity-75">Phase 2</p>
+                <p
+                  class="stick__cater-size ft-bold underline text-[var(--accent-color-3)]"
+                >
+                  Phase 2
+                </p>
               </div>
             </div>
             <div
               v-else
               class="pointer__phase-box w-full flex flex-row justify-between"
             >
-              <div class="pointer__phase-toshow">
-                <p class="stick__cater-size opacity-70">Next</p>
-                <div class="icon__arrow-right"></div>
+              <div
+                class="pointer__phase-toshow w-max flex flex-row gap-[2px] text-[var(--title-color)] opacity-70"
+              >
+                <p class="stick__cater-size">Display Next</p>
+                <div class="icon__arrow-right">
+                  <span class="basis--icon .mingcute--arrows-right-line"></span>
+                </div>
               </div>
               <div
                 class="cta__next-phase cursor-pointer"
                 @click="() => handlePhaseChange('back-phase-one')"
               >
                 <div class="icon__player-right"></div>
-                <p class="stick__cater-size opacity-75">Phase 2</p>
+                <p
+                  class="stick__cater-size ft-bold underline text-[var(--accent-color-3)]"
+                >
+                  Phase 2
+                </p>
               </div>
             </div>
           </div>
@@ -752,32 +770,48 @@ onBeforeUpdate(async () => {
               v-if="!indexLang"
               class="pointer__phase-box w-full flex flex-row justify-between"
             >
-              <div class="pointer__phase-toshow">
-                <p class="stick__cater-size opacity-70">Precedent</p>
-                <div class="icon__arrow-right"></div>
+              <div
+                class="pointer__phase-toshow w-max flex flex-row gap-[2px] text-[var(--title-color)] opacity-70"
+              >
+                <p class="stick__cater-size">Precedent</p>
+                <div class="icon__arrow-right">
+                  <span class="basis--icon mingcute--arrows-right-line"></span>
+                </div>
               </div>
               <div
                 class="cta__next-phase cursor-pointer"
                 @click="() => handlePhaseChange('move-phase-two')"
               >
                 <div class="icon__player-right"></div>
-                <p class="stick__cater-size opacity-75">Phase 1</p>
+                <p
+                  class="stick__cater-size ft-bold underline text-[var(--link--external-btn)]"
+                >
+                  Phase 1
+                </p>
               </div>
             </div>
             <div
               v-else
               class="pointer__phase-box w-full flex flex-row justify-between"
             >
-              <div class="pointer__phase-toshow">
-                <p class="stick__cater-size opacity-70">Previous</p>
-                <div class="icon__arrow-right"></div>
+              <div
+                class="pointer__phase-toshow w-max flex flex-row gap-[2px] text-[var(--title-color)] opacity-70"
+              >
+                <p class="stick__cater-size">Previous</p>
+                <div class="icon__arrow-right">
+                  <span class="basis--icon mingcute--arrows-right-line"></span>
+                </div>
               </div>
               <div
                 class="cta__next-phase cursor-pointer"
                 @click="() => handlePhaseChange('move-phase-two')"
               >
                 <div class="icon__player-right"></div>
-                <p class="stick__cater-size opacity-75">Phase 1</p>
+                <p
+                  class="stick__cater-size ft-bold underline text-[var(--link--external-btn)]"
+                >
+                  Phase 1
+                </p>
               </div>
             </div>
           </div>
@@ -840,7 +874,8 @@ p {
 
 .phase__one .pointer__phase-box,
 .phase__two .pointer__phase-box {
-  box-shadow: 0px 1px 2px #afafaf;
+  background-color: var(--background-secondary);
+  box-shadow: 0px 1px 3px #afafaf;
   padding: 0.25rem 0.35rem;
   border-radius: 0.25rem;
   z-index: 1;

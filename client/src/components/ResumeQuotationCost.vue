@@ -92,7 +92,7 @@ watch(
   <!-- foundation resume quotation -->
   <div
     v-if="quotationType === 'foundation'"
-    class="resume__quotation-container w-full px-2 flex flex-row justify-between bg-[var(--background-secondary)]"
+    class="resume__quotation-container w-full px-2 flex flex-row justify-between"
   >
     <ul
       v-if="activeLayerFoundation === 0"
@@ -146,7 +146,7 @@ watch(
   <!-- roof resume quotation -->
   <div
     v-else-if="quotationType === 'roofing'"
-    class="resume__quotation-container w-full px-2 flex flex-row justify-between bg-[var(--background-secondary)]"
+    class="resume__quotation-container w-full px-2 flex flex-row justify-between"
   >
     <ul
       v-if="activeLayerRoof === 0"
@@ -200,7 +200,7 @@ watch(
   <!-- plumbing or electricity quotation -->
   <div
     v-else
-    class="resume__quotation-container w-full px-2 flex flex-row justify-between bg-[var(--background-secondary)]"
+    class="resume__quotation-container w-full px-2 flex flex-row justify-between"
   >
     <ul class="resume__quotation-content w-full flex flex-row justify-between">
       <li><p>Materials + labor</p></li>
@@ -237,7 +237,8 @@ p {
   padding: 0.25rem;
   color: var(--text-paragraph);
   background-color: transparent;
-  opacity: 0.98;
+  background-color: var(--accent-color-1);
+  opacity: 0.86;
   transform: rotateZ(0deg) scale(1);
   outline: 2px solid var(--link--external-btn);
   outline-offset: -1px;
@@ -249,10 +250,29 @@ p {
 .button__circle.anim__rotate-z {
   color: var(--background-secondary);
   background-color: var(--link--external-btn);
+  opacity: 0.98;
   transform: rotateZ(180deg) scale(1.15);
   outline: 0 solid var(--background-secondary);
   outline-offset: 0;
 
   transition: all 1.5s ease;
+}
+
+.resume__quotation-content li {
+  animation: anim-appearance 0.85s ease forwards;
+}
+
+@keyframes anim-appearance {
+  0% {
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 0.45;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 </style>

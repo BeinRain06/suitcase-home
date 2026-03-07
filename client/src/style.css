@@ -10,43 +10,52 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* font-sizes variables */
-  --mini-size: calc(0.6rem + 0.12vw);
-  --cater-size: calc(0.78rem + 0.1vw);
-  --mid-size: calc(1rem + 0.18vw);
-  --regular-size: calc(1.5rem + 0.2vw);
+  /* color-scheme (11 colors)*/
 
-  --subtitle-size: calc(2rem + 0.1vw): --title-size: calc(2.25rem + 0.15vw);
-  --hero-title-size: calc(3rem + 0.12vw);
-
-  --size-scale-factor: 0.5rem; /* 1.5rem / 3 = 0.5rem */
-
-  /* color-scheme (08 colors)*/
-
-  /* --background-primary: hsl(213, 45%, 94%); */
   --background-primary: hsl(300, 20%, 99%);
   --background-secondary: hsl(41, 46%, 86%);
 
-  /* --highlight-text: hsl(32, 88%, 37%); */
   --highlight-text: hsl(32, 88%, 37%);
+  --highlight-background: hsl(345, 84%, 89%);
   --link--external-btn: hsl(32, 30%, 37%);
   --title-color: hsl(345, 88%, 37%);
 
   /* neutral accent */
   --text-paragraph: hsl(0, 0%, 12%);
+
   /* accent-card color */
   --accent-color-1: hsl(300, 20%, 86%);
   --accent-color-2: hsl(300, 20%, 80%);
+
+  --accent-color-3: hsl(142, 22%, 54%);
+  --accent-color-4: hsl(32, 30%, 57%);
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 140px) {
   :root {
+    /* font-sizes variables */
+    --mini-size: calc(0.6rem + 0.12vw);
+    --cater-size: calc(0.65rem + 0.1vw);
+    --mid-size: calc(0.75rem + 0.12vw);
+    --regular-size: calc(1.15rem + 0.1vw); /* modified once */
+
+    --subtitle-size: calc(1.45rem + 0.1vw): /* modified once */
+      --title-size: calc(2.25rem + 0.15vw);
+    --hero-title-size: calc(3rem + 0.12vw);
+
+    --size-scale-factor: 0.5rem; /* 1.5rem / 3 = 0.5rem */
+  }
+}
+
+@media screen and (min-width: 620px) {
+  :root {
+    /* font-sizes variables */
     --mini-size: calc(0.6rem + 0.12vw);
     --cater-size: calc(0.78rem + 0.1vw);
     --mid-size: calc(1rem + 0.18vw);
-    --regular-size: calc(1.5rem + 0.2vw);
+    --regular-size: calc(1.35rem + 0.1vw);
 
-    --subtitle-size: calc(2rem + 0.1vw);
+    --subtitle-size: calc(1.75rem + 0.1vw);
     --title-size: calc(2.25rem + 0.15vw);
     --hero-title-size: calc(3rem + 0.12vw);
   }
@@ -54,6 +63,7 @@
 
 @media screen and (min-width: 1160px) {
   :root {
+    /* font-sizes variables */
     --mini-size: calc(0.64rem + 0.12vw);
     --cater-size: calc(0.85rem + 0.12vw);
     --mid-size: calc(0.96rem + 0.1vw);
