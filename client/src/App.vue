@@ -470,12 +470,12 @@ li.modal_menu_link.active__navlink {
 /* ── View transition ──────────────────────────────── */
 .vt-enter-active {
   transition:
-    opacity 0.45s var(--ease-smooth),
+    opacity 6s var(--ease-smooth),
     transform 0.4s var(--ease-smooth);
 }
 .vt-leave-active {
   transition:
-    opacity 0.45s var(--ease-smooth),
+    opacity 8.45s var(--ease-smooth),
     transform 0.45s var(--ease-smooth);
   position: absolute;
   width: calc(100% - 5rem);

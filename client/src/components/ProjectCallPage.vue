@@ -146,9 +146,11 @@ const goBackHome = () => {
 const handleFloorChange = async (e) => {
   const targetElt = e.currentTarget;
 
-  const projectIdArr = route.params.projectId;
+  console.log("targetElt:", targetElt);
 
-  if (projectIdArr[0] !== "dexter_flip") return;
+  const projectId = route.params.projectId;
+
+  if (projectId !== "dexter_flip") return;
 
   if (targetElt.id === "floor_0") {
     activeFloor.value.floor_0 = true;
@@ -519,12 +521,17 @@ watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
 
   oldActiveFloor = await oldActiveFloor;
 
+  console.log("newActiveFloor:", newActiveFloor);
+  console.log("oldActiveFloor:", oldActiveFloor);
+
   if (newActiveFloor !== oldActiveFloor) {
-    const projectIdArr = route.params.projectId;
+    const projectId = route.params.projectId;
 
-    if (projectIdArr[0] !== "dexter_flip") return;
+    console.log("projectId", projectId);
 
-    const projectId = projectIdArr[0];
+    if (projectId !== "dexter_flip") return;
+
+    /* const projectId = projectIdArr[0]; */
 
     const isFloor_0 = newActiveFloor ? "0" : "1";
 
@@ -542,6 +549,8 @@ watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
     home.value = homeIn;
     roomInProject.value = roomEntireProject;
     houseType.value = houseCallType;
+
+    await initInfos.value;
   }
 });
 
@@ -572,11 +581,6 @@ onBeforeRouteUpdate(async (to, from) => {
 onMounted(async () => {
   /* console.log("initInfos --onMounted :", initInformation); */
 
-  if (numbersBtnRef.value) {
-    const numberHighlight = numbersBtnRef.value[0];
-    numberHighlight.classList.add("active__number-play");
-  }
-
   const catchArrayQuery = route.query.value;
 
   if (catchArrayQuery === "single") {
@@ -587,7 +591,30 @@ onMounted(async () => {
 
   const catchArrayParams = route.params.projectId;
 
-  const projectId = catchArrayParams[0] || "danton_shield";
+  console.log("catchArrayParams:", catchArrayParams);
+
+  let projectId = catchArrayParams[0] || "danton_shield";
+
+  if (numbersBtnRef.value) {
+    const numberHighlight = numbersBtnRef.value[0];
+    numberHighlight.classList.add("active__number-play");
+
+    if (projectId !== "danton_shield") {
+      projectId = "danton_shield";
+
+      router
+        .replace({
+          name: "project",
+          params: { projectId: "danton_shield" },
+          query: { value: "multiple" },
+        })
+        .catch((err) =>
+          console.log(
+            "error tyring to replace params router in --onMounted Hook",
+          ),
+        );
+    }
+  }
 
   const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1";
 
@@ -861,8 +888,8 @@ onMounted(async () => {
                     >
                       <span
                         :class="{
-                          '': activeFloor.floor_0,
-                          smaller__span: !activeFloor.floor_0,
+                          '': activeFloorWatch,
+                          smaller__span: !activeFloorWatch,
                         }"
                         >0</span
                       >
@@ -875,8 +902,8 @@ onMounted(async () => {
                     >
                       <span
                         :class="{
-                          '': !activeFloor.floor_0,
-                          smaller__span: activeFloor.floor_0,
+                          '': !activeFloorWatch,
+                          smaller__span: activeFloorWatch,
                         }"
                         >1</span
                       >

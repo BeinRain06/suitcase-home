@@ -16,6 +16,8 @@ const houseCallType = { one_floor: "true", level: "0" };
 let roomEntireProject = {};
 
 export const initInfoProject = (projectId, isCallPage, isActiveFloor) => {
+  console.log("isActiveFloor:", isActiveFloor);
+
   const typeQuotation = ["foundation", "plumbing", "electricity", "roofing"];
 
   if (isCallPage === "main-page") {
