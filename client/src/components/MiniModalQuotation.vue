@@ -333,7 +333,7 @@ onMounted(async () => {
         <h4>Cost</h4>
       </div>
       <div
-        class="record__overwall-work w-full h-86 pt-1 mt-4 flex flex-col justify-center"
+        class="record__overwall-work w-full h-max pt-1 mt-4 flex flex-col justify-center"
       >
         <div id="mini__modal" class="box__overall-pricing">
           <ResumeQuotationCost :data-resumeQuotation="dataResumeQuotation" />

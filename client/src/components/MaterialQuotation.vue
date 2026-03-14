@@ -123,7 +123,7 @@ const surface = computed(() => {
     <!-- active Layer Foundation === 0 -->
     <div
       v-if="activeLayerFoundation === 0"
-      class="needed__materials w-full h-[12.5rem] flex flex-row"
+      class="needed__materials w-full h-48 lg:h-64 flex flex-row"
     >
       <!-- materials items -->
       <div class="needed__materials-content w-6/12 h-full">
@@ -135,7 +135,7 @@ const surface = computed(() => {
         </div>
         <!-- materials -->
         <div
-          class="needed__construction-elements w-full h-[11rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
+          class="needed__construction-elements w-full h-[14.5rem] lg:h-[14.5rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
         >
           <div class="need__pinpointed-element w-full py-2">
             <div
@@ -244,7 +244,7 @@ const surface = computed(() => {
     <!-- active Layer Foundation === 1 -->
     <div
       v-else-if="activeLayerFoundation === 1"
-      class="needed__materials w-full h-[12.5rem] flex flex-row"
+      class="needed__materials w-full h-48 lg:h-64 flex flex-row"
     >
       <!-- materials items -->
       <div class="needed__materials-content w-6/12 h-full">
@@ -256,7 +256,7 @@ const surface = computed(() => {
         </div>
         <!-- materials -->
         <div
-          class="needed__construction-elements w-full h-[11rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
+          class="needed__construction-elements w-full h-[12rem] lg:h-[14.5rem] py-2 px-2 border border-r-0 border-solid border-[var(--accent-color-2)]"
         >
           <div class="need__pinpointed-element w-full py-2">
             <div

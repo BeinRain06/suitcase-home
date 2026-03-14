@@ -34,7 +34,7 @@ onUpdated(() => {
 </script>
 <template>
   <div class="project__container w-full" ref="projectContainerRef">
-    <div class="projectcallpage__wrap w-hull h-full">
+    <div class="projectcallpage__wrap w-full">
       <ProjectCallPage
         :user-language="props.userLanguage"
         @update-modalpage="handleModalPage"
@@ -55,7 +55,7 @@ onUpdated(() => {
 .project__container {
   position: relative;
   width: 100vw;
-  height: max-content;
+  height: 100%;
   overflow-y: hidden;
   /* overflow-y: scroll;
   scroll-margin-block: auto;
@@ -65,7 +65,7 @@ onUpdated(() => {
 .project__container.activate__modal {
   position: relative;
   width: 100vw;
-  height: auto;
+  height: max-content;
   overflow-y: auto;
   /* overflow-y: hidden;
   scroll-margin-block: 0;
@@ -78,7 +78,8 @@ onUpdated(() => {
   left: -25%;
   width: 100%;
   /* height: 100%; */
-  height: calc(100vh - 3.125rem);
+  height: calc(100vh + 3.125rem);
+  height: auto;
   background-color: hsla(300, 20%, 99%, 0.86);
   background-color: hsla(300, 20%, 99%, 0.96);
   opacity: 0.25;
@@ -93,7 +94,7 @@ onUpdated(() => {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: hsla(300, 20%, 99%, 0.86);
   background-color: hsla(300, 20%, 99%, 0.96);
   opacity: 1;

@@ -902,7 +902,7 @@ onUpdated(() => {
   }
 }
 
-@media screen and (min-width: 1160px) {
+@media screen and (min-width: 1040px) {
   /* contact layout form */
 
   .contact__layout-form {

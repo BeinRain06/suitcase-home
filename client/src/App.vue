@@ -339,19 +339,27 @@ export default {
       <!-- i have set footer hidden -- temporary -->
 
       <footer v-if="isFooter" id="footer" class="w-full mx-auto">
-        <div class="footer__container pt-20 pb-10 px-[1rem]">
+        <div class="footer__container pt-20 pb-10 max-[420px]:pb-14 px-[1rem]">
           <div
-            class="footer__upper w-full h-48 flex flex-row justify-between gap-4 pt-[2%]"
+            class="footer__upper w-full h-auto min-[420px]:h-48 flex flex-col items-center md:flex-row md:items-start md:justify-between gap-10 md:gap-4 pt-[2%]"
           >
-            <div class="footer__upper-left w-[36%]">
+            <div
+              class="footer__upper-left w-[76%] md:w-[36%] text-center md:text-left"
+            >
               <div class="footer__logo-container">
                 <div class="footer__logo-icon"></div>
                 <div class="footer__brand-name"><h3>SuitCase Home</h3></div>
               </div>
             </div>
-            <div class="footer__upper-right w-[64%] h-full grid grid-cols-3">
+            <div
+              class="footer__upper-right w-[86%] md:w-[64%] h-full grid grid-cols-1 grid-rows- gap-2 min-[420px]:grid-cols-3 min-[420px]:grid-rows-1 place-items-center md:place-items-left"
+            >
               <div class="footer_item">
-                <h4 class="footer__item-title pb-1">Home</h4>
+                <h4
+                  class="footer__item-title pb-4 min-[420px]:pb-1 text-center lg:text-left"
+                >
+                  Home
+                </h4>
                 <ul class="footer__item-context">
                   <li class="footer__item-link">Mission</li>
                   <li class="footer__item-link">Trust</li>
@@ -359,7 +367,11 @@ export default {
                 </ul>
               </div>
               <div class="footer_item">
-                <h4 class="footer__item-title pb-1">Projects</h4>
+                <h4
+                  class="footer__item-title pb-4 min-[420px]:pb-1 text-center lg:text-left"
+                >
+                  Projects
+                </h4>
                 <ul class="footer__item-context">
                   <li class="footer__item-link">Project One</li>
                   <li class="footer__item-link">Project Two</li>
@@ -367,7 +379,11 @@ export default {
                 </ul>
               </div>
               <div class="footer_item">
-                <h4 class="footer__item-title pb-1">Contact</h4>
+                <h4
+                  class="footer__item-title pb-4 min-[420px]:pb-1 text-center lg:text-left"
+                >
+                  Contact
+                </h4>
                 <ul class="footer__item-context">
                   <li class="footer__item-link">Contact</li>
                   <li class="footer__item-link footer__number">
@@ -381,19 +397,28 @@ export default {
             </div>
           </div>
           <div
-            class="footer__lower h-8 flex flex-row justify-between items-center"
+            class="footer__lower h-14 mt-10 px-4 md:h-8 md:mt-0 md:px-0 flex flex-row justify-between items-center"
           >
             <div
               class="footer__lower-left h-full flex flex-row items-center space-x-2"
             >
-              <div><span class="smaller__span">Suitcase home.</span></div>
               <div>
+                <span class="smaller__span">Suitcase home</span>
+                <span class="smaller__span max-[420px]:hidden">.</span>
+              </div>
+              <div class="max-[420px]:hidden">
                 <span class="smaller__span pr-1">&copy;</span>
                 <span class="smaller__span">2025 All right reserved.</span>
               </div>
             </div>
             <div class="footer__lower-right">
               <span class="smaller__span pr-[0.25rem]">Terms Of Services</span>
+            </div>
+          </div>
+          <div class="footer__lower-extra">
+            <div class="copyright__mobile text-center min-[420px]:hidden">
+              <span class="smaller__span pr-1">&copy;</span>
+              <span class="smaller__span">2025 All right reserved.</span>
             </div>
           </div>
         </div>
@@ -440,25 +465,6 @@ li.modal_menu_link.active__navlink {
   /* do something */
   color: var(--background-primary);
   background-color: hsla(32, 30%, 37%, 0.65);
-}
-
-/* footer */
-.footer__item-link {
-  /* width: 7rem; */
-  cursor: pointer;
-  width: max-content;
-  word-break: break-word;
-  padding: 0.25rem 0 0.25rem 0.5rem;
-  font-size: var(--cater-size);
-  font-weight: 300;
-  line-height: 1.35;
-  text-decoration: underline;
-  border-bottom: 1px solid inherit;
-}
-
-li.footer_number {
-  cursor: default;
-  text-decoration: none;
 }
 
 /* ── View transition ──────────────────────────────── */
@@ -575,8 +581,67 @@ li.footer_number {
     justify-content: flex-start;
     transition: all 300ms linear;
   }
+
+  /* footer */
+  .footer__item-context {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .footer__item-link {
+    cursor: pointer;
+    width: max-content;
+    word-break: break-word;
+    padding: 0.25rem 0 0.25rem 0.5rem;
+    font-size: var(--cater-size);
+    font-weight: 300;
+    line-height: 1.35;
+    text-decoration: underline;
+    border-bottom: 1px solid inherit;
+  }
+
+  li.footer_number {
+    cursor: default;
+    text-decoration: none;
+  }
 }
 
-@media screen and (min-width: 1160px) {
+@media screen and (min-width: 420px) {
+  /* footer */
+  h4.footer__item-title {
+    font-size: var(--regular-size);
+    line-height: 1.6;
+  }
+
+  .footer__item-link {
+    padding: 0.25rem 0;
+    font-size: var(--cater-size);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  /* footer */
+  h4.footer__item-title {
+    font-size: var(--regular-size);
+  }
+
+  .footer__item-link {
+    padding: 0.25rem 0 0.25rem 0.5rem;
+    font-size: var(--cater-size);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  /* footer */
+  h4.footer__item-title {
+    font-size: var(--subtitle-size);
+    line-height: 1.5;
+  }
+
+  .footer__item-context {
+    align-items: center;
+  }
 }
 </style>

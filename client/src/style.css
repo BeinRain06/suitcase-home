@@ -13,7 +13,7 @@
   /* color-scheme (11 colors)*/
 
   --background-primary: hsl(300, 20%, 99%);
-  --background-secondary: hsl(41, 46%, 86%);
+  --background-secondary: hsl(41, 46%, 92%);
 
   --highlight-text: hsl(32, 88%, 37%);
   --highlight-background: hsl(345, 84%, 89%);
@@ -36,32 +36,34 @@
     /* font-sizes variables */
     --mini-size: calc(0.6rem + 0.12vw);
     --cater-size: calc(0.65rem + 0.1vw);
-    --mid-size: calc(0.75rem + 0.12vw);
-    --regular-size: calc(1.15rem + 0.1vw); /* modified once */
+    --mid-size: calc(0.78rem + 0.12vw);
+    --regular-size: calc(0.9rem + 0.1vw); /* modified once */
 
-    --subtitle-size: calc(1.45rem + 0.1vw): /* modified once */
-      --title-size: calc(2.25rem + 0.15vw);
+    --subtitle-size: calc(1.45rem + 0.1vw); /* modified once */
+    /* --title-size: calc(2.25rem + 0.15vw); */
+    --title-size: calc(1.75rem + 0.1vw);
     --hero-title-size: calc(3rem + 0.12vw);
 
     --size-scale-factor: 0.5rem; /* 1.5rem / 3 = 0.5rem */
   }
 }
 
-@media screen and (min-width: 620px) {
+@media screen and (min-width: 768px) {
   :root {
     /* font-sizes variables */
     --mini-size: calc(0.6rem + 0.12vw);
-    --cater-size: calc(0.78rem + 0.1vw);
-    --mid-size: calc(1rem + 0.18vw);
-    --regular-size: calc(1.35rem + 0.1vw);
+    --cater-size: calc(0.76rem + 0.1vw);
+    --mid-size: calc(0.9rem + 0.12vw);
+    /* --regular-size: calc(1.15rem + 0.1vw); */
+    --regular-size: calc(1.12rem + 0.05vw);
 
-    --subtitle-size: calc(1.75rem + 0.1vw);
-    --title-size: calc(2.25rem + 0.15vw);
-    --hero-title-size: calc(3rem + 0.12vw);
+    --subtitle-size: calc(1.72rem + 0.05vw);
+    --title-size: calc(1.75rem + 0.15vw);
+    --hero-title-size: calc(1.82rem + 0.12vw);
   }
 }
 
-@media screen and (min-width: 1160px) {
+@media screen and (min-width: 1040px) {
   :root {
     /* font-sizes variables */
     --mini-size: calc(0.64rem + 0.12vw);

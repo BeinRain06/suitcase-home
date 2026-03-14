@@ -610,7 +610,7 @@ onMounted(async () => {
 </script>
 <template>
   <section id="project__call" class="project__call w-full">
-    <div class="project__call-container pb-6">
+    <div class="project__call-container pb-10">
       <div
         class="project__btn-display w-full flex flex-row justify-between pt-4 px-4"
       >
@@ -650,19 +650,33 @@ onMounted(async () => {
         </div>
       </div>
       <!-- project show layout -->
-      <div class="project__layout w-full px-[3%] flex flex-col gap-4">
-        <div class="project__title mb-1">
+      <div class="project__layout">
+        <div
+          class="project__title mt-6 mb-4 max-[420px]:mb-0 md:mb-1 md:mt-0 w-full flex flex-row justify-between max-[420px]:justify-center"
+        >
           <h2 class="opacity-68">{{ home.name }}</h2>
+          <div
+            class="project__remind-area flex flex-row items-center gap-1 max-[420px]:hidden md:hidden"
+          >
+            <div class="icon__land w-4 h-full flex flex-row">
+              <HouseCues icon-sketch="land" />
+            </div>
+            <h5 class="opacity-70 ft-bold">{{ home.land_area }}</h5>
+          </div>
         </div>
         <div
-          class="project__spec-layout w-full flex flex-row justify-between gap-12"
+          class="project__spec-layout w-full flex flex-col md:flex-row justify-between gap-12"
         >
           <!-- first area -description -->
-          <div class="project__description w-1/2">
-            <div class="project__specification">
+          <div
+            class="project__description w-full md:w-1/2 flex max-[420px]:flex-col flex-row md:flex-col"
+          >
+            <div
+              class="project__specification max-[420px]:w-full w-1/2 md:w-auto"
+            >
               <div class="project__land-area py-1">
                 <div
-                  class="project__space w-40 h-max flex flex-row items-center gap-2"
+                  class="project__space w-40 h-max flex flex-row items-center gap-2 max-[420px]:justify-center max-[420px]:mx-auto"
                 >
                   <div class="icon__land w-7 h-full">
                     <HouseCues icon-sketch="land" />
@@ -670,7 +684,7 @@ onMounted(async () => {
                   <h4 class="opacity-65">{{ home.land_area }}</h4>
                 </div>
               </div>
-              <div class="project__rooms-in py-6">
+              <div class="project__rooms-in py-2 md:py-6">
                 <div class="project__rooms-standard">
                   <div
                     class="room__item w-max h-10 flex flex-row items-center gap-2"
@@ -749,7 +763,7 @@ onMounted(async () => {
                   </div>
                 </div>
                 <div
-                  class="project__key-element w-max h-10 flex flex-row items-center"
+                  class="project__key-element max-[420px]:mt-2 max-md:mt-6 w-max h-10 flex flex-row items-center"
                 >
                   <div class="icon__room w-6 h-6">
                     <HouseCues icon-sketch="keyPlace" />
@@ -766,21 +780,23 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
-            <div class="project__hook-presentation h-max pb-6 mt-4">
+            <div
+              class="project__hook-presentation max-[420px]:w-full w-1/2 h-max pb-6 mt-4 md:w-auto max-[420px]:pb-2 max-md:mt-2"
+            >
               <p
                 v-if="!indexLang"
-                class="project__hook-text variant__weight-one py-6 opacity-90"
+                class="project__hook-text max-[420px]:px-[10%] max-md:px-[1%] w-full variant__weight-one py-6"
               >
                 {{ home.benefit.fr }}
               </p>
               <p
                 v-else
-                class="project__hook-text variant__weight-one py-6 opacity-90"
+                class="project__hook-text max-md:px-[1%] w-full variant__weight-one py-6"
               >
                 {{ home.benefit.en }}
               </p>
             </div>
-            <div class="project__hook-cta relative w-max h-max">
+            <div class="project__hook-cta relative w-max h-max max-md:hidden">
               <div class="cta__button--depth"></div>
               <a
                 v-if="!indexLang"
@@ -799,7 +815,9 @@ onMounted(async () => {
             </div>
           </div>
           <!-- second area -quotation -->
-          <div class="project__minibox-quotation w-1/2">
+          <div
+            class="project__minibox-quotation max-[420px]:hidden w-full md:w-1/2"
+          >
             <div
               class="project__minibox-container relative w-full h-max pb-2 pt-4 px-[3%]"
             >
@@ -1057,296 +1075,395 @@ onMounted(async () => {
               </div>
             </div>
           </div>
+          <!-- media queries download plan cta widht <= 768px -->
+          <div
+            class="project__hook-cta relative w-max h-max mx-auto mt-1 mb-6 md:hidden"
+          >
+            <div class="cta__button--depth"></div>
+            <a
+              v-if="!indexLang"
+              href="
+        #"
+              class="cta__button-primary"
+              >TELECHARGER PLAN</a
+            >
+            <a
+              v-else
+              href="
+        #"
+              class="cta__button-primary"
+              >DOWNLOAD PLAN</a
+            >
+          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
 <style scoped>
-/* utilities */
-.variant__weight-one {
-  font-weight: 300;
-  line-height: 1.8;
-}
+@media screen and (min-width: 140px) {
+  /* utilities */
+  .variant__weight-one {
+    font-weight: 300;
+    line-height: 1.8;
+  }
 
-.size__scale-92 {
-  transform: scale(0.92);
-}
-
-.size__scale-88 {
-  transform: scale(0.88);
-}
-
-.cta__domain p {
-  font-size: var(--cater-size);
-}
-
-.cta__button--depth {
-  position: absolute;
-  /* top: -36%; */
-  top: 12%;
-  left: -1%;
-  width: 100%;
-  height: 134%;
-  background-color: var(--link--external-btn);
-  opacity: 0.65;
-  border-radius: 1.5rem;
-  z-index: -1;
-  transform: skewY(3deg);
-}
-
-/* slide-projects box  visibility */
-.cta__slide-projects {
-  opacity: 0;
-  visibility: hidden;
-  transition: all 1s ease;
-}
-
-.cta__slide-projects.active__slide-box {
-  opacity: 1;
-  visibility: visible;
-}
-
-.arrow__slide-anim {
-  animation: arrow-slide-anim 350ms ease backwards;
-}
-
-/* project specification */
-.project__rooms-standard {
-  width: 80%;
-  height: 6.5rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 2.5rem 2.5rem 1.5rem;
-  column-gap: 2rem;
-}
-
-/* project quotation */
-.project__minibox-container {
-  border: 1px solid var(--accent-color-2);
-  border-radius: 0.5rem;
-}
-
-.cta__floor-quotation {
-  opacity: 0.85;
-}
-
-.cta__floor-quotation.active__floor {
-  /* active floor --remove --smaller__span-- class for the span child */
-  opacity: 0.9;
-}
-
-.project__delivery {
-  color: var(--background-primary);
-  background-color: var(--accent-color-3);
-  box-shadow: 0px 1px 4px var(--text-paragraph);
-  border-radius: 0.25rem;
-  opacity: 1;
-}
-
-/* project cards anim display (resume 1, resume 2) */
-
-.project__items-container {
-  position: relative;
-  width: 100%;
-  min-height: 30.625rem;
-  padding-top: 0.25rem;
-}
-
-#half__quotation-one.project__items-quotation.activeproject__resume,
-#half__quotation-two.project__items-quotation.activeproject__resume {
-  position: relative;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  visibility: visible;
-  opacity: 1;
-  z-index: 3;
-  transition: all 860ms ease-in-out 300ms;
-}
-
-#half__quotation-one.project__items-quotation {
-  position: absolute;
-  left: -110%;
-  width: 100%;
-  height: 100%;
-  visibility: hidden;
-  opacity: 0.12;
-  z-index: 1;
-  transition: all 650ms ease-in-out;
-}
-
-#half__quotation-two.project__items-quotation {
-  position: absolute;
-  left: 110%;
-  width: 100%;
-  height: 100%;
-  visibility: hidden;
-  opacity: 0.12;
-  z-index: 1;
-  transition: all 650ms ease-in-out;
-}
-
-/* responsible hide/show the entire box if the other box icon arrow-up-down side is clicked */
-.project__item-container .project__item-animation {
-  position: absolute;
-  width: 100%;
-  height: 0;
-  display: none;
-  visibility: hidden;
-  transition:
-    height 1.5s ease-in-out 450ms,
-    position 350ms ease;
-}
-
-.project__item-container.activeproject__display .project__item-animation {
-  width: 100%;
-  height: max-content;
-  visibility: visible;
-  position: relative;
-  display: grid;
-  transition:
-    position 350ms ease,
-    height 1.5s ease-in-out 450ms;
-}
-
-/* cta choice quotation display */
-.cta__quotation-resume {
-  color: inherit;
-  font-size: var(--regular-size);
-  border: 1px solid transparent;
-  border-radius: 0;
-  box-shadow: 0px 0px 0px 0px transparent;
-  transition: all 300ms ease-in-out;
-}
-
-.cta__quotation-resume.active_resume {
-  color: var(--title-color);
-  font-size: var(--regular-size);
-  border-bottom: 1px solid var(--title-color);
-  border-radius: 1.5rem;
-  box-shadow: 0px 2px 10px 1px var(--highlight-text);
-}
-
-/* cta play joytick --style-- */
-.cta__grid-display {
-  width: 10rem;
-  height: 6rem;
-  display: grid;
-  grid-template-columns: repeat(4, 2rem);
-  grid-template-rows: 1.6rem 1.6rem 1.2rem;
-  column-gap: 0.5rem;
-  opacity: 0.8;
-}
-
-.cta__play-number,
-.cta__play-viewall {
-  display: grid;
-  place-items: center;
-}
-
-#cta__play-numberone {
-  grid-column: 1 / span 1;
-  grid-row: 2 / span 1;
-}
-
-#cta__play-numbertwo {
-  grid-column: 2 / span 1;
-  grid-row: 1 / span 1;
-}
-
-#cta__play-numberthree {
-  grid-column: 3 / span 1;
-  grid-row: 1 / span 1;
-}
-
-#cta__play-numberfour {
-  grid-column: 4 / span 1;
-  grid-row: 2 / span 1;
-}
-
-#cta__play-linkall {
-  grid-column: 2 / span 2;
-  grid-row: 2 / span 1;
-}
-
-/* cta play joystick --anim-- */
-.cta__domain {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: inherit;
-  background-color: transparent;
-  border: 1px solid var(--accent-color-2);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  transition: all 1s ease 1.4s;
-  cursor: pointer;
-}
-
-.cta__domain.activeplay__joystick {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--background-primary);
-  background-color: var(--link--external-btn);
-  border: 1px solid transparent;
-  border-radius: 44%;
-  display: grid;
-  place-items: center;
-  transition: all 1s ease 1.6s;
-  cursor: pointer;
-}
-
-/* cta slider 1,2.3 buttons */
-
-.cta__numbers-play {
-  position: absolute;
-  left: 24px;
-  width: 150px;
-  height: 42px;
-  padding-inline: 11px; /*padding-inline*/
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 36px; /*gapBetweenNumber*/
-  overflow: hidden;
-  transition: all 350ms linear;
-}
-
-.cta__number-play {
-  width: 20px; /*widthBoxNumber*/
-  height: 100%;
-  color: inherit;
-  background-color: transparent;
-  opacity: 1;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--accent-color-2);
-  border-radius: 28%;
-  transition: all 1s ease-in-out;
-}
-
-.cta__number-play.active__number-play {
-  width: 20px; /*widthBoxNumber*/
-  height: 100%;
-  color: var(--background-primary);
-  background-color: var(--link--external-btn);
-  opacity: 0.64;
-  display: grid;
-  place-items: center;
-  border: 2px solid transparent;
-  border-radius: 28%;
-}
-
-@keyframes arrow-slide-anim {
-  0% {
-    opacity: 0.98;
+  .size__scale-92 {
     transform: scale(0.92);
   }
-  100% {
-    opacity: 1;
-    transform: scale(1);
+
+  .size__scale-88 {
+    transform: scale(0.88);
   }
+
+  .cta__domain p {
+    font-size: var(--cater-size);
+  }
+
+  .cta__button--depth {
+    position: absolute;
+    /* top: -36%; */
+    top: 12%;
+    left: -1%;
+    width: 100%;
+    height: 134%;
+    background-color: var(--link--external-btn);
+    opacity: 0.65;
+    border-radius: 1.5rem;
+    z-index: -1;
+    transform: skewY(3deg);
+  }
+
+  /* slide-projects box  visibility */
+  .cta__slide-projects {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 1s ease;
+  }
+
+  .cta__slide-projects.active__slide-box {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .arrow__slide-anim {
+    animation: arrow-slide-anim 350ms ease backwards;
+  }
+
+  /* project call */
+  .project__call {
+    width: 100%;
+    min-height: 34rem;
+    height: 100%;
+  }
+
+  /* project specification */
+  .project__rooms-standard {
+    width: 100%;
+    height: 6.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 2.5rem 2.5rem 1.5rem;
+    column-gap: 2rem;
+  }
+
+  p.project__hook-text {
+    font-size: var(--regular-size);
+    text-align: center;
+    background-color: var(--accent-color-1);
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+    opacity: 0.85;
+    transform: scale(0.9);
+    /* font-family: "Source Sans 3", sans-serif; */
+  }
+
+  /* project quotation */
+  .project__minibox-container {
+    border: 1px solid var(--accent-color-2);
+    border-radius: 0.5rem;
+  }
+
+  .cta__floor-quotation {
+    opacity: 0.85;
+  }
+
+  .cta__floor-quotation.active__floor {
+    /* active floor --remove --smaller__span-- class for the span child */
+    opacity: 0.9;
+  }
+  /* project layout container */
+  .project__layout {
+    width: 100%;
+    height: auto;
+    padding: 0 3%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 0.5rem;
+    overflow: hidden;
+  }
+
+  .project__delivery {
+    color: var(--background-primary);
+    background-color: var(--accent-color-3);
+    box-shadow: 0px 1px 4px var(--text-paragraph);
+    border-radius: 0.25rem;
+    opacity: 1;
+  }
+
+  /* project cards anim display (resume 1, resume 2) */
+
+  .project__items-container {
+    position: relative;
+    width: 100%;
+    min-height: 30.625rem;
+    padding-top: 0.25rem;
+  }
+
+  #half__quotation-one.project__items-quotation.activeproject__resume,
+  #half__quotation-two.project__items-quotation.activeproject__resume {
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: visible;
+    opacity: 1;
+    z-index: 3;
+    transition: all 860ms ease-in-out 300ms;
+  }
+
+  #half__quotation-one.project__items-quotation {
+    position: absolute;
+    left: -110%;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    opacity: 0.12;
+    z-index: 1;
+    transition: all 650ms ease-in-out;
+  }
+
+  #half__quotation-two.project__items-quotation {
+    position: absolute;
+    left: 110%;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    opacity: 0.12;
+    z-index: 1;
+    transition: all 650ms ease-in-out;
+  }
+
+  /* responsible hide/show the entire box if the other box icon arrow-up-down side is clicked */
+  .project__item-container .project__item-animation {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    display: none;
+    visibility: hidden;
+    transition:
+      height 1.5s ease-in-out 450ms,
+      position 350ms ease;
+  }
+
+  .project__item-container.activeproject__display .project__item-animation {
+    width: 100%;
+    height: max-content;
+    visibility: visible;
+    position: relative;
+    display: grid;
+    transition:
+      position 350ms ease,
+      height 1.5s ease-in-out 450ms;
+  }
+
+  /* cta choice quotation display */
+  .cta__quotation-resume {
+    color: inherit;
+    font-size: var(--regular-size);
+    border: 1px solid transparent;
+    border-radius: 0;
+    box-shadow: 0px 0px 0px 0px transparent;
+    transition: all 300ms ease-in-out;
+  }
+
+  .cta__quotation-resume.active_resume {
+    color: var(--title-color);
+    font-size: var(--regular-size);
+    border-bottom: 1px solid var(--title-color);
+    border-radius: 1.5rem;
+    box-shadow: 0px 2px 10px 1px var(--highlight-text);
+  }
+
+  /* cta play joytick --style-- */
+  .cta__grid-display {
+    width: 10rem;
+    height: 6rem;
+    display: grid;
+    grid-template-columns: repeat(4, 2rem);
+    grid-template-rows: 1.6rem 1.6rem 1.2rem;
+    column-gap: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .cta__play-number,
+  .cta__play-viewall {
+    display: grid;
+    place-items: center;
+  }
+
+  #cta__play-numberone {
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+  }
+
+  #cta__play-numbertwo {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+  }
+
+  #cta__play-numberthree {
+    grid-column: 3 / span 1;
+    grid-row: 1 / span 1;
+  }
+
+  #cta__play-numberfour {
+    grid-column: 4 / span 1;
+    grid-row: 2 / span 1;
+  }
+
+  #cta__play-linkall {
+    grid-column: 2 / span 2;
+    grid-row: 2 / span 1;
+  }
+
+  /* cta play joystick --anim-- */
+  .cta__domain {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: inherit;
+    background-color: transparent;
+    border: 1px solid var(--accent-color-2);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    transition: all 1s ease 1.4s;
+    cursor: pointer;
+  }
+
+  .cta__domain.activeplay__joystick {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--background-primary);
+    background-color: var(--link--external-btn);
+    border: 1px solid transparent;
+    border-radius: 44%;
+    display: grid;
+    place-items: center;
+    transition: all 1s ease 1.6s;
+    cursor: pointer;
+  }
+
+  /* cta slider 1,2.3 buttons */
+
+  .cta__numbers-play {
+    position: absolute;
+    left: 24px;
+    width: 150px;
+    height: 42px;
+    padding-inline: 11px; /*padding-inline*/
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 36px; /*gapBetweenNumber*/
+    overflow: hidden;
+    transition: all 350ms linear;
+  }
+
+  .cta__number-play {
+    width: 20px; /*widthBoxNumber*/
+    height: 100%;
+    color: inherit;
+    background-color: transparent;
+    opacity: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--accent-color-2);
+    border-radius: 28%;
+    transition: all 1s ease-in-out;
+  }
+
+  .cta__number-play.active__number-play {
+    width: 20px; /*widthBoxNumber*/
+    height: 100%;
+    color: var(--background-primary);
+    background-color: var(--link--external-btn);
+    opacity: 0.64;
+    display: grid;
+    place-items: center;
+    border: 2px solid transparent;
+    border-radius: 28%;
+  }
+
+  @keyframes arrow-slide-anim {
+    0% {
+      opacity: 0.98;
+      transform: scale(0.92);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+@media screen and (min-width: 420px) {
+  /* project specification */
+  .project__rooms-standard {
+    width: 96%;
+    height: 6.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 2.5rem 2.5rem 1.5rem;
+    column-gap: 0.92em;
+  }
+
+  p.project__hook-text {
+    font-size: var(--mid-size);
+    text-align: center;
+    background-color: var(--accent-color-1);
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+    opacity: 0.97;
+    transform: scale(0.95);
+    font-family: "Source Sans 3", sans-serif;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  /* project specification */
+  .project__rooms-standard {
+    width: 80%;
+    height: 6.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 2.5rem 2.5rem 1.5rem;
+    column-gap: 2rem;
+  }
+
+  p.project__hook-text {
+    font-size: var(--regular-size);
+    text-align: left;
+    background-color: transparent;
+    border-radius: 0;
+    opacity: 0.75;
+    transform: scale(1);
+    font-family: "Noto Sans", sans-serif;
+  }
+}
+
+@media screen and (min-width: 1040px) {
 }
 </style>
