@@ -165,6 +165,7 @@ const handleFloorChange = async (e) => {
 
     // update data is made in watch --activeFloorWatch--
   }
+
 };
 
 const handleSwitchPage = () => {

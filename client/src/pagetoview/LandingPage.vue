@@ -68,10 +68,10 @@ const handleRoute = async (route, projectId, queryValue) => {
     <section id="hero" class="hero">
       <div class="hero__container">
         <div
-          class="hero__description h-max flex flex-col max-[420px]:items-center items-start gap-7"
+          class="hero__description max-[420px]:h-[88%] h-max flex flex-col max-[420px]:items-center max-[420px]:justify-center justify-start items-start gap-7"
         >
           <div
-            class="hero_text w-[84%] md:w-[72%] xl:w-[58%] h- max-[420px]:pt-[12%] pt-[8%] md:pt-[6%] xl:pt-20 flex flex-col gap-4"
+            class="hero_text w-[84%] md:w-[72%] xl:w-[58%] h-auto max-[420px]:pt-[12%] pt-[8%] md:pt-[6%] xl:pt-20 flex flex-col gap-4"
           >
             <h1
               v-if="!indexLang"
@@ -94,7 +94,7 @@ const handleRoute = async (route, projectId, queryValue) => {
               Build Your Entire House On Reasonable Budget.
             </h1>
             <p
-              class="hero__subvalue-proposal font-light text-[var(--background-primary)] opacity-80"
+              class="hero__subvalue-proposal font-light text-[var(--background-primary)] max-[420px]:opacity-95 opacity-80"
             >
               {{ hero[indexLang].subValueProposal }}
             </p>
@@ -148,7 +148,7 @@ const handleRoute = async (route, projectId, queryValue) => {
           <div class="mission__text">
             <h3 class="mission__title pt-5 max-[768px]:hidden">MISSION</h3>
             <p
-              class="mission__value font-extralight opacity-80 pt-4 lg:pt-[7.5%]"
+              class="mission__value font-extralight opacity-85 pt-4 lg:pt-[7.5%]"
             >
               {{ mission[indexLang].vision }}
             </p>
@@ -496,7 +496,7 @@ const handleRoute = async (route, projectId, queryValue) => {
               COLLABORATION
             </h3>
             <p
-              class="reinforcement__value font-extralight opacity-80 pt-4 lg:pt-[7.5%]"
+              class="reinforcement__value font-extralight opacity-85 pt-4 lg:pt-[7.5%]"
             >
               {{ reinforcement[indexLang].vision }}
             </p>
@@ -1068,7 +1068,7 @@ h5 {
   }
 
   .service__card .service__text p {
-    opacity: 0.68;
+    opacity: 0.8;
     font-size: var(--mid-size);
     font-weight: 200;
   }
