@@ -72,6 +72,8 @@ const isActiveBtnJoyStick = reactive({
   four: false,
 });
 
+const errDownloadMsg = ref("");
+
 const numbersBtnRef = ref({});
 
 const typeQuotation = ref(["foundation", "plumbing", "electricity", "roofing"]);
@@ -491,6 +493,60 @@ const handleArrowSlide = (e, typeArrow) => {
   });
 };
 
+const triggerDownload = async (filename) => {
+  const assetUrl = `/pdfs/${filename}.pdf`;
+
+  const response = await fetch(assetUrl);
+
+  console.log("response --triggerDownload Fn", response);
+
+  if (!response.ok) {
+    throw new Error(
+      `Could not find "${filename}.pdf" (HTTP ${response.status ?? "unreachable"})`,
+    );
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+
+  const anchor = document.createElement("a");
+  anchor.href = objectUrl;
+  anchor.download = `${filename}.pdf`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+};
+
+const handleDownloadPdf = () => {
+  const projectId = route.params.projectId;
+
+  const filename = `plan-${projectId}`;
+
+  try {
+    if (projectId === "dexter_flip") {
+      const MULTIPLE_PDF_FILENAMES = {
+        [projectId]: [`plan-${projectId}-1`, `plan-${projectId}-2`],
+      };
+
+      MULTIPLE_PDF_FILENAMES[projectId].map((filename) => {
+        triggerDownload(filename);
+      });
+    } else {
+      triggerDownload(filename);
+    }
+  } catch (err) {
+    console.error("[DownloadPdf]", err);
+
+    setTimeout(() => {
+      errDownloadMsg.value = `Downlaoaded Failed : ${err.message}`;
+    }, 5000);
+
+    errDownloadMsg.value = "";
+  }
+};
+
 watch(
   [isBtnJoystickTrigerred, isBoxMaterialExpanded],
   async (
@@ -823,7 +879,10 @@ onMounted(async () => {
                 {{ home.benefit.en }}
               </p>
             </div>
-            <div class="project__hook-cta relative w-max h-max max-md:hidden">
+            <div
+              class="project__hook-cta relative w-max h-max max-md:hidden"
+              @click="handleDownloadPdf"
+            >
               <div class="cta__button--depth"></div>
               <a
                 v-if="!indexLang"
@@ -840,6 +899,9 @@ onMounted(async () => {
                 >DOWNLOAD PLAN</a
               >
             </div>
+            <p v-if="errDownloadMsg" class="text-red-500">
+              {{ errDownloadMsg }}
+            </p>
           </div>
           <!-- second area -quotation -->
           <div

@@ -15,8 +15,64 @@ const props = defineProps({
 
 const initInfos = ref({ 0: {}, 1: {}, 2: {}, 3: {} });
 
+const errDownloadMsg = ref("");
+
 const handleSwitchPage = () => {
   emit("update-modalpage", { isModalPage: false });
+};
+
+const triggerDownload = async (filename) => {
+  const assetUrl = `/pdfs/${filename}.pdf`;
+
+  const response = await fetch(assetUrl);
+
+  console.log("response --triggerDownload Fn", response);
+
+  if (!response.ok) {
+    throw new Error(
+      `Could not find "${filename}.pdf" (HTTP ${response.status ?? "unreachable"})`,
+    );
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+
+  const anchor = document.createElement("a");
+  anchor.href = objectUrl;
+  anchor.download = `${filename}.pdf`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+};
+
+const handleDownloadPdf = () => {
+  const projectId = route.params.projectId;
+
+  const filename = `plan-${projectId}`;
+
+  try {
+    if (projectId === "dexter_flip") {
+      const MULTIPLE_PDF_FILENAMES = {
+        [projectId]: [`plan-${projectId}-1`, `plan-${projectId}-2`],
+      };
+
+      MULTIPLE_PDF_FILENAMES[projectId].map((filename) => {
+        triggerDownload(filename);
+      });
+    } else {
+      triggerDownload(filename);
+    }
+  } catch (err) {
+    console.error("[DownloadPdf]", err);
+
+    setTimeout(() => {
+      errDownloadMsg.value = `Downlaoaded Failed : ${err.message}`;
+    }, 5000);
+
+    errDownloadMsg.value = "";
+  }
 };
 
 onMounted(() => {
@@ -34,9 +90,8 @@ onMounted(() => {
     >
       <div
         class="cta__modal-close w-full h-24 px-4 flex flex-row items-center justify-end cursor-pointer"
-        @click="handleSwitchPage"
       >
-        <div class="cta__modalbtn-close">x</div>
+        <div class="cta__modalbtn-close" @click="handleSwitchPage">x</div>
       </div>
       <!-- quotation layout -->
       <div class="project__quotation-templates">
@@ -78,6 +133,7 @@ onMounted(() => {
       >
         <div
           class="cta__modalbtn-download w-max px-4 py-2 mb-4 text-[var(--link--external-btn)] border-b-1 border-solid border-[var(--link--external-btn)] cursor-pointer rounded-sm"
+          @click="handleDownloadPdf"
         >
           <span>Download Plan</span>
         </div>
