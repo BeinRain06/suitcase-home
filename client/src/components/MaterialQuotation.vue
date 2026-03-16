@@ -131,7 +131,7 @@ const surface = computed(() => {
         <div
           class="material__generic-title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
         >
-          <p class="smaller_span">material</p>
+          <p class="smaller_span text-[var(--accent-color-3)]">material</p>
         </div>
         <!-- materials -->
         <div
@@ -202,14 +202,14 @@ const surface = computed(() => {
                 v-if="!indexLang"
                 class="stick__min-size w-max max-w-full flex-shrink-0"
               >
-                {{ materialTemplate.part1.needThree?.fr || "" }}
+                {{ materialTemplate.part1?.needThree?.fr || "" }}
               </p>
               <p v-else class="stick__min-size w-full flex-shrink-0">
-                {{ materialTemplate.part1.needThree?.en || "" }}
+                {{ materialTemplate.part1?.needThree?.en || "" }}
               </p>
               <!-- when needThree Object -->
               <p v-if="!indexLang" class="stick__min-size w-1/2 text-left">
-                {{ materialTemplate.part1.needThree?.qty?.fr || "" }}
+                {{ materialTemplate.part1?.needThree?.qty?.fr || "" }}
               </p>
               <p v-else class="stick__min-size w-1/2 text-left">
                 {{ materialTemplate.part1.needThree?.qty?.en || "" }}
@@ -252,7 +252,7 @@ const surface = computed(() => {
         <div
           class="material__generic-title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
         >
-          <p class="smaller_span">material</p>
+          <p class="smaller_span text-[var(--accent-color-3)]">material</p>
         </div>
         <!-- materials -->
         <div
@@ -301,7 +301,7 @@ const surface = computed(() => {
     <!-- labor investment -->
     <div
       v-if="activeLayerFoundation === 0"
-      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
+      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)] text-[var(--link--external-btn)]"
     >
       <div class="labor__label w-8/12 h-full flex flex-row items-center">
         <p>Labor</p>
@@ -314,7 +314,7 @@ const surface = computed(() => {
     </div>
     <div
       v-else-if="activeLayerFoundation === 1"
-      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
+      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)] text-[var(--link--external-btn)]"
     >
       <div class="labor__label w-8/12 h-full flex flex-row items-center">
         <p>Labor</p>
@@ -333,8 +333,8 @@ const surface = computed(() => {
       <div class="total__label h-full">
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
-      <div class="total__investment h-full">
-        <p class="font-bold opacity-65">{{ cost.part1.total }}</p>
+      <div class="total__investment h-full text-[var(--title-color)]">
+        <p class="font-bold opacity-60">{{ cost.part1.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>
@@ -345,8 +345,8 @@ const surface = computed(() => {
       <div class="total__label h-full">
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
-      <div class="total__investment h-full">
-        <p class="font-bold opacity-65">{{ cost.part2.total }}</p>
+      <div class="total__investment h-full text-[var(--title-color)]">
+        <p class="font-bold opacity-60">{{ cost.part2.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>
@@ -369,7 +369,7 @@ const surface = computed(() => {
         <div
           class="material__generic-title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
         >
-          <p class="smaller_span">material</p>
+          <p class="smaller_span text-[var(--accent-color-3)]">material</p>
         </div>
         <!-- materials -->
         <div
@@ -397,29 +397,7 @@ const surface = computed(() => {
               </p>
             </div>
           </div>
-          <div class="need__pinpointed-element w-full py-2">
-            <!-- <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part2.needOne.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part2.needOne.en }}
-              </p>
-            </div> -->
-
-            <!-- <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part2.needTwo.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part2.needTwo.en }}
-              </p>
-            </div> -->
-          </div>
+          <div class="need__pinpointed-element w-full py-2"></div>
         </div>
       </div>
 
@@ -448,7 +426,7 @@ const surface = computed(() => {
         <div
           class="material__generic-title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
         >
-          <p class="smaller_span">material</p>
+          <p class="smaller_span text-[var(--accent-color-3)]">material</p>
         </div>
         <!-- materials -->
         <div
@@ -475,27 +453,6 @@ const surface = computed(() => {
                 {{ materialTemplate.part2.needTwo.en }}
               </p>
             </div>
-            <!--  <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part2.needOne.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part2.needOne.en }}
-              </p>
-            </div> -->
-
-            <!-- <div
-              class="structure__to-install w-full flex flex-row justify-between"
-            >
-              <p v-if="!indexLang" class="stick__cater-size">
-                {{ materialTemplate.part2.needTwo.fr }}
-              </p>
-              <p v-else class="stick__cater-size">
-                {{ materialTemplate.part2.needTwo.en }}
-              </p>
-            </div> -->
           </div>
           <div class="need__pinpointed-element w-full py-2">
             <div
@@ -530,7 +487,9 @@ const surface = computed(() => {
       v-if="activeLayerRoof === 0"
       class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
     >
-      <div class="labor__label w-8/12 h-full flex flex-row items-center">
+      <div
+        class="labor__label w-8/12 h-full flex flex-row items-center text-[var(--link--external-btn)]"
+      >
         <p>Labor</p>
       </div>
       <div
@@ -543,7 +502,9 @@ const surface = computed(() => {
       v-else-if="activeLayerRoof === 1"
       class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
     >
-      <div class="labor__label w-8/12 h-full flex flex-row items-center">
+      <div
+        class="labor__label w-8/12 h-full flex flex-row items-center text-[var(--link--external-btn)]"
+      >
         <p>Labor</p>
       </div>
       <div
@@ -560,8 +521,8 @@ const surface = computed(() => {
       <div class="total__label h-full">
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
-      <div class="total__investment h-full">
-        <p class="font-bold opacity-65">{{ cost.part1.total }}</p>
+      <div class="total__investment h-full text-[var(--title-color)]">
+        <p class="font-bold opacity-60">{{ cost.part1.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>
@@ -572,8 +533,8 @@ const surface = computed(() => {
       <div class="total__label h-full">
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
-      <div class="total__investment h-full">
-        <p class="font-bold opacity-65">{{ cost.part2.total }}</p>
+      <div class="total__investment h-full text-[var(--title-color)]">
+        <p class="font-bold opacity-60">{{ cost.part2.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>
@@ -589,7 +550,7 @@ const surface = computed(() => {
         <div
           class="material__generic-title w-full h-6 px-2 text-left border-l-1 border-solid border-[var(--accent-color-2)]"
         >
-          <p class="smaller_span">material</p>
+          <p class="smaller_span text-[var(--accent-color-3)]">material</p>
         </div>
         <!-- materials -->
         <div
@@ -637,7 +598,7 @@ const surface = computed(() => {
     </div>
     <!-- labor investment -->
     <div
-      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)]"
+      class="labor__investment w-full h-10 px-2 flex flex-row justify-between items-center border-l-1 border-r-1 border-solid border-[var(--accent-color-2)] text-[var(--link--external-btn)]"
     >
       <div class="labor__label w-8/12 h-full flex flex-row items-center">
         <p>Labor</p>
@@ -655,8 +616,8 @@ const surface = computed(() => {
       <div class="total__label h-full">
         <p class="font-bold text-[var(--link--external-btn)]">TOTAL</p>
       </div>
-      <div class="total__investment h-full">
-        <p class="font-bold opacity-65">{{ cost.total }}</p>
+      <div class="total__investment h-full text-[var(--title-color)]">
+        <p class="font-bold opacity-60">{{ cost.total }}</p>
         <p class="pl-1 font-bold opacity-65">XAF</p>
       </div>
     </div>

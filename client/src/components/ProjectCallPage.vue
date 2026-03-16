@@ -158,17 +158,13 @@ const handleFloorChange = async (e) => {
     activeFloor.value.floor_0 = true;
     houseType.value.level = "0";
 
-    // update data to fetch
-    /*  dataToFetch("0"); */
+    // update data is made in watch --activeFloorWatch--
   } else {
     activeFloor.value.floor_0 = false;
     houseType.value.level = "1";
 
-    // update data to fetch
-    /* dataToFetch("1"); */
+    // update data is made in watch --activeFloorWatch--
   }
-
-  await nextTick();
 };
 
 const handleSwitchPage = () => {
@@ -440,11 +436,18 @@ const handleArrowSlide = (e, typeArrow) => {
 
     const tagNumber = carriedInfo.childrenArray[carriedInfo.indexNumber];
 
+    console.log(
+      "tagNumber.innerText --handleArrowSlide Fn--:",
+      tagNumber.innerText,
+    );
+
     if (tagNumber.innerText === "1") projectId = "danton_shield";
 
     if (tagNumber.innerText === "2") projectId = "merry_clap";
 
     if (tagNumber.innerText === "3") projectId = "dexter_flip";
+
+    console.log("projectId --handleArrowSlide Fn-- :", projectId);
 
     prevElt.style.left = `${leftVal}px`;
   } else if (typeArrow === "backward") {
@@ -475,10 +478,10 @@ const handleArrowSlide = (e, typeArrow) => {
 
   //remove the second layer floor appearance
   if (projectId !== "dexter_flip") {
-    activeFloor.value.floor_0 = true;
+    /* activeFloor.value.floor_0 = true; */
     houseType.value.one_floor = true;
   } else {
-    activeFloor.value.floor_0 = false;
+    /*     activeFloor.value.floor_0 = false; */
     houseType.value.one_floor = false;
   }
 
@@ -570,7 +573,7 @@ watch(
 );
 
 watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
-  // watch react naturally before component mount It is why we add **nextTick**
+  // watch reacts naturally before component mount It is why we add **nextTick**
   await nextTick();
 
   newActiveFloor = await newActiveFloor;
@@ -598,7 +601,7 @@ watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
       homeIn,
       roomEntireProject,
       houseCallType,
-    } = initInfoProject(projectId, "main-page", isFloor_0);
+    } = await initInfoProject(projectId, "main-page", isFloor_0);
 
     initInfos.value = initInformation;
     durationProject.value = durationOfProject;
@@ -624,7 +627,7 @@ onBeforeRouteUpdate(async (to, from) => {
       homeIn,
       roomEntireProject,
       houseCallType,
-    } = initInfoProject(projectId, "main-page", isActiveFloor);
+    } = await initInfoProject(projectId, "main-page", isActiveFloor);
 
     initInfos.value = initInformation;
     durationProject.value = durationOfProject;
@@ -682,7 +685,7 @@ onMounted(async () => {
     homeIn,
     roomEntireProject,
     houseCallType,
-  } = initInfoProject(projectId, "main-page", isActiveFloor);
+  } = await initInfoProject(projectId, "main-page", isActiveFloor);
 
   initInfos.value = initInformation;
   durationProject.value = durationOfProject;
@@ -940,7 +943,7 @@ onMounted(async () => {
                 <div
                   class="floors__metrics w-full flex flex-row justify-between"
                 >
-                  <h5>Floor</h5>
+                  <h5 class="opacity-75 text-[var(--title-color)]">Floor</h5>
 
                   <div class="cta__floors w-max flex flex-row gap-2">
                     <div
@@ -948,13 +951,14 @@ onMounted(async () => {
                       class="cta__floor-quotation w-4 cursor-pointer"
                       @click="(e) => handleFloorChange(e)"
                     >
-                      <span
+                      <p
                         :class="{
-                          '': activeFloorWatch,
+                          'font-semibold': activeFloorWatch,
                           smaller__span: !activeFloorWatch,
                         }"
-                        >0</span
                       >
+                        0
+                      </p>
                     </div>
                     <div
                       v-if="!houseType.one_floor"
@@ -962,13 +966,14 @@ onMounted(async () => {
                       class="cta__floor-quotation active__floor w-4 cursor-pointer"
                       @click="(e) => handleFloorChange(e)"
                     >
-                      <span
+                      <p
                         :class="{
-                          '': !activeFloorWatch,
+                          'font-semibold': !activeFloorWatch,
                           smaller__span: activeFloorWatch,
                         }"
-                        >1</span
                       >
+                        1
+                      </p>
                     </div>
                   </div>
                 </div>

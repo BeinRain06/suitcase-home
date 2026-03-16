@@ -124,14 +124,11 @@ const activeLayerRoof = computed(() => {
     <!-- v-else !*foundation* or *roofing*  -->
     <div class="record__delivery">
       <div class="w-full h-16 mt-6 px-2 flex flex-row justify-between">
-        <p>Delivery Times</p>
-        <p
-          v-if="!indexLang"
-          class="opacity-80 text-[var(--link--external-btn)]"
-        >
+        <p class="opacity-75">Delivery Times</p>
+        <p v-if="!indexLang" class="opacity-95 text-[var(--accent-color-3)]">
           {{ delayToExecute.fr }}
         </p>
-        <p v-else class="opacity-80 text-[var(--link--external-btn)]">
+        <p v-else class="opacity-95 text-[var(--accent-color-3)]">
           {{ delayToExecute.en }}
         </p>
       </div>

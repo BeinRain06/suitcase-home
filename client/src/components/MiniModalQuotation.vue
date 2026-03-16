@@ -347,7 +347,10 @@ onMounted(async () => {
       </div>
 
       <div class="record__block-delivery">
-        <DeliveryQuotationTime :data-delivery="dataDelivery" />
+        <DeliveryQuotationTime
+          :data-delivery="dataDelivery"
+          class="text-var[(--accent-color-3)]"
+        />
       </div>
 
       <!-- v-if *foundation* or *roofing* -->

@@ -181,7 +181,7 @@ export default {
 
       console.log("middleBarRef:", this.middleBarRef);
 
-      if (this.checkMenuRef.checked) {
+      if (this.checkMenuRef?.checked) {
         this.middleBarRef.classList.add("active_menu");
         this.modalMenuRef.classList.add("active_menu");
       } else {

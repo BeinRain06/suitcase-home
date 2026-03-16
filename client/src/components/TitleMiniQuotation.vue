@@ -44,7 +44,7 @@ onMounted(async () => {
     >
       <div
         v-if="activeLayerFoundation === 0"
-        class="label__quotation w-max pb-1 text-[var(--link--external-btn)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
+        class="label__quotation w-max pb-1 text-[var(--title-color)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
       >
         <p>A</p>
         <p>-</p>
@@ -68,7 +68,7 @@ onMounted(async () => {
     >
       <div
         v-if="activeLayerRoof === 0"
-        class="label__quotation w-max pb-1 text-[var(--link--external-btn)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
+        class="label__quotation w-max pb-1 text-[var(--title-color)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
       >
         <p>D</p>
         <p>-</p>
@@ -77,7 +77,7 @@ onMounted(async () => {
       </div>
       <div
         v-else
-        class="label__quotation w-max pb-1 text-[var(--link--external-btn)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
+        class="label__quotation w-max pb-1 text-[var(--highlight-text)] border-b-1 border-solid border-[var(--accent-color-2)] flex flex-row gap-2"
       >
         <p>D</p>
         <p>-</p>

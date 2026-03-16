@@ -102,28 +102,28 @@ onMounted(() => {
             <MiniModalQuotation
               :quotation-info="initInfos[0]"
               :user-language="props.userLanguage"
-              class="p-4 bg-[var(--background-secondary)]"
+              class="p-4 cover__quotation-a"
             />
           </div>
           <div id="modal__quotation-two" class="px-[5%]">
             <MiniModalQuotation
               :quotation-info="initInfos[1]"
               :user-language="props.userLanguage"
-              class="p-4 bg-[var(--accent-color-1)]"
+              class="p-4 cover__quotation-b"
             />
           </div>
           <div id="modal__quotation-three" class="px-[5%]">
             <MiniModalQuotation
               :quotation-info="initInfos[2]"
               :user-language="props.userLanguage"
-              class="p-4 bg-[var(--accent-color-1)]"
+              class="p-4 cover__quotation-b"
             />
           </div>
           <div id="modal__quotation-four" class="px-[5%]">
             <MiniModalQuotation
               :quotation-info="initInfos[3]"
               :user-language="props.userLanguage"
-              class="p-4 bg-[var(--background-secondary)]"
+              class="p-4 cover__quotation-a"
             />
           </div>
         </div>
@@ -158,6 +158,19 @@ onMounted(() => {
 
   .cta__modalbtn-download span {
     font-size: var(--mid-size);
+  }
+
+  .cover__quotation-a {
+    border-radius: 0.25rem;
+    border: 1px solid var(--accent-color-1);
+    box-shadow: 0px 2px 3px var(--title-color);
+    opacity: 0.9;
+  }
+
+  .cover__quotation-b {
+    border-radius: 0.25rem;
+    border: 1px solid var(--accent-color-1);
+    box-shadow: 0px 2px 3px var(--link--external-btn);
   }
 
   /* project quotation template (will be not visble in fact due to the flow web page med-queries of the ProjectCallPage --Component--) */
@@ -208,7 +221,34 @@ onMounted(() => {
     padding-inline: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(18rem, 1fr));
+    grid-template-areas:
+      "quotation-one quotation-three"
+      "quotation-four quotation-two";
     gap: 1rem;
+  }
+
+  #modal__quotation-one {
+    grid-area: quotation-one;
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+  }
+
+  #modal__quotation-two {
+    grid-area: quotation-two;
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+  }
+
+  #modal__quotation-three {
+    grid-area: quotation-three;
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+  }
+
+  #modal__quotation-four {
+    grid-area: quotation-one;
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
   }
 
   .template__bar-squaresplitter {
