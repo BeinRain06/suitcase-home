@@ -1,13 +1,5 @@
 <script setup>
-import {
-  ref,
-  reactive,
-  onMounted,
-  computed,
-  watch,
-  nextTick,
-  onBeforeUpdate,
-} from "vue";
+import { ref, reactive, onMounted, computed, watch, nextTick } from "vue";
 
 import { useProjectStore } from "../store-management/useProjectStore";
 
@@ -38,22 +30,8 @@ const emit = defineEmits(["updatebtn-background"]);
 
 const projectStore = useProjectStore();
 
-const isInFloor_0 = projectStore.isFloor_0;
-
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
-});
-
-const isBtnJoystickTrigerred = computed(() => {
-  return projectStore.$state.isBtnJoystickTrigerred;
-});
-
-const isBoxMaterialExpanded = computed(() => {
-  return projectStore.$state.isBoxMaterialExpanded;
-});
-
-const quotationTypeSelect = computed(() => {
-  return projectStore.$state.quotationTypeSelect;
 });
 
 const extraBoxInfos = ref(true);
@@ -235,7 +213,7 @@ const handlePhaseChange = async (direction_phase) => {
   await nextTick();
 };
 
-const dataToComponents = (dataSource, quotationType) => {
+/* const dataToComponents = (dataSource, quotationType) => {
   let catchCost = {};
   let catchVolume = {};
   let caseTitle1, caseTitle2;
@@ -250,15 +228,11 @@ const dataToComponents = (dataSource, quotationType) => {
 
   const activeFloorIn = projectStore.isFloor_0;
 
-  /* console.log(
-    "activeFloorIn --dataToComponents-- in --MiniQuotation--:",
-    activeFloorIn,
-  ); */
 
   if (activeFloorIn === "0") {
     switch (quotationType) {
       case "foundation":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         caseTitle1 =
           dataSource.part_1?.title || dataSource.floor_1?.part_1?.title;
         caseTitle2 =
@@ -266,7 +240,7 @@ const dataToComponents = (dataSource, quotationType) => {
 
         dataTitle.value.title.part1 = caseTitle1;
         dataTitle.value.title.part2 = caseTitle2;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         caseRes1 =
           dataSource.part_1?.total || dataSource.floor_1?.part_1?.total;
         caseRes2 =
@@ -274,7 +248,7 @@ const dataToComponents = (dataSource, quotationType) => {
 
         dataResumeQuotation.value.totalCost.part1 = caseRes1;
         dataResumeQuotation.value.totalCost.part2 = caseRes2;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         caseDel1 =
           dataSource.part_1?.delivery || dataSource.floor_1?.part_1?.delivery;
         caseDel2 =
@@ -282,7 +256,7 @@ const dataToComponents = (dataSource, quotationType) => {
 
         dataDelivery.value.delayToExecute.part1 = caseDel1;
         dataDelivery.value.delayToExecute.part2 = caseDel2;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         caseMat1 =
           dataSource.part_1?.materials || dataSource.floor_1?.part_1?.materials;
         caseMat2 =
@@ -314,7 +288,7 @@ const dataToComponents = (dataSource, quotationType) => {
         };
         dataMaterials.value.cost = catchCost;
 
-        /* data volume catch */
+      //  data volume catch
 
         catchVolume = {
           part1: dataSource.part_1?.volume || dataSource.floor_1?.part_1.volume,
@@ -325,14 +299,14 @@ const dataToComponents = (dataSource, quotationType) => {
 
         break;
       case "plumbing":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title = dataSource.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost = dataSource.total;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         dataDelivery.value.delayToExecute = dataSource.delivery;
         dataDelivery.value.delayToExecute = dataSource.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate = dataSource.materials;
         dataMaterials.value.materialTemplate = dataSource.materials;
 
@@ -344,14 +318,14 @@ const dataToComponents = (dataSource, quotationType) => {
         dataMaterials.value.cost = catchCost;
         break;
       case "electricity":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title = dataSource.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost = dataSource.total;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         dataDelivery.value.delayToExecute = dataSource.delivery;
         dataDelivery.value.delayToExecute = dataSource.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate = dataSource.materials;
         dataMaterials.value.materialTemplate = dataSource.materials;
         catchCost = {
@@ -362,16 +336,16 @@ const dataToComponents = (dataSource, quotationType) => {
         dataMaterials.value.cost = catchCost;
         break;
       case "roofing":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title.part1 = dataSource.part_1.title;
         dataTitle.value.title.part2 = dataSource.part_2.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost.part1 = dataSource.part_1.total;
         dataResumeQuotation.value.totalCost.part2 = dataSource.part_2.total;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         dataDelivery.value.delayToExecute.part1 = dataSource.part_1.delivery;
         dataDelivery.value.delayToExecute.part2 = dataSource.part_2.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate.part1 =
           dataSource.part_1.materials;
         dataMaterials.value.materialTemplate.part2 =
@@ -391,7 +365,7 @@ const dataToComponents = (dataSource, quotationType) => {
         };
         dataMaterials.value.cost = catchCost;
 
-        /* data roof surface */
+        // data roof surface
         dataMaterials.value.surface = dataSource.surface;
         break;
       default:
@@ -403,25 +377,25 @@ const dataToComponents = (dataSource, quotationType) => {
   } else {
     switch (quotationType) {
       case "foundation":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         caseTitle1 = dataSource.floor_2?.part_1?.title;
         caseTitle2 = dataSource.floor_2?.part_2?.title;
 
         dataTitle.value.title.part1 = caseTitle1;
         dataTitle.value.title.part2 = caseTitle2;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         caseRes1 = dataSource.floor_2?.part_1?.total;
         caseRes2 = dataSource.floor_2?.part_2?.total;
 
         dataResumeQuotation.value.totalCost.part1 = caseRes1;
         dataResumeQuotation.value.totalCost.part2 = caseRes2;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         caseDel1 = dataSource.floor_2?.part_1?.delivery;
         caseDel2 = dataSource.floor_2?.part_2?.delivery;
 
         dataDelivery.value.delayToExecute.part1 = caseDel1;
         dataDelivery.value.delayToExecute.part2 = caseDel2;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         caseMat1 = dataSource.floor_2?.part_1?.materials;
         caseMat2 = dataSource.floor_2?.part_2?.materials;
 
@@ -443,7 +417,7 @@ const dataToComponents = (dataSource, quotationType) => {
         };
         dataMaterials.value.cost = catchCost;
 
-        /* data volume catch */
+        // data volume catch
 
         catchVolume = {
           part1: dataSource.floor_2?.part_1.volume,
@@ -454,14 +428,14 @@ const dataToComponents = (dataSource, quotationType) => {
 
         break;
       case "plumbing":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title = dataSource.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost = dataSource.total;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         dataDelivery.value.delayToExecute = dataSource.delivery;
         dataDelivery.value.delayToExecute = dataSource.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate = dataSource.materials;
         dataMaterials.value.materialTemplate = dataSource.materials;
 
@@ -473,14 +447,14 @@ const dataToComponents = (dataSource, quotationType) => {
         dataMaterials.value.cost = catchCost;
         break;
       case "electricity":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title = dataSource.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost = dataSource.total;
-        /* dataDelivery first fetch */
+        // dataDelivery first fetch
         dataDelivery.value.delayToExecute = dataSource.delivery;
         dataDelivery.value.delayToExecute = dataSource.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate = dataSource.materials;
         dataMaterials.value.materialTemplate = dataSource.materials;
         catchCost = {
@@ -491,16 +465,16 @@ const dataToComponents = (dataSource, quotationType) => {
         dataMaterials.value.cost = catchCost;
         break;
       case "roofing":
-        /* dataTitle first fetch */
+        // dataTitle first fetch
         dataTitle.value.title.part1 = dataSource.part_1.title;
         dataTitle.value.title.part2 = dataSource.part_2.title;
-        /* dataResumeQuotation first fetch */
+        // dataResumeQuotation first fetch
         dataResumeQuotation.value.totalCost.part1 = dataSource.part_1.total;
         dataResumeQuotation.value.totalCost.part2 = dataSource.part_2.total;
-        /* dataDelivery first fetch */
+        //  dataDelivery first fetch
         dataDelivery.value.delayToExecute.part1 = dataSource.part_1.delivery;
         dataDelivery.value.delayToExecute.part2 = dataSource.part_2.delivery;
-        /* dataMaterials first fetch */
+        // dataMaterials first fetch
         dataMaterials.value.materialTemplate.part1 =
           dataSource.part_1.materials;
         dataMaterials.value.materialTemplate.part2 =
@@ -520,7 +494,7 @@ const dataToComponents = (dataSource, quotationType) => {
         };
         dataMaterials.value.cost = catchCost;
 
-        /* data roof surface */
+        // data roof surface
         dataMaterials.value.surface = dataSource.surface;
         break;
       default:
@@ -530,13 +504,143 @@ const dataToComponents = (dataSource, quotationType) => {
     }
   }
 
-  /* console.log(
-    "dataTitle value --dataToComponents Fn-- in --MiniQuotation-- :",
-    dataTitle.value,
-  ); */
-
-  /* collect data Fetched */
+  //  collect data Fetched
   dataFetched.value = dataSource;
+}; */
+
+const dataToComponents = (dataSource, quotationType) => {
+  const activeFloorIn = projectStore.isFloor_0;
+
+  // Create a helper to point to the correct floor level in the data
+  // If it's floor 0, use 'floor_1' data. If it's floor 1, use 'floor_2' data.
+  const floorKey = activeFloorIn === "0" ? "floor_1" : "floor_2";
+
+  // Now, instead of two huge IF/ELSE blocks,
+  // we use a single switch and dynamic keys.
+
+  let catchCost = {};
+  let catchVolume = {};
+
+  dataTitle.value.quotationType = quotationType;
+  dataResumeQuotation.value.quotationType = quotationType;
+  dataDelivery.value.quotationType = quotationType;
+  dataMaterials.value.quotationType = quotationType;
+
+  switch (quotationType) {
+    case "foundation":
+      // Use optional chaining (?.) and the floorKey variable
+      const part1 = dataSource.part_1 || dataSource[floorKey]?.part_1;
+      const part2 = dataSource.part_2 || dataSource[floorKey]?.part_2;
+
+      dataTitle.value.title.part1 = part1?.title;
+      dataTitle.value.title.part2 = part2?.title;
+
+      dataResumeQuotation.value.totalCost.part1 = part1?.total;
+      dataResumeQuotation.value.totalCost.part2 = part2?.total;
+
+      dataDelivery.value.delayToExecute.part1 = part1?.delivery;
+      dataDelivery.value.delayToExecute.part2 = part2?.delivery;
+
+      dataMaterials.value.materialTemplate.part1 = part1?.materials;
+      dataMaterials.value.materialTemplate.part2 = part2?.materials;
+
+      catchCost = {
+        part1: {
+          materials: part1?.material_cost,
+          labor: part1?.labor,
+          total: part1?.total,
+        },
+        part2: {
+          materials: part2?.material_cost,
+          labor: part2?.labor,
+          total: part2?.total,
+        },
+      };
+      dataMaterials.value.cost = catchCost;
+
+      catchVolume = {
+        part1: part1?.volume,
+        part2: part2?.volume,
+      };
+
+      dataMaterials.value.volume = catchVolume;
+      break;
+    case "plumbing":
+      // dataTitle first fetch
+      dataTitle.value.title = dataSource.title;
+      // dataResumeQuotation first fetch
+      dataResumeQuotation.value.totalCost = dataSource.total;
+      // dataDelivery first fetch
+      dataDelivery.value.delayToExecute = dataSource.delivery;
+      dataDelivery.value.delayToExecute = dataSource.delivery;
+      // dataMaterials first fetch
+      dataMaterials.value.materialTemplate = dataSource.materials;
+      dataMaterials.value.materialTemplate = dataSource.materials;
+
+      catchCost = {
+        materials: dataSource.material_cost,
+        labor: dataSource.labor,
+        total: dataSource.total,
+      };
+      dataMaterials.value.cost = catchCost;
+      break;
+    case "electricity":
+      // dataTitle first fetch
+      dataTitle.value.title = dataSource.title;
+      // dataResumeQuotation first fetch
+      dataResumeQuotation.value.totalCost = dataSource.total;
+      // dataDelivery first fetch
+      dataDelivery.value.delayToExecute = dataSource.delivery;
+      dataDelivery.value.delayToExecute = dataSource.delivery;
+      // dataMaterials first fetch
+      dataMaterials.value.materialTemplate = dataSource.materials;
+      dataMaterials.value.materialTemplate = dataSource.materials;
+      catchCost = {
+        materials: dataSource.material_cost,
+        labor: dataSource.labor,
+        total: dataSource.total,
+      };
+      dataMaterials.value.cost = catchCost;
+      break;
+    case "roofing":
+      // Define these first so the code below knows what 'part1' is
+      const rPart1 = dataSource.part_1;
+      const rPart2 = dataSource.part_2;
+      // dataTitle first fetch
+      dataTitle.value.title.part1 = rPart1?.title;
+      dataTitle.value.title.part2 = rPart2?.title;
+      // dataResumeQuotation first fetch
+      dataResumeQuotation.value.totalCost.part1 = rPart1?.total;
+      dataResumeQuotation.value.totalCost.part2 = rPart2?.total;
+      //  dataDelivery first fetch
+      dataDelivery.value.delayToExecute.part1 = rPart1?.delivery;
+      dataDelivery.value.delayToExecute.part2 = rPart2?.delivery;
+      // dataMaterials first fetch
+      dataMaterials.value.materialTemplate.part1 = rPart1?.materials;
+      dataMaterials.value.materialTemplate.part2 = rPart2?.materials;
+
+      catchCost = {
+        part1: {
+          materials: rPart1?.material_cost,
+          labor: rPart1?.labor,
+          total: rPart1?.total,
+        },
+        part2: {
+          materials: rPart2?.material_cost,
+          labor: rPart2?.labor,
+          total: rPart2?.total,
+        },
+      };
+      dataMaterials.value.cost = catchCost;
+
+      // data roof surface
+      dataMaterials.value.surface = dataSource.surface;
+      break;
+    default:
+      throw new Error(
+        "Error Fn *dataToComponents* --ELSE --MiniQuotation component-- ",
+      );
+  }
 };
 
 const dataToFetch = () => {
@@ -572,18 +676,11 @@ const dataToFetch = () => {
 };
 
 watch(
-  [isBoxMaterialExpanded, quotationTypeSelect],
+  () => [projectStore.isBoxMaterialIn, projectStore.quotationTypeSelect],
   async (
     [newBoxMaterialExpanded, newQuotationTypeSelect],
     [oldBoxMaterialExpanded, oldQuotationTypeSelect],
   ) => {
-    /* watch react naturalle before compnent mount/ It is why we add **nextTick** */
-    await nextTick();
-
-    newQuotationTypeSelect = await newQuotationTypeSelect;
-
-    newBoxMaterialExpanded = await newBoxMaterialExpanded;
-
     const evalQuotationType1 =
       recordWorkRef.value.getAttribute("quotation-type") ===
         oldQuotationTypeSelect &&
@@ -625,18 +722,11 @@ watch(
 );
 
 watch(
-  [isBtnJoystickTrigerred, isBoxMaterialExpanded],
+  () => [projectStore.isBtnJoystickIn, projectStore.isBoxMaterialIn],
   async (
     [newBtnJoystickTrigerred, newBoxMaterialExpanded],
     [oldBtnJoystickTrigerred, oldBoxMaterialExpanded],
   ) => {
-    // watch react naturally before component mount It is why we add **nextTick**
-    await nextTick();
-
-    newBtnJoystickTrigerred = await newBtnJoystickTrigerred;
-
-    newBoxMaterialExpanded = await newBoxMaterialExpanded;
-
     if (!newBtnJoystickTrigerred && !newBoxMaterialExpanded) {
       recordWorkRef.value.classList.remove("active__overall-work");
       boxAnimRef.value.classList.remove("active__materials-anim");
@@ -644,26 +734,16 @@ watch(
   },
 );
 
-onBeforeUpdate(async () => {
-  const quotationInfoCatch = await props.quotationInfo;
-
-  /* console.log("quotation info catch --MiniQuotation--:", quotationInfoCatch); */
-
-  const quotationType = props.quotationInfo.quotationType;
-
-  dataToFetch();
-
-  if (quotationType === "foundation" || quotationType === "roofing") {
-    extraBoxInfos.value = true;
-  } else {
-    extraBoxInfos.value = false;
-  }
-});
-
-/* onMounted(async () => {
-  const quotationInfoCatch = await props.quotationInfo; // This line is important! to made ready for use *quotationInfo* props to the component.
-
-}); */
+// Use a watcher instead of onBeforeUpdate
+watch(
+  () => props.quotationInfo,
+  (newInfo) => {
+    if (newInfo) {
+      dataToFetch(); // This only runs when the data actually changes
+    }
+  },
+  { deep: true },
+);
 </script>
 <template>
   <div

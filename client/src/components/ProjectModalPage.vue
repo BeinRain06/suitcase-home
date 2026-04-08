@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted, onUpdated, watch, nextTick } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+
+import { storeToRefs } from "pinia";
 
 import MiniModalQuotation from "./MiniModalQuotation.vue";
 import { initInfoProject } from "../reusable-function/initInfoProjects";
@@ -17,8 +19,12 @@ const props = defineProps({
 
 const projectStore = useProjectStore();
 
-const isInFloor_0 = projectStore.isFloor_0;
+/* const isInFloor_0 = projectStore.isFloor_0; */
 
+// This makes 'isFloor_0' a reactive ref in your component
+const { isFloor_0 } = storeToRefs(projectStore);
+
+// initInfos MiniModalQuotation.vue component
 const initInfos = ref({ 0: {}, 1: {}, 2: {}, 3: {} });
 
 const errDownloadMsg = ref("");
@@ -82,48 +88,34 @@ const handleDownloadPdf = () => {
 };
 
 watch(
-  () => projectStore.activeFloor.floor_0,
+  () => projectStore.isFloor_0,
   async (newActiveFloor, oldActiveFloor) => {
-    // watch reacts naturally before component mount It is why we add **nextTick**
-    await nextTick();
+    // 1. Only run if the value actually changed
+    if (newActiveFloor === oldActiveFloor) return;
 
-    newActiveFloor = await newActiveFloor;
+    const catchArrayParams = route.params.projectId;
 
-    oldActiveFloor = await oldActiveFloor;
+    const projectId = catchArrayParams[0] || "danton_shield";
 
-    console.log("newActiveFloor:", newActiveFloor);
-    console.log("oldActiveFloor:", oldActiveFloor);
+    if (projectId !== "dexter_flip") return;
 
-    if (newActiveFloor !== oldActiveFloor) {
-      /* const projectId = route.params.projectId; */
-
-      const catchArrayParams = route.params.projectId;
-
-      const projectId = catchArrayParams[0] || "danton_shield";
-
-      console.log("projectId", projectId);
-
-      if (projectId !== "dexter_flip") return;
-
-      const newIsInFloor_0 = newActiveFloor ? "0" : "1";
-
-      const {
-        initInformation,
-        durationOfProject,
-        homeIn,
-        roomEntireProject,
-        houseCallType,
-      } = await initInfoProject(projectId, "call-page", newIsInFloor_0);
+    try {
+      // 2. Trigger the fetch immediately
+      const { initInformation } = await initInfoProject(
+        projectId,
+        "call-page",
+        projectStore.isFloor_0,
+      );
 
       initInfos.value = initInformation;
-      durationProject.value = durationOfProject;
-      home.value = homeIn;
-      roomInProject.value = roomEntireProject;
-      houseType.value = houseCallType;
-
-      await initInfos.value;
+    } catch (error) {
+      console.error(
+        "Failed to fetch project info --in ProjectModalPage-- :",
+        error,
+      );
     }
   },
+  { immediate: false }, // Only runs when the floor changes, not on mount
 );
 
 onMounted(async () => {
@@ -131,7 +123,7 @@ onMounted(async () => {
 
   const projectId = catchArrayParams[0] || "danton_shield";
 
-  initInfos.value = await initInfoProject(projectId, "modal-page", isInFloor_0);
+  initInfos.value = await initInfoProject(projectId, "modal-page", isFloor_0);
 });
 </script>
 <template>

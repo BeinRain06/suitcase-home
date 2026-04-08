@@ -1,15 +1,9 @@
 <script setup>
-import {
-  ref,
-  reactive,
-  onMounted,
-  computed,
-  onBeforeUpdate,
-  nextTick,
-  watch,
-} from "vue";
+import { ref, reactive, onMounted, computed, nextTick, watch } from "vue";
 
 import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
+
+import { storeToRefs } from "pinia";
 
 import MiniQuotation from "./MiniQuotation.vue";
 import HouseCues from "../some-svg-components/HouseCues.vue";
@@ -30,9 +24,10 @@ const props = defineProps({
 
 const projectStore = useProjectStore();
 
-const isInFloor_0 = projectStore.isFloor_0;
+/* const isInFloor_0 = projectStore.isFloor_0; */
 
-const activeFloorWatched = ref("0");
+// This makes 'isFloor_0' a reactive ref in your component
+const { isFloor_0 } = storeToRefs(projectStore);
 
 const halfResumeRef1 = ref();
 const halfResumeRef2 = ref();
@@ -51,14 +46,6 @@ const numberBtnSlide = reactive({
     id: "btn-slide-3",
     text: "3",
   },
-});
-
-const isBtnJoystickTrigerred = computed(() => {
-  return projectStore.$state.isBtnJoystickTrigerred;
-});
-
-const isBoxMaterialExpanded = computed(() => {
-  return projectStore.$state.isBoxMaterialExpanded;
 });
 
 const isActiveResume = reactive({ one: true, two: false });
@@ -125,20 +112,13 @@ const houseType = ref({
   level: "0",
 });
 
-/* const activeFloor = ref({ floor_0: true }); */ // true --active floor 0, false --active floor 1
-
-/* const activeFloorWatch = computed(() => {
-  return activeFloor.value.floor_0;
-}); */
-
+// initInfos MiniQuotation.vue Component
 const initInfos = ref({
   0: {},
   1: {},
   2: {},
   3: {},
 });
-
-/* const isBtnSlider = ref(true); */
 
 const btnSliderRef = ref();
 
@@ -162,21 +142,17 @@ const handleFloorChange = async (e) => {
   if (projectId !== "dexter_flip") return;
 
   if (targetElt.id === "floor_0") {
-    /*  activeFloor.value.floor_0 = true; */
     await projectStore.$patch({ activeFloor: { floor_0: true } });
 
-    activeFloorWatched.value = "0";
     houseType.value.level = "0";
 
-    // update data is made in watch --activeFloorWatch--
+    // update data is made in watch () => projectStore.isFloor_0
   } else {
-    /*  activeFloor.value.floor_0 = false; */
     await projectStore.$patch({ activeFloor: { floor_0: false } });
 
-    activeFloorWatched.value = "1";
     houseType.value.level = "1";
 
-    // update data is made in watch --activeFloorWatch--
+    // update data is made in watch () => projectStore.isFloor_0
   }
 };
 
@@ -564,18 +540,11 @@ const handleDownloadPdf = () => {
 };
 
 watch(
-  [isBtnJoystickTrigerred, isBoxMaterialExpanded],
+  () => [projectStore.isBtnJoystickIn, projectStore.isBoxMaterialIn],
   async (
     [newBtnJoystickTrigerred, newBoxMaterialExpanded],
     [oldBtnJoystickTrigerred, oldBoxMaterialExpanded],
   ) => {
-    // watch react naturalle before component mount It is why we add **nextTick**
-    await nextTick();
-
-    newBtnJoystickTrigerred = await newBtnJoystickTrigerred;
-
-    newBoxMaterialExpanded = await newBoxMaterialExpanded;
-
     if (!newBtnJoystickTrigerred && !newBoxMaterialExpanded) {
       Object.keys(isActiveBtnJoyStick).forEach((key, index) => {
         isActiveBtnJoyStick[key] = false;
@@ -586,44 +555,38 @@ watch(
 );
 
 watch(
-  () => projectStore.activeFloor.floor_0,
+  () => projectStore.isFloor_0,
   async (newActiveFloor, oldActiveFloor) => {
-    // watch reacts naturally before component mount It is why we add **nextTick**
-    await nextTick();
+    // 1. Only run if the value actually changed
+    if (newActiveFloor === oldActiveFloor) return;
 
-    newActiveFloor = await newActiveFloor;
+    const projectId = route.params.projectId;
 
-    oldActiveFloor = await oldActiveFloor;
+    if (projectId !== "dexter_flip") return;
 
-    console.log("newActiveFloor:", newActiveFloor);
-    console.log("oldActiveFloor:", oldActiveFloor);
-
-    if (newActiveFloor !== oldActiveFloor) {
-      const projectId = route.params.projectId;
-
-      console.log("projectId", projectId);
-
-      if (projectId !== "dexter_flip") return;
-
-      const newIsInFloor_0 = newActiveFloor ? "0" : "1";
-
+    try {
+      // 2. Trigger the fetch immediately
       const {
         initInformation,
         durationOfProject,
         homeIn,
         roomEntireProject,
         houseCallType,
-      } = await initInfoProject(projectId, "main-page", newIsInFloor_0);
+      } = await initInfoProject(projectId, "main-page", projectStore.isFloor_0);
 
       initInfos.value = initInformation;
       durationProject.value = durationOfProject;
       home.value = homeIn;
       roomInProject.value = roomEntireProject;
       houseType.value = houseCallType;
-
-      await initInfos.value;
+    } catch (error) {
+      console.error(
+        "Failed to fetch project info --in ProjectCallPage-- :",
+        error,
+      );
     }
   },
+  { immediate: false }, // Only runs when the floor changes, not on mount
 );
 
 /* watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
@@ -678,7 +641,7 @@ onBeforeRouteUpdate(async (to, from) => {
       homeIn,
       roomEntireProject,
       houseCallType,
-    } = await initInfoProject(projectId, "main-page", isInFloor_0);
+    } = await initInfoProject(projectId, "main-page", isFloor_0);
 
     initInfos.value = initInformation;
     durationProject.value = durationOfProject;
@@ -689,8 +652,6 @@ onBeforeRouteUpdate(async (to, from) => {
 });
 
 onMounted(async () => {
-  /* console.log("initInfos --onMounted :", initInformation); */
-
   const catchArrayQuery = route.query.value;
 
   if (catchArrayQuery === "single") {
@@ -724,17 +685,13 @@ onMounted(async () => {
     }
   }
 
-  /* const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1"; */
-
-  /* console.log("isActiveFloor --onMounted:", isActiveFloor); */
-
   const {
     initInformation,
     durationOfProject,
     homeIn,
     roomEntireProject,
     houseCallType,
-  } = await initInfoProject(projectId, "main-page", isInFloor_0);
+  } = await initInfoProject(projectId, "main-page", isFloor_0);
 
   initInfos.value = initInformation;
   durationProject.value = durationOfProject;
@@ -1002,8 +959,8 @@ onMounted(async () => {
                     >
                       <p
                         :class="{
-                          'font-semibold': activeFloorWatched === '0',
-                          smaller__span: activeFloorWatched === '1',
+                          'font-semibold': isFloor_0 === '0',
+                          smaller__span: isFloor_0 === '1',
                         }"
                       >
                         0
@@ -1017,8 +974,8 @@ onMounted(async () => {
                     >
                       <p
                         :class="{
-                          'font-semibold': activeFloorWatched === '1',
-                          smaller__span: activeFloorWatched === '0',
+                          'font-semibold': isFloor_0 === '1',
+                          smaller__span: isFloor_0 === '0',
                         }"
                       >
                         1

@@ -17,6 +17,9 @@ export const useProjectStore = defineStore("project-state", {
   }),
   getters: {
     isFloor_0: (state) => (state.activeFloor.floor_0 ? "0" : "1"),
+    isBtnJoystickIn: (state) => state.isBtnJoystickTrigerred,
+    isBoxMaterialIn: (state) => state.isBoxMaterialExpanded,
+    quotationTypeSelect: (state) => state.quotationTypeSelect,
   },
   actions: {},
 });
