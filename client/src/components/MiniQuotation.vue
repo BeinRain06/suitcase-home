@@ -38,6 +38,8 @@ const emit = defineEmits(["updatebtn-background"]);
 
 const projectStore = useProjectStore();
 
+const isInFloor_0 = projectStore.isFloor_0;
+
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
 });
@@ -70,9 +72,9 @@ const isActivePhase = reactive({ one: false, two: true });
 
 const activeLayer = ref({ foundation: 0, roof: 0 }); // foundation or roof materials weren't all stacking in our designed card (html &css). We create an object boolean: 0 or 1 to display th entire materials.
 
-const activeFloorWatch = computed(() => {
+/* const activeFloorWatch = computed(() => {
   return props.quotationInfo.activeFloor;
-});
+}); */
 
 const dataTitle = ref({
   userLanguage: props.userLanguage,
@@ -233,7 +235,7 @@ const handlePhaseChange = async (direction_phase) => {
   await nextTick();
 };
 
-const dataToComponents = (dataSource, quotationType, isFloor_0) => {
+const dataToComponents = (dataSource, quotationType) => {
   let catchCost = {};
   let catchVolume = {};
   let caseTitle1, caseTitle2;
@@ -246,7 +248,14 @@ const dataToComponents = (dataSource, quotationType, isFloor_0) => {
   dataDelivery.value.quotationType = quotationType;
   dataMaterials.value.quotationType = quotationType;
 
-  if (isFloor_0 === "0") {
+  const activeFloorIn = projectStore.isFloor_0;
+
+  /* console.log(
+    "activeFloorIn --dataToComponents-- in --MiniQuotation--:",
+    activeFloorIn,
+  ); */
+
+  if (activeFloorIn === "0") {
     switch (quotationType) {
       case "foundation":
         /* dataTitle first fetch */
@@ -521,33 +530,38 @@ const dataToComponents = (dataSource, quotationType, isFloor_0) => {
     }
   }
 
+  /* console.log(
+    "dataTitle value --dataToComponents Fn-- in --MiniQuotation-- :",
+    dataTitle.value,
+  ); */
+
   /* collect data Fetched */
   dataFetched.value = dataSource;
 };
 
-const dataToFetch = (isFloor_0) => {
+const dataToFetch = () => {
   let dataSource = null;
 
   switch (props.quotationInfo.quotationType) {
     case "foundation":
       dataSource = quotationFoundations[props.quotationInfo.indexToSelect];
 
-      dataToComponents(dataSource, "foundation", isFloor_0);
+      dataToComponents(dataSource, "foundation");
       break;
     case "plumbing":
       dataSource = quotationPlumbing[props.quotationInfo.indexToSelect];
 
-      dataToComponents(dataSource, "plumbing", isFloor_0);
+      dataToComponents(dataSource, "plumbing");
       break;
     case "electricity":
       dataSource = quotationElectricity[props.quotationInfo.indexToSelect];
 
-      dataToComponents(dataSource, "electricity", isFloor_0);
+      dataToComponents(dataSource, "electricity");
       break;
     case "roofing":
       dataSource = quotationRoofing[props.quotationInfo.indexToSelect];
 
-      dataToComponents(dataSource, "roofing", isFloor_0);
+      dataToComponents(dataSource, "roofing");
       break;
     default:
       throw new Error("--Error DataFetch Fn --MinQuotation component--");
@@ -633,13 +647,11 @@ watch(
 onBeforeUpdate(async () => {
   const quotationInfoCatch = await props.quotationInfo;
 
+  /* console.log("quotation info catch --MiniQuotation--:", quotationInfoCatch); */
+
   const quotationType = props.quotationInfo.quotationType;
 
-  const isFloor_0 = quotationInfoCatch.activeFloor;
-
-  /*  console.log("isFloor_0 --onBeforeUpdate-- :", isFloor_0); */
-
-  dataToFetch(isFloor_0);
+  dataToFetch();
 
   if (quotationType === "foundation" || quotationType === "roofing") {
     extraBoxInfos.value = true;

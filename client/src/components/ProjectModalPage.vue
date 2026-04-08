@@ -1,9 +1,11 @@
 <script setup>
-import { ref, onMounted, onUpdated } from "vue";
+import { ref, onMounted, onUpdated, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
 
 import MiniModalQuotation from "./MiniModalQuotation.vue";
 import { initInfoProject } from "../reusable-function/initInfoProjects";
+
+import { useProjectStore } from "../store-management/useProjectStore";
 
 const route = useRoute();
 
@@ -12,6 +14,10 @@ const emit = defineEmits(["update-modalpage"]);
 const props = defineProps({
   userLanguage: String,
 });
+
+const projectStore = useProjectStore();
+
+const isInFloor_0 = projectStore.isFloor_0;
 
 const initInfos = ref({ 0: {}, 1: {}, 2: {}, 3: {} });
 
@@ -75,12 +81,57 @@ const handleDownloadPdf = () => {
   }
 };
 
-onMounted(() => {
+watch(
+  () => projectStore.activeFloor.floor_0,
+  async (newActiveFloor, oldActiveFloor) => {
+    // watch reacts naturally before component mount It is why we add **nextTick**
+    await nextTick();
+
+    newActiveFloor = await newActiveFloor;
+
+    oldActiveFloor = await oldActiveFloor;
+
+    console.log("newActiveFloor:", newActiveFloor);
+    console.log("oldActiveFloor:", oldActiveFloor);
+
+    if (newActiveFloor !== oldActiveFloor) {
+      /* const projectId = route.params.projectId; */
+
+      const catchArrayParams = route.params.projectId;
+
+      const projectId = catchArrayParams[0] || "danton_shield";
+
+      console.log("projectId", projectId);
+
+      if (projectId !== "dexter_flip") return;
+
+      const newIsInFloor_0 = newActiveFloor ? "0" : "1";
+
+      const {
+        initInformation,
+        durationOfProject,
+        homeIn,
+        roomEntireProject,
+        houseCallType,
+      } = await initInfoProject(projectId, "call-page", newIsInFloor_0);
+
+      initInfos.value = initInformation;
+      durationProject.value = durationOfProject;
+      home.value = homeIn;
+      roomInProject.value = roomEntireProject;
+      houseType.value = houseCallType;
+
+      await initInfos.value;
+    }
+  },
+);
+
+onMounted(async () => {
   const catchArrayParams = route.params.projectId;
 
   const projectId = catchArrayParams[0] || "danton_shield";
 
-  initInfos.value = initInfoProject(projectId, "modal-page");
+  initInfos.value = await initInfoProject(projectId, "modal-page", isInFloor_0);
 });
 </script>
 <template>

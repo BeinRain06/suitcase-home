@@ -8,6 +8,7 @@ import {
   nextTick,
   watch,
 } from "vue";
+
 import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router";
 
 import MiniQuotation from "./MiniQuotation.vue";
@@ -28,6 +29,10 @@ const props = defineProps({
 });
 
 const projectStore = useProjectStore();
+
+const isInFloor_0 = projectStore.isFloor_0;
+
+const activeFloorWatched = ref("0");
 
 const halfResumeRef1 = ref();
 const halfResumeRef2 = ref();
@@ -120,11 +125,11 @@ const houseType = ref({
   level: "0",
 });
 
-const activeFloor = ref({ floor_0: true }); // true --active floor 0, false --active floor 1
+/* const activeFloor = ref({ floor_0: true }); */ // true --active floor 0, false --active floor 1
 
-const activeFloorWatch = computed(() => {
+/* const activeFloorWatch = computed(() => {
   return activeFloor.value.floor_0;
-});
+}); */
 
 const initInfos = ref({
   0: {},
@@ -152,20 +157,27 @@ const handleFloorChange = async (e) => {
 
   const projectId = route.params.projectId;
 
+  console.log("projectId:", projectId);
+
   if (projectId !== "dexter_flip") return;
 
   if (targetElt.id === "floor_0") {
-    activeFloor.value.floor_0 = true;
+    /*  activeFloor.value.floor_0 = true; */
+    await projectStore.$patch({ activeFloor: { floor_0: true } });
+
+    activeFloorWatched.value = "0";
     houseType.value.level = "0";
 
     // update data is made in watch --activeFloorWatch--
   } else {
-    activeFloor.value.floor_0 = false;
+    /*  activeFloor.value.floor_0 = false; */
+    await projectStore.$patch({ activeFloor: { floor_0: false } });
+
+    activeFloorWatched.value = "1";
     houseType.value.level = "1";
 
     // update data is made in watch --activeFloorWatch--
   }
-
 };
 
 const handleSwitchPage = () => {
@@ -573,7 +585,48 @@ watch(
   },
 );
 
-watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
+watch(
+  () => projectStore.activeFloor.floor_0,
+  async (newActiveFloor, oldActiveFloor) => {
+    // watch reacts naturally before component mount It is why we add **nextTick**
+    await nextTick();
+
+    newActiveFloor = await newActiveFloor;
+
+    oldActiveFloor = await oldActiveFloor;
+
+    console.log("newActiveFloor:", newActiveFloor);
+    console.log("oldActiveFloor:", oldActiveFloor);
+
+    if (newActiveFloor !== oldActiveFloor) {
+      const projectId = route.params.projectId;
+
+      console.log("projectId", projectId);
+
+      if (projectId !== "dexter_flip") return;
+
+      const newIsInFloor_0 = newActiveFloor ? "0" : "1";
+
+      const {
+        initInformation,
+        durationOfProject,
+        homeIn,
+        roomEntireProject,
+        houseCallType,
+      } = await initInfoProject(projectId, "main-page", newIsInFloor_0);
+
+      initInfos.value = initInformation;
+      durationProject.value = durationOfProject;
+      home.value = homeIn;
+      roomInProject.value = roomEntireProject;
+      houseType.value = houseCallType;
+
+      await initInfos.value;
+    }
+  },
+);
+
+/* watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
   // watch reacts naturally before component mount It is why we add **nextTick**
   await nextTick();
 
@@ -591,11 +644,10 @@ watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
 
     if (projectId !== "dexter_flip") return;
 
-    /* const projectId = projectIdArr[0]; */
 
     const isFloor_0 = newActiveFloor ? "0" : "1";
 
-    /* dataToFetch(isFloor_0); */
+    
     const {
       initInformation,
       durationOfProject,
@@ -612,7 +664,7 @@ watch(activeFloorWatch, async (newActiveFloor, oldActiveFloor) => {
 
     await initInfos.value;
   }
-});
+}); */
 
 onBeforeRouteUpdate(async (to, from) => {
   if (to.params.projectId !== from.params.projectId) {
@@ -620,15 +672,13 @@ onBeforeRouteUpdate(async (to, from) => {
 
     const projectId = projectParams;
 
-    const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1";
-
     const {
       initInformation,
       durationOfProject,
       homeIn,
       roomEntireProject,
       houseCallType,
-    } = await initInfoProject(projectId, "main-page", isActiveFloor);
+    } = await initInfoProject(projectId, "main-page", isInFloor_0);
 
     initInfos.value = initInformation;
     durationProject.value = durationOfProject;
@@ -650,8 +700,6 @@ onMounted(async () => {
   }
 
   const catchArrayParams = route.params.projectId;
-
-  console.log("catchArrayParams:", catchArrayParams);
 
   let projectId = catchArrayParams[0] || "danton_shield";
 
@@ -676,7 +724,7 @@ onMounted(async () => {
     }
   }
 
-  const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1";
+  /* const isActiveFloor = (await activeFloor.value.floor_0) ? "0" : "1"; */
 
   /* console.log("isActiveFloor --onMounted:", isActiveFloor); */
 
@@ -686,7 +734,7 @@ onMounted(async () => {
     homeIn,
     roomEntireProject,
     houseCallType,
-  } = await initInfoProject(projectId, "main-page", isActiveFloor);
+  } = await initInfoProject(projectId, "main-page", isInFloor_0);
 
   initInfos.value = initInformation;
   durationProject.value = durationOfProject;
@@ -771,7 +819,7 @@ onMounted(async () => {
                   <h4 class="opacity-65">{{ home.land_area }}</h4>
                 </div>
               </div>
-              <div class="project__rooms-in py-2 md:py-6">
+              <div class="project__rooms-in py-2 max-[420px]:pt-7 md:py-6">
                 <div class="project__rooms-standard">
                   <div
                     class="room__item w-max h-10 flex flex-row items-center gap-2"
@@ -954,8 +1002,8 @@ onMounted(async () => {
                     >
                       <p
                         :class="{
-                          'font-semibold': activeFloorWatch,
-                          smaller__span: !activeFloorWatch,
+                          'font-semibold': activeFloorWatched === '0',
+                          smaller__span: activeFloorWatched === '1',
                         }"
                       >
                         0
@@ -969,8 +1017,8 @@ onMounted(async () => {
                     >
                       <p
                         :class="{
-                          'font-semibold': !activeFloorWatch,
-                          smaller__span: activeFloorWatch,
+                          'font-semibold': activeFloorWatched === '1',
+                          smaller__span: activeFloorWatched === '0',
                         }"
                       >
                         1
@@ -1250,6 +1298,7 @@ onMounted(async () => {
     width: 100%;
     min-height: 34rem;
     height: 100%;
+    overflow-x: hidden;
   }
 
   /* project specification */
@@ -1291,11 +1340,11 @@ onMounted(async () => {
   .project__layout {
     width: 100%;
     height: auto;
-    padding: 0 3%;
+    padding: 1rem 3% 0;
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 0.5rem;
+    gap: 1.5rem;
     overflow: hidden;
   }
 
@@ -1515,6 +1564,12 @@ onMounted(async () => {
 }
 
 @media screen and (min-width: 420px) {
+  /* project layout container */
+  .project__layout {
+    padding: 0 3%;
+    gap: 0.5rem;
+  }
+
   /* project specification */
   .project__rooms-standard {
     width: 96%;

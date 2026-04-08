@@ -599,257 +599,6 @@ h5 {
   font-size: calc(3.25rem + 0.12vw);
 }
 
-/* .hero__container {
-  position: relative;
-  width: 100vw;
-  height: 78vh;
-  padding: 0 3.5rem;
-  margin: 0 auto;
-  background: linear-gradient(20deg, hsl(345, 72%, 24%), hsl(32, 30%, 37%) 87%);
-  z-index: 2;
-}
-
-.hero__image-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.hero__image {
-  position: absolute;
-  top: 3.3%;
-  right: 0;
-  width: 70%;
-  height: 100%;
-  background: url("../assets/images/hero-image_7.png") top 45% right -6%
-    no-repeat;
-  background-size: cover;
-  background-blend-mode: overlay;
-  z-index: -1;
-  opacity: 0.62;
-  clip-path: xywh(0 5px 100% 86% round 2% 0px);
-} */
-
-/* mission, reinforcement */
-
-/* .mission__container,
-.reinforcement__container {
-  width: 100%;
-  padding: 7rem 6rem 6rem;
-}
-
-.mission__image,
-.reinforcement__image {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.4)
-    url("../assets/images/Atana-Paskalev_Pixabay.jpg") center no-repeat;
-  background-size: cover;
-  border: 1px solid transparent;
-  box-shadow: 0px 0px 12px var(--link--external-btn);
-  border-radius: 3px;
-  z-index: 0;
-}
-
-.reinforcement__image {
-  background: rgba(0, 0, 0, 0.65)
-    url("../assets/images/Tung-Nguyen_Pixabay.jpg") center no-repeat;
-  z-index: 0;
-}
-
-.mission__message--before,
-.reinforcement__message--before {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: var(--title-color);
-  transform: translateY(5%);
-  border-radius: 5px;
-  opacity: 0.98;
-  z-index: -3;
-  transform: skew(-5deg, 2deg);
-} */
-
-/* projects */
-
-/* .projects__container {
-  width: 100%;
-  padding: 4rem 6rem 7rem;
-}
-
-.project__card {
-  width: max(54.75rem, 80%);
-  margin: 0 auto;
-  height: 14.5rem;
-  padding: 2rem 1rem 1.35rem;
-  border-radius: 0.8rem;
-}
-
-.project__image {
-  width: 100%;
-  height: 100%;
-  background: url("../assets/images/C-Hickenbotham_Pixabay_1280.jpg") center
-    no-repeat;
-  background-size: cover;
-}
-
-#card_image_1.project__image {
-  background: url("../assets/images/Paul-Brennan_Pixabay_1280.jpg") center
-    no-repeat;
-  background-size: cover;
-}
-
-#card_image_2.project__image {
-  background: url("../assets/images/Jlyne-Hanback_Pixabay_1280.jpg") center
-    no-repeat;
-  background-size: cover;
-} */
-
-/* services */
-
-/* .services__container {
-  background: linear-gradient(
-    60deg,
-    hsl(300, 20%, 99%) 97%,
-    hsl(345, 60%, 72%) 3%
-  );
-}
-
-.services__cards {
-  width: max(54.75rem, 80%);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(17.5rem, 1fr));
-  grid-auto-rows: max-content;
-  gap: 2rem;
-}
-
-.service__card {
-  width: 100%;
-  height: 100%;
-  padding: 1rem 1rem 1.5rem;
-  background-color: var(--accent-color-1);
-  text-align: center;
-  display: grid;
-  grid-auto-columns: 100%;
-  grid-template-rows: 2rem 10rem;
-  gap: 1rem;
-  border-radius: 1rem;
-  outline: none;
-}
-
-.service__card .service__text {
-  background-color: var(--accent-color-2);
-  border-radius: 0;
-} */
-
-/* trust section */
-
-/* .trust__container {
-  position: relative;
-  height: 100%;
-  background: linear-gradient(
-    300deg,
-    hsl(300, 20%, 99%) 97%,
-    hsl(32, 50%, 72%) 3%
-  );
-  z-index: 0;
-}
-
-.trust__deal {
-  display: grid;
-  grid-template-areas:
-    "benefit-1 benefit-1 benefit-2 benefit-2"
-    "benefit-1 benefit-1 benefit-3 benefit-3";
-  gap: 1.35rem;
-  grid-template-columns: 22% 22% 22% 22%;
-  grid-template-rows: auto auto;
-  place-content: center center;
-}
-
-#benefit__item1 {
-  grid-column: 1 / span 2;
-  grid-row: 1 / span 2;
-}
-
-#benefit__item2 {
-  grid-column: 3 / span 2;
-  grid-row: 1 / span 1;
-}
-
-#benefit__item3 {
-  grid-column: 3 / span 2;
-  grid-row: 2 / span 1;
-} */
-
-/* breathing */
-
-/* .breathing__left-scene {
-  position: absolute;
-  top: -30%;
-  left: -1%;
-  width: 65%;
-  height: 123%;
-  background-color: var(--background-primary);
-  transform: rotate(10deg);
-  border-radius: 40%;
-  overflow: hidden;
-  outline: 3px solid var(--background-secondary);
-  z-index: 5;
-}
-
-.breathing__image {
-  width: 97%;
-  aspect-ratio: 16/12;
-  position: absolute;
-  top: 60%;
-  left: 51%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.2) url("/src/assets/images/Azubcic_Pixabay.jpg")
-    center no-repeat;
-  background-size: cover;
-  background-blend-mode: overlay;
-  clip-path: circle(90%);
-}
-
-.breathing__right-scene {
-  position: absolute;
-  top: 0;
-  right: -14%;
-  width: 94%;
-  height: 150%;
-  background: linear-gradient(
-    315deg,
-    hsl(345, 42%, 48%),
-    hsl(345, 52%, 24%),
-    hsl(345, 28%, 32%)
-  );
-
-  transform: rotate(315deg);
-  overflow: hidden;
-  outline: 3px solid var(--background-secondary);
-  z-index: 3;
-}
-
-.breathing_description {
-  position: absolute;
-  top: 9%;
-  right: 0;
-  width: 60%;
-  opacity: 0.79;
-  height: max-content;
-  padding: 1rem 0 0 1rem;
-  z-index: 10;
-}  */
-
-/* farewell */
-
 @media screen and (min-width: 140px) {
   /* utilities */
   .cta__button--depth {
@@ -891,14 +640,20 @@ h5 {
     font-weight: 300;
   }
 
+  /* landing page */
+
+  #landingpage {
+    overflow-x: hidden;
+  }
+
   /* hero section */
   .hero__container {
     --hero-title-size: calc(1.35rem + 0.12vw);
     --regular-size: calc(0.86rem + 0.05vw);
     position: relative;
     width: 100vw;
-    height: 106vh;
-    padding: 0 3%;
+    height: 32rem;
+    padding: 3% 3% 2%;
     margin: 0 auto;
     background: linear-gradient(
       20deg,
@@ -1218,7 +973,7 @@ h5 {
     --hero-title-size: calc(1.45rem + 0.12vw);
     --regular-size: calc(0.86rem + 0.05vw);
 
-    height: 90vh;
+    height: 39rem;
     padding: 0 3%;
   }
 
@@ -1358,7 +1113,9 @@ h5 {
     --regular-size: calc(1.12rem + 0.05vw);
 
     width: 100vw;
-    height: 100vh;
+
+    height: 32rem;
+    padding: 2.5% 5% 0;
   }
 
   .hero__image {

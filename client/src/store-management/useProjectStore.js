@@ -13,6 +13,10 @@ export const useProjectStore = defineStore("project-state", {
     isBtnJoystickTrigerred: false,
     isBoxMaterialExpanded: false,
     quotationTypeSelect: "",
+    activeFloor: { floor_0: true },
   }),
+  getters: {
+    isFloor_0: (state) => (state.activeFloor.floor_0 ? "0" : "1"),
+  },
   actions: {},
 });
