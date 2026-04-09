@@ -485,8 +485,17 @@ const handleArrowSlide = (e, typeArrow) => {
   });
 };
 
+const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 const triggerDownload = async (filename) => {
   const assetUrl = `/pdfs/${filename}.pdf`;
+
+  // On mobile, blob + anchor.click() is silently blocked after async ops.
+  // Fall back to opening the PDF in a new tab instead.
+  if (isMobile()) {
+    window.open(assetUrl, "_blank");
+    return;
+  }
 
   const response = await fetch(assetUrl);
 
@@ -511,7 +520,7 @@ const triggerDownload = async (filename) => {
   setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
 };
 
-const handleDownloadPdf = () => {
+const handleDownloadPdf = async () => {
   const projectId = route.params.projectId;
 
   const filename = `plan-${projectId}`;
@@ -522,11 +531,19 @@ const handleDownloadPdf = () => {
         [projectId]: [`plan-${projectId}-1`, `plan-${projectId}-2`],
       };
 
-      MULTIPLE_PDF_FILENAMES[projectId].map((filename) => {
-        triggerDownload(filename);
-      });
+      if (isMobile()) {
+        const filenames = MULTIPLE_PDF_FILENAMES[projectId];
+
+        // Open them sequentially — back-to-back window.open() calls get blocked
+        for (const name of filenames) {
+          await triggerDownload(name);
+          await new Promise((res) => setTimeout(res, 300)); // small gap
+        }
+      } else {
+        await Promise.all(filenames.map((name) => triggerDownload(name)));
+      }
     } else {
-      triggerDownload(filename);
+      await triggerDownload(filename);
     }
   } catch (err) {
     console.error("[DownloadPdf]", err);

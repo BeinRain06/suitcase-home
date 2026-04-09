@@ -272,7 +272,7 @@ export default {
 </script>
 
 <template>
-  <transition name="vt" mode-out="out-in">
+  <transition name="delayed-fade" mode-out="out-in">
     <div v-if="!isLoading" class="w-full h-full" key="principal">
       <header>
         <!-- i have set navbar invisible -- temporary -->
@@ -556,25 +556,33 @@ li.modal_menu_link.active__navlink {
 }
 
 /* ── View transition ──────────────────────────────── */
-.vt-enter-active {
+
+/* timing for the transition effect before enter */
+.delayed-fade-enter-active {
   transition:
-    opacity 6s var(--ease-smooth),
-    transform 0.4s var(--ease-smooth);
+    opacity 0.35s var(--ease-smooth),
+    transform 0.35s var(--ease-smooth);
 }
-.vt-leave-active {
+/* timing for the transition effect before leave */
+.delayed-fade-leave-active {
   transition:
-    opacity 8.45s var(--ease-smooth),
-    transform 0.45s var(--ease-smooth);
-  position: absolute;
-  width: calc(100% - 5rem);
+    opacity 0.35s var(--ease-smooth),
+    transform 0.35s var(--ease-smooth);
+  transition-delay: 0.28s; /* the wait period */
 }
-.vt-enter-from {
+
+/* starting point */
+.delayed-fade-enter-from {
   opacity: 0;
   transform: translateY(14px);
 }
-.vt-leave-to {
+/* final point after the wait and fade */
+.delayed-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+
+  position: absolute;
+  width: calc(100% - 5rem);
 }
 
 @media screen and (min-width: 140px) {

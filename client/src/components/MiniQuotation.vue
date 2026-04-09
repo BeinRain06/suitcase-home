@@ -676,7 +676,7 @@ const dataToFetch = () => {
 };
 
 watch(
-  () => [projectStore.isBoxMaterialIn, projectStore.quotationTypeSelect],
+  () => [projectStore.isBoxMaterialIn, projectStore.quotationTypeSelectIn],
   async (
     [newBoxMaterialExpanded, newQuotationTypeSelect],
     [oldBoxMaterialExpanded, oldQuotationTypeSelect],
