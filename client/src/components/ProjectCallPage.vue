@@ -521,6 +521,7 @@ const triggerDownload = async (filename) => {
 };
 
 const handleDownloadPdf = async () => {
+  console.log("entering DownloadPdf");
   const projectId = route.params.projectId;
 
   const filename = `plan-${projectId}`;
@@ -1192,9 +1193,10 @@ onMounted(async () => {
               </div>
             </div>
           </div>
-          <!-- media queries download plan cta widht <= 768px -->
+          <!-- media queries download plan cta width <= 768px -->
           <div
             class="project__hook-cta relative w-max h-max mx-auto mt-1 mb-6 md:hidden"
+            @click="handleDownloadPdf"
           >
             <div class="cta__button--depth"></div>
             <a
