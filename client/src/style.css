@@ -147,6 +147,12 @@ li.navlink__item-language {
   line-height: 1.6;
 }
 
+li.navlink__mobitem-language {
+  font-size: var(--regular-size);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
 span {
   font-size: var(--regular-size);
   font-weight: 300;

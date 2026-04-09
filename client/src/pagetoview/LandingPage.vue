@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import {
   hero,
@@ -14,32 +14,9 @@ const props = defineProps({ userLanguage: String });
 
 const router = useRouter();
 
-/* const mission = reactive({
-  0: {
-    id: "mission-fr",
-    vision:
-      "Nos valeurs s'associent à donner aux travailleurs des services publiques et des secteurs informels de tout genre; la capacité de réaliser leurs domiciles: Dans un context du marché immobilier charactérisé par une crise de logement sociaux, des surenchères de matériaux de construction, des devis estimatif menaçants. ",
-  },
-  1: {
-    id: "mission-en",
-    vision:
-      "We collaborate to enable workers of the public services and informal division of any field, to fearlessly mount their houses, in a real estate market featured by home crisis, high-stakes building materials, an yawning work's quotations that rise doubts and despair to whoever is actually found to start a construction site.",
-  },
-}); */
-
-/* const indexLang = ref(0); */
-
-/* const indexLang = reactive({ val: 0 }); */
-
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
 });
-
-/* onUpdated(() => {
-   if (props.userLanguage) {
-    indexLang.val = props.userLanguage === "FR" ? 0 : 1;
-  }
-}); */
 
 const handleRoute = async (route, projectId, queryValue) => {
   const catchProjectId = projectId || "";
@@ -1283,8 +1260,8 @@ h5 {
     --hero-title-size: calc(2.25rem + 0.12vw);
     --regular-size: calc(1.18rem + 0.05vw);
 
-    height: 78vh;
-    padding: 0 5%;
+    height: 83vh;
+    padding: 0 5% 2%;
   }
 
   .hero__image {

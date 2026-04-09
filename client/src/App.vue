@@ -1,5 +1,5 @@
 <script>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive } from "vue";
 import { useDisplayDataStore } from "./store-management/useDisplayDataStore";
 
 import LandingPage from "./pagetoview/LandingPage.vue";
@@ -31,6 +31,10 @@ export default {
         ref: null,
       },
     });
+
+    const scrollPosEx = ref(0);
+
+    const isNavDisplayed = ref(true);
 
     const navlinkLanguage = ref({
       fr: "FR",
@@ -74,6 +78,8 @@ export default {
       middleBarRef,
       modalMenuRef,
       storeElt,
+      scrollPosEx,
+      isNavDisplayed,
       setItemRef,
     };
   },
@@ -189,6 +195,34 @@ export default {
         this.modalMenuRef.classList.remove("active_menu");
       }
     },
+    handleScroll() {
+      /* const viewportInWidth = getComputedStyle(targetElt).width; */
+
+      // 1. Get current vertical scroll position
+      const scrollPosNew = window.scrollY;
+
+      // 2. Calculate the difference (Delta Y)
+      // Positive = Scrolling Down | Negative = Scrolling Up
+      const deltaY = scrollPosNew - this.scrollPosEx;
+
+      // 3. Movement Logic
+      // We only act if the user has scrolled a significant amount (threshold)
+      if (deltaY >= 45) {
+        // User is scrolling down aggressively -> Hide Nav
+        this.isNavDisplayed = false;
+      } else if (deltaY <= -30) {
+        // User is scrolling up -> Show Nav
+        this.isNavDisplayed = true;
+      }
+
+      // 4. Force Show Nav if we are at the very top of the page
+      if (scrollPosNew <= 0) {
+        this.isNavDisplayed = true;
+      }
+
+      // 5. Update the reference for the NEXT scroll event
+      this.scrollPosEx = scrollPosNew;
+    },
   },
   computed: {
     isNavbar() {
@@ -226,19 +260,30 @@ export default {
     }
 
     this.langSelected();
+
+    // Attach the global scroll listener
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  beforeUnmount() {
+    // Clean up the listener when the component is destroyed
+    window.removeEventListener("scroll", this.handleScroll);
   },
 };
 </script>
 
 <template>
   <transition name="vt" mode-out="out-in">
-    <div v-if="!isLoading" class="w-full" key="principal">
+    <div v-if="!isLoading" class="w-full h-full" key="principal">
       <header>
         <!-- i have set navbar invisible -- temporary -->
         <nav
           v-if="isNavbar"
           id="navbar"
-          class="navbar flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
+          class="navbar__desktop flex flex-row justify-between items-center pl-[2rem] pr-[1rem] bg-[var(--background-secondary)]"
+          :class="{
+            isDisplayed: isNavDisplayed,
+            '': !isNavDisplayed,
+          }"
         >
           <div class="logo__nav-container">
             <div class="logo__nav-icon"></div>
@@ -246,7 +291,7 @@ export default {
               <h5>SuitCase Home</h5>
             </div>
           </div>
-
+          <!-- navlinks desktop -->
           <ul
             class="navlinks__desktop-container w-[40%] h-full hidden min-[620px]:flex flex-row justify-end items-center gap-[1.5em]"
           >
@@ -280,57 +325,83 @@ export default {
             </li>
           </ul>
 
-          <!-- Menu Mobile -->
-          <div class="menu_wrap block min-[620px]:hidden">
-            <div
-              class="menu_content relative w-8 h-8 flex justify-center items-center rounded border border-solid border-[var(--accent-color-3)]"
+          <!-- navlinks  mobile -->
+          <ul
+            class="navlinks__mobile-container w-max h-full flex items-center gap-1 min-[620px]:hidden"
+          >
+            <li
+              class="navlink__mobitem-language w-[3.5rem] flex flex-row justify-center z-20"
             >
-              <div
-                class="middle_bar relative h-[1px] w-[72%] bg-[var(--text-paragraph)] z-0"
-                ref="middleBarRef"
-              ></div>
-              <div
-                class="input_check_wrap absolute w-4/5 h-4/5 opacity-0 mx-auto z-10"
-                @click="handleMenu"
+              <select
+                name="language"
+                id="language-selected"
+                class="cursor-pointer flex-shrink-0 opacity-85"
+                ref="selectLangRef"
+                @change="langSelected"
               >
-                <input
-                  type="checkbox"
-                  name="checkbox"
-                  class="check_menu w-full h-full rounded cursor-pointer"
-                  ref="checkMenuRef"
-                />
-              </div>
-            </div>
-            <div class="modal_menu" ref="modalMenuRef">
-              <div class="modal_close w-full">
+                <option value="FR" class="option__language">
+                  {{ navlinkLanguage.fr }}
+                </option>
+                <option value="EN" class="option__language">
+                  {{ navlinkLanguage.en }}
+                </option>
+              </select>
+            </li>
+
+            <!-- Menu Mobile -->
+            <li>
+              <div class="menu_wrap block">
                 <div
-                  class="icon_menu_close w-full h-6 cursor-pointer flex flex-row justify-end"
-                  @click="handleMenu"
-                >
-                  x
-                </div>
-              </div>
-              <ul class="modal_menu_links flex flex-col space-y-6">
-                <li
-                  class="modal_menu_link z-10"
-                  :key="value.id"
-                  v-for="(value, key) in navlinksItems"
-                  :ref="(el) => setItemRef(el, key, 'mobile')"
-                  @click="(e) => handleNavigationPath(e, key)"
+                  class="menu_content relative w-8 h-8 flex justify-center items-center rounded border border-solid border-[var(--accent-color-3)]"
                 >
                   <div
-                    class="holder_navlink inline-flex items-center justify-end tansition-all duration-300 ease-in-out hover:text-[var(--link--external-btn)] cursor-pointer"
+                    class="middle_bar relative h-[1px] w-[72%] bg-[var(--text-paragraph)] z-0"
+                    ref="middleBarRef"
+                  ></div>
+                  <div
+                    class="input_check_wrap absolute w-4/5 h-4/5 opacity-0 mx-auto z-10"
+                    @click="handleMenu"
                   >
-                    <div>
-                      <p class="nav_p_link cursor-pointer">
-                        {{ value.text }}
-                      </p>
+                    <input
+                      type="checkbox"
+                      name="checkbox"
+                      class="check_menu w-full h-full rounded cursor-pointer"
+                      ref="checkMenuRef"
+                    />
+                  </div>
+                </div>
+                <div class="modal_menu" ref="modalMenuRef">
+                  <div class="modal_close w-full">
+                    <div
+                      class="icon_menu_close w-full h-6 cursor-pointer flex flex-row justify-end"
+                      @click="handleMenu"
+                    >
+                      x
                     </div>
                   </div>
-                </li>
-              </ul>
-            </div>
-          </div>
+                  <ul class="modal_menu_links flex flex-col space-y-6">
+                    <li
+                      class="modal_menu_link z-10"
+                      :key="value.id"
+                      v-for="(value, key) in navlinksItems"
+                      :ref="(el) => setItemRef(el, key, 'mobile')"
+                      @click="(e) => handleNavigationPath(e, key)"
+                    >
+                      <div
+                        class="holder_navlink inline-flex items-center justify-end tansition-all duration-300 ease-in-out hover:text-[var(--link--external-btn)] cursor-pointer"
+                      >
+                        <div>
+                          <p class="nav_p_link cursor-pointer">
+                            {{ value.text }}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
         </nav>
       </header>
       <!-- introduce component routed -->
@@ -447,6 +518,7 @@ ul {
   width: 100vw;
   height: 50px;
   margin: 0 auto;
+  z-index: 15;
 }
 
 li.navlink__item,
@@ -465,6 +537,22 @@ li.modal_menu_link.active__navlink {
   /* do something */
   color: var(--background-primary);
   background-color: hsla(32, 30%, 37%, 0.65);
+}
+
+/* navbar scrolling animation - mobile */
+.navbar__desktop {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* The "cool" ease */
+}
+
+.isDisplayed {
+  transform: translateY(0);
+}
+
+.navbar__desktop:not(.isDisplayed) {
+  transform: translateY(-100%);
 }
 
 /* ── View transition ──────────────────────────────── */
