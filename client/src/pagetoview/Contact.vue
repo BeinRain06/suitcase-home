@@ -16,6 +16,8 @@ import { useRouter } from "vue-router";
 
 import { useDisplayDataStore } from "../store-management/useDisplayDataStore.js";
 
+import { useWhatsappStore } from "../store-management/whatsappStore.js";
+
 import { sendDataMail } from "../api-data/api-email-function.js";
 
 import ContactCues from "../some-svg-components/ContactCues.vue";
@@ -25,8 +27,7 @@ const props = defineProps({ userLanguage: String });
 const router = useRouter();
 
 const displayStore = useDisplayDataStore();
-
-const isBtnWhatsappVisible = ref(false);
+const whatsappStore = useWhatsappStore();
 
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
@@ -226,13 +227,15 @@ const handleScroll = () => {
   // Total height - (scroll position + window size) = distance from bottom
   const distanceFromBottom = documentHeight - (scrollY + windowHeight);
 
+  whatsappStore.$patch({ isItContactPage: true });
+
   if (distanceFromBottom <= 50) {
-    isBtnWhatsappVisible.value = true;
+    whatsappStore.show();
   }
 
   // 2. Logic for disappearing: 40px from the TOP
   if (scrollY <= 60) {
-    isBtnWhatsappVisible.value = false;
+    whatsappStore.hide();
   }
 };
 
@@ -621,24 +624,6 @@ onUnmounted(() => {
               </div>
             </div>
           </div>
-
-          <!-- Floating Whatsapp icon -->
-          <transition name="whatsapp-fade">
-            <div
-              class="whatsapp__float-container"
-              v-show="isBtnWhatsappVisible"
-            >
-              <div
-                class="whatsapp__icon-container flex justify-center items-center"
-              >
-                <div class="icon__whatsapp grid place-items-center">
-                  <div
-                    class="icon__content basis--icon streamline-logos--whatsapp-logo"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </transition>
         </div>
       </div>
       <!-- /form -->
@@ -936,80 +921,6 @@ onUnmounted(() => {
     80% {
       transform: translateX(3px);
     }
-  }
-
-  /* floating whatsapp icon */
-  .whatsapp__float-container {
-    width: 3rem;
-    height: 3rem;
-    position: fixed;
-    right: 4.2%;
-    bottom: 5%;
-    z-index: 100;
-  }
-
-  .whatsapp__icon-container {
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    color: hsl(0, 0%, 100%);
-    background-color: hsl(142, 70%, 49%);
-    border-radius: 50%;
-    position: relative; /* Required for absolute positioning of the pulse */
-    z-index: 1;
-  }
-
-  /* 2. Create the Pulse Rings */
-  .whatsapp__icon-container::before,
-  .whatsapp__icon-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: hsl(142, 70%, 49%); /* Same color as the icon */
-    border-radius: 50%;
-    z-index: -1; /* Place rings behind the icon */
-    opacity: 0.7;
-  }
-
-  /* 3. Animate the Rings */
-  .whatsapp__icon-container::before {
-    animation: pulse-wave 2s infinite ease-out;
-  }
-
-  .whatsapp__icon-container::after {
-    animation: pulse-wave 2s infinite ease-out 0.5s; /* 0.5s delay for second wave */
-  }
-
-  /* 4. Define the Pulse Keyframes */
-  @keyframes pulse-wave {
-    0% {
-      transform: scale(1);
-      opacity: 0.7;
-    }
-    100% {
-      transform: scale(1.5); /* How far the pulse spreads */
-      opacity: 0;
-    }
-  }
-
-  /* Ensure the icon stays above the pulse */
-  .icon__whatsapp {
-    position: relative;
-    z-index: 2;
-  }
-
-  /*-- whatsapp-fade transition (handleScroll activity) -- */
-  .whatsapp-fade-enter-active,
-  .whatsapp-fade-leave-active {
-    transition: opacity 0.5s ease;
-  }
-
-  .whatsapp-fade-enter-from,
-  .whatsapp-fade-leave-to {
-    opacity: 0;
   }
 }
 

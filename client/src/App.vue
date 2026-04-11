@@ -6,10 +6,13 @@ import LandingPage from "./pagetoview/LandingPage.vue";
 
 import LoadingPage from "./components/LoadingPage.vue";
 
+import WhatsappButton from "./components/WhatsappButton.vue";
+
 export default {
   components: {
     LandingPage,
     LoadingPage,
+    WhatsappButton,
   },
   setup() {
     const storeElt = useDisplayDataStore();
@@ -498,6 +501,8 @@ export default {
           </div>
         </div>
       </footer>
+      <!-- floating whatsapp button-->
+      <WhatsappButton />
     </div>
 
     <!-- when Loading is played -->
