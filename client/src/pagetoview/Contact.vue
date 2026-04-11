@@ -225,16 +225,26 @@ const handleScroll = () => {
 
   // 1. Logic for appearing: 50px from the BOTTOM
   // Total height - (scroll position + window size) = distance from bottom
-  const distanceFromBottom = documentHeight - (scrollY + windowHeight);
+  const distanceFromBottom = Math.max(
+    documentHeight - (scrollY + windowHeight),
+  );
 
   whatsappStore.$patch({ isItContactPage: true });
 
-  if (distanceFromBottom <= 50) {
-    whatsappStore.show();
-  }
+  // 2. FLAG: Is the user essentially at the bottom?
+  // We use 50px OR a check to see if they can't scroll any further
+  const isAtBottom =
+    distanceFromBottom <= 50 || scrollY + windowHeight >= documentHeight - 2;
 
-  // 2. Logic for disappearing: 40px from the TOP
-  if (scrollY <= 60) {
+  // 3. FLAG: Is the user essentially at the top?
+  const isAtTop = scrollY <= 60;
+
+  // THE LOGIC
+  if (isAtBottom) {
+    whatsappStore.show();
+  } else if (isAtTop) {
+    // We use "else if" so the 'show' logic takes priority
+    // if the page is so short that top and bottom overlap.
     whatsappStore.hide();
   }
 };
@@ -578,7 +588,7 @@ onUnmounted(() => {
               </div>
             </div>
             <div
-              class="contact__vertical-straightbar chidden min-[620px]:block"
+              class="contact__vertical-straightbar hidden min-[620px]:block"
             ></div>
           </div>
           <div class="contact__layout-phones relative mx-auto">

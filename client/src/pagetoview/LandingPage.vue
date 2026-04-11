@@ -89,7 +89,7 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <main id="landingpage">
+  <main id="landingpage" class="p-0">
     <!-- hero section -->
     <section id="hero" class="hero">
       <div class="hero__container">
@@ -785,6 +785,7 @@ h5 {
 
   .project__card {
     width: 100%;
+    position: relative;
     margin: 0 auto;
     height: 26.5rem;
     padding: 2rem 1rem 1.35rem;
