@@ -1,7 +1,16 @@
 <script setup>
 import "../style-contact-submit.css";
 
-import { ref, reactive, onUpdated, computed, watch, nextTick } from "vue";
+import {
+  ref,
+  reactive,
+  onUpdated,
+  computed,
+  watch,
+  nextTick,
+  onMounted,
+  onUnmounted,
+} from "vue";
 
 import { useRouter } from "vue-router";
 
@@ -16,6 +25,8 @@ const props = defineProps({ userLanguage: String });
 const router = useRouter();
 
 const displayStore = useDisplayDataStore();
+
+const isBtnWhatsappVisible = ref(false);
 
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
@@ -204,6 +215,27 @@ function goHome() {
   router.push({ name: "home" });
 }
 
+/* handlescroll -whatsapp btn display */
+const handleScroll = () => {
+  const scrollY = window.scrollY; // Current distance from top
+
+  const windowHeight = window.innerHeight; // Height of the browser window
+  const documentHeight = document.documentElement.scrollHeight; // Total page height
+
+  // 1. Logic for appearing: 50px from the BOTTOM
+  // Total height - (scroll position + window size) = distance from bottom
+  const distanceFromBottom = documentHeight - (scrollY + windowHeight);
+
+  if (distanceFromBottom <= 50) {
+    isBtnWhatsappVisible.value = true;
+  }
+
+  // 2. Logic for disappearing: 40px from the TOP
+  if (scrollY <= 60) {
+    isBtnWhatsappVisible.value = false;
+  }
+};
+
 watch(sent, async (newSent, oldSent) => {
   if (newSent) {
     await displayStore.$patch({ isNavbar: false });
@@ -214,6 +246,14 @@ onUpdated(() => {
   if (props.userLanguage) {
     indexLang.val = props.userLanguage === "FR" ? 0 : 1;
   }
+});
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 <template>
@@ -535,7 +575,7 @@ onUpdated(() => {
               </div>
             </div>
             <div
-              class="contact__vertical-straightbar hidden min-[620px]:block"
+              class="contact__vertical-straightbar chidden min-[620px]:block"
             ></div>
           </div>
           <div class="contact__layout-phones relative mx-auto">
@@ -551,32 +591,54 @@ onUpdated(() => {
                 </p>
               </div>
               <div
-                class="contact__phones w-8/12 h-3/12 pt-4 min-[620px]:pt-8 mx-auto flex flex-col items-center justify-center gap-2"
+                class="contact__phones w-8/12 h-3/12 pt-2 min-[620px]:pt-8 mx-auto flex flex-col items-center justify-center gap-2"
               >
                 <div
                   class="icons__phone-number w-max h-6 flex flex-row gap-2 items-center justify-center"
                 >
-                  <div class="icon__phone">
+                  <div
+                    class="icon__phone opacity-80 text-[var(--highlight-text)]"
+                  >
                     <div
                       class="icon__content basis--icon mdi-light--phone"
                     ></div>
                   </div>
-                  <div class="icon__whatsapp">
+                  <!-- <div class="icon__whatsapp">
                     <div
                       class="icon__content basis--icon streamline-logos--whatsapp-logo"
                     ></div>
-                  </div>
+                  </div> -->
                 </div>
                 <div
-                  class="phone__numbers w-full flex flex-col items-center min-[620px]:flex-row min-[620px]:justify-center"
+                  class="phone__numbers w-full pt-3 flex flex-col items-center min-[620px]:flex-row min-[620px]:justify-center"
                 >
-                  <h4 class="phone__number">6 72 99 97 49</h4>
+                  <h4 class="phone__number">+237 6 72 99 97 49</h4>
                   <h4 class="phone__space min-[620px]:ml-4">/</h4>
-                  <h4 class="phone__number min-[620px]:ml-4">6 76 93 58 16</h4>
+                  <h4 class="phone__number min-[620px]:ml-4">
+                    +237 6 76 93 58 16
+                  </h4>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Floating Whatsapp icon -->
+          <transition name="whatsapp-fade">
+            <div
+              class="whatsapp__float-container"
+              v-show="isBtnWhatsappVisible"
+            >
+              <div
+                class="whatsapp__icon-container flex justify-center items-center"
+              >
+                <div class="icon__whatsapp grid place-items-center">
+                  <div
+                    class="icon__content basis--icon streamline-logos--whatsapp-logo"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </transition>
         </div>
       </div>
       <!-- /form -->
@@ -625,8 +687,9 @@ onUpdated(() => {
   h4.phone__number,
   h4.phone__space {
     font-size: var(--regular-size);
-    color: var(--text-paragraph);
-    opacity: 0.6;
+    font-weight: medium;
+    color: var(--link--external-btn);
+    opacity: 0.74;
   }
 
   #contact {
@@ -873,6 +936,80 @@ onUpdated(() => {
     80% {
       transform: translateX(3px);
     }
+  }
+
+  /* floating whatsapp icon */
+  .whatsapp__float-container {
+    width: 3rem;
+    height: 3rem;
+    position: fixed;
+    right: 4.2%;
+    bottom: 5%;
+    z-index: 100;
+  }
+
+  .whatsapp__icon-container {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    color: hsl(0, 0%, 100%);
+    background-color: hsl(142, 70%, 49%);
+    border-radius: 50%;
+    position: relative; /* Required for absolute positioning of the pulse */
+    z-index: 1;
+  }
+
+  /* 2. Create the Pulse Rings */
+  .whatsapp__icon-container::before,
+  .whatsapp__icon-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: hsl(142, 70%, 49%); /* Same color as the icon */
+    border-radius: 50%;
+    z-index: -1; /* Place rings behind the icon */
+    opacity: 0.7;
+  }
+
+  /* 3. Animate the Rings */
+  .whatsapp__icon-container::before {
+    animation: pulse-wave 2s infinite ease-out;
+  }
+
+  .whatsapp__icon-container::after {
+    animation: pulse-wave 2s infinite ease-out 0.5s; /* 0.5s delay for second wave */
+  }
+
+  /* 4. Define the Pulse Keyframes */
+  @keyframes pulse-wave {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1.5); /* How far the pulse spreads */
+      opacity: 0;
+    }
+  }
+
+  /* Ensure the icon stays above the pulse */
+  .icon__whatsapp {
+    position: relative;
+    z-index: 2;
+  }
+
+  /*-- whatsapp-fade transition (handleScroll activity) -- */
+  .whatsapp-fade-enter-active,
+  .whatsapp-fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+
+  .whatsapp-fade-enter-from,
+  .whatsapp-fade-leave-to {
+    opacity: 0;
   }
 }
 

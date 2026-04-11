@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
 import {
   hero,
@@ -13,6 +13,12 @@ import {
 const props = defineProps({ userLanguage: String });
 
 const router = useRouter();
+
+const whatsAppTriggerRef = ref(null);
+
+const isBtnWhatsappVisible = ref(false);
+
+let observer = null;
 
 const indexLang = computed(() => {
   return props.userLanguage === "FR" ? 0 : 1;
@@ -38,6 +44,39 @@ const handleRoute = async (route, projectId, queryValue) => {
       throw new Error("Error --handleRoute Fn-- in -- *LandingPage* component");
   }
 };
+
+onMounted(() => {
+  // 1. Define the logic for when the section enters/leaves view
+  const callback = (entries) => {
+    entries.forEach((entry) => {
+      // 1. Get the position of the section relative to the viewport
+      const isAboveViewport = entry.boundingClientRect.y < 0;
+
+      if (entry.isIntersecting || isAboveViewport) {
+        // 2. If we are touching the section OR we have passed it (scrolled down)
+        isBtnWhatsappVisible.value = true;
+      } else {
+        // 3. Only hide if we are ABOVE the section (scrolled back up)
+        isBtnWhatsappVisible.value = false;
+      }
+    });
+  };
+
+  // 2. Initialize the observer
+  observer = new IntersectionObserver(callback, {
+    threshold: 0.1, // Adjust this (0 to 1) for how much of the section should be visible
+  });
+
+  // 3. Start watching the target section
+  if (whatsAppTriggerRef.value) {
+    observer.observe(whatsAppTriggerRef.value);
+  }
+});
+
+// 4. Cleanup to prevent memory leaks
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
+});
 </script>
 <template>
   <main id="landingpage">
@@ -448,7 +487,7 @@ const handleRoute = async (route, projectId, queryValue) => {
       </div>
     </section>
     <!-- reinforcement -->
-    <section id="reinforcement" class="reinforcement">
+    <section id="reinforcement" class="reinforcement" ref="whatsAppTriggerRef">
       <div
         class="reinforcement__container flex flex-col md:flex-row-reverse justify-between gap-6 md:gap-12 lg:gap-16"
       >
@@ -550,6 +589,19 @@ const handleRoute = async (route, projectId, queryValue) => {
         </div>
       </div>
     </section>
+
+    <!-- Floating Whatsapp icon -->
+    <transition name="whatsapp-fade">
+      <div class="whatsapp__float-container" v-show="isBtnWhatsappVisible">
+        <div class="whatsapp__icon-container flex justify-center items-center">
+          <div class="icon__whatsapp grid place-items-center">
+            <div
+              class="icon__content basis--icon streamline-logos--whatsapp-logo"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </main>
 </template>
 <style scoped>
@@ -936,6 +988,36 @@ h5 {
     font-size: var(--subtitle-size);
     font-size: calc(var(--regular-size) + 0.95vw);
     line-height: 1.6;
+  }
+
+  /* floating whatsapp icon */
+  .whatsapp__float-container {
+    width: 3rem;
+    height: 3rem;
+    position: fixed;
+    right: 3%;
+    bottom: 5%;
+    z-index: 100;
+  }
+
+  .whatsapp__icon-container {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    color: hsl(0, 0%, 100%);
+    background-color: hsl(142, 70%, 49%);
+    border-radius: 50%;
+  }
+
+  /*-- whatsapp-fade transition -- */
+  .whatsapp-fade-enter-active,
+  .whatsapp-fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+
+  .whatsapp-fade-enter-from,
+  .whatsapp-fade-leave-to {
+    opacity: 0;
   }
 }
 

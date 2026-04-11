@@ -209,10 +209,14 @@ export default {
       // We only act if the user has scrolled a significant amount (threshold)
       if (deltaY >= 45) {
         // User is scrolling down aggressively -> Hide Nav
-        this.isNavDisplayed = false;
+        setTimeout(() => {
+          this.isNavDisplayed = false;
+        }, 5000);
       } else if (deltaY <= -30) {
         // User is scrolling up -> Show Nav
-        this.isNavDisplayed = true;
+        setTimeout(() => {
+          this.isNavDisplayed = true;
+        }, 350);
       }
 
       // 4. Force Show Nav if we are at the very top of the page
