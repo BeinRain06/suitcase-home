@@ -1,7 +1,7 @@
 /* version simple javascript */
 
 export const sendDataMail = (dataObject, url) => {
-  console.log(dataObject);
+  // console.log(dataObject);
 
   const searchParams = new URLSearchParams();
 
@@ -9,7 +9,7 @@ export const sendDataMail = (dataObject, url) => {
     searchParams.append(key, dataObject[key]);
   }
 
-  console.log("searchParams", searchParams);
+  // console.log("searchParams", searchParams);
 
   const onFire = fetch(url, {
     method: "POST",
@@ -24,7 +24,10 @@ export const sendDataMail = (dataObject, url) => {
 
   setTimeout(async () => {
     const cooked = await onFire;
-    console.log("result POST:", cooked);
+
+    // console.log("result POST:", cooked);
+
+    console.log("post Sent!");
   }, 3000);
 };
 

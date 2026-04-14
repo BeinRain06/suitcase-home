@@ -186,10 +186,6 @@ export default {
         this.checkMenuRef.checked = !this.checkMenuRef.checked;
       }
 
-      console.log("checkMenuRef:", this.checkMenuRef);
-
-      console.log("middleBarRef:", this.middleBarRef);
-
       if (this.checkMenuRef?.checked) {
         this.middleBarRef.classList.add("active_menu");
         this.modalMenuRef.classList.add("active_menu");
@@ -233,15 +229,12 @@ export default {
   },
   computed: {
     isNavbar() {
-      console.log("this storeElt isNavbar :", this.storeElt.isNavbar);
       return this.storeElt.isNavbar;
     },
     isFooter() {
-      console.log("this storeElt isNavbar :", this.storeElt.isFooter);
       return this.storeElt.isFooter;
     },
     isLoading() {
-      console.log("this storeElt isLoading :", this.storeElt.isLoading);
       return this.storeElt.isLoading;
     },
   },
@@ -261,7 +254,6 @@ export default {
   },
   mounted() {
     if (this.itemsRef && this.itemsRefMenu) {
-      console.log("this itemRef 0:", this.itemsRef[0]);
       this.itemsRef[0]?.classList.add("active__navlink");
       this.itemsRefMenu[0]?.classList.add("active__navlink");
     }

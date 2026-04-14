@@ -40,7 +40,6 @@
     --regular-size: calc(0.9rem + 0.1vw); /* modified once */
 
     --subtitle-size: calc(1.45rem + 0.1vw); /* modified once */
-    /* --title-size: calc(2.25rem + 0.15vw); */
     --title-size: calc(1.75rem + 0.1vw);
     --hero-title-size: calc(3rem + 0.12vw);
 
@@ -54,7 +53,6 @@
     --mini-size: calc(0.6rem + 0.12vw);
     --cater-size: calc(0.76rem + 0.1vw);
     --mid-size: calc(0.9rem + 0.12vw);
-    /* --regular-size: calc(1.15rem + 0.1vw); */
     --regular-size: calc(1.12rem + 0.05vw);
 
     --subtitle-size: calc(1.72rem + 0.05vw);
@@ -263,47 +261,3 @@ textarea {
   font-weight: 600;
   font-style: normal;
 }
-
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
- */

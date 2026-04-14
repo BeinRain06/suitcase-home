@@ -1,6 +1,4 @@
 <script setup>
-import "../style-contact-submit.css";
-
 import {
   ref,
   reactive,
@@ -20,7 +18,11 @@ import { useWhatsappStore } from "../store-management/whatsappStore.js";
 
 import { sendDataMail } from "../api-data/api-email-function.js";
 
-import ContactCues from "../some-svg-components/ContactCues.vue";
+import SuccessFullSentForm from "../components/SuccessFullSentForm.vue";
+
+import SendErrorForm from "../components/SendErrorForm.vue";
+
+import SubmitButtonValidation from "../components/SubmitButtonValidation.vue";
 
 const props = defineProps({ userLanguage: String });
 
@@ -44,10 +46,10 @@ const sent = ref(false); // normal set: false
 const sendError = ref("");
 
 /* ─── Recipient tags ──────────────────────────── */
-const recipients = ref([]); // [{ id, email, removing }]
+/* const recipients = ref([]); // [{ id, email, removing }]
 const tagDraft = ref("");
 const tagInputRef = ref(null);
-const recipientsError = ref(false);
+const recipientsError = ref(false); */
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
 const DEBOUNCE_MS = 3000; // 3 seconds after user stops typing
@@ -208,14 +210,6 @@ function resetAll() {
   sendError.value = "";
 }
 
-function goHome() {
-  /* sent.value = false;
-  resetAll(); */
-
-  /* router.push("/"); */
-  router.push({ name: "home" });
-}
-
 /* handlescroll -whatsapp btn display */
 const handleScroll = () => {
   const scrollY = window.scrollY; // Current distance from top
@@ -271,7 +265,7 @@ onUnmounted(() => {
 </script>
 <template>
   <section id="contact" class="contact">
-    <transition name="vt" mode-out="out-in">
+    <transition name="fade-transform" mode-out="out-in">
       <!-- ══════════════════════════════════════════
            FORM VIEW  — only 3 fields, no recipient input
       ══════════════════════════════════════════════ -->
@@ -532,22 +526,7 @@ onUnmounted(() => {
                 >
                   <!-- SEND ERROR IF OCCUR -->
                   <div v-if="sendError" class="send__error">
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                      <circle
-                        cx="10"
-                        cy="10"
-                        r="9"
-                        stroke="#ef4444"
-                        stroke-width="1.5"
-                      />
-                      <path
-                        d="M10 6v4.5M10 13v.5"
-                        stroke="#ef4444"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                    <p>{{ sendError }}</p>
+                    <SendErrorForm :send-error="SendError" />
                   </div>
                   <!-- VALIDATION BUTTON -->
                   <div
@@ -555,34 +534,10 @@ onUnmounted(() => {
                     :disabled="sending || !formReady"
                     @click.stop="submitForm"
                   >
-                    <button v-if="!indexLang" class="submit__form">
-                      <div v-if="!sending" class="block text-[length:inherit]">
-                        Laisser un Message
-                      </div>
-                      <div
-                        v-else
-                        class="w-max flex flex-row gap-2 text-[length:inherit]"
-                      >
-                        <!-- <span class="spinner w-max hidden"></span> -->
-                        <span class="smaller__span"
-                          >Your message is being transferred…</span
-                        >
-                      </div>
-                    </button>
-                    <button v-else class="submit__form">
-                      <div v-if="!sending" class="block text-[length:inherit]">
-                        Drop a Message
-                      </div>
-                      <div
-                        v-else
-                        class="w-max flex flex-row gap-2 text-[length:inherit]"
-                      >
-                        <span class="spinner w-max"></span>
-                        <span class="smaller__span"
-                          >Your message is being transferred…</span
-                        >
-                      </div>
-                    </button>
+                    <SubmitButtonValidation
+                      :sending="sending"
+                      :indexLang="indexLang"
+                    />
                   </div>
                 </div>
               </div>
@@ -641,41 +596,55 @@ onUnmounted(() => {
       <!-- ══════════════════════════════════════════
            SUCCESS SCREEN
       ══════════════════════════════════════════════ -->
-      <div v-else key="success" class="success__screen mt-20">
-        <div class="success__icon-wrap">
-          <svg viewBox="0 0 44 44" fill="none">
-            <circle
-              cx="22"
-              cy="22"
-              r="20"
-              stroke="#22c55e"
-              stroke-width="1.8"
-            />
-            <path
-              d="M13 22l6 6 12-12"
-              stroke="#22c55e"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </div>
-
-        <p class="success__title text-[var(--title-color)] opacity-80">
-          Message Sent!
-        </p>
-        <p class="success__sub">
-          Thank you — your message was delivered successfully.<br />
-          We are grateful and will get back to you as soon as possible.
-        </p>
-
-        <a class="back__home" href="/" @click.prevent="goHome">← Back home</a>
+      <div v-else key="success" class="success__screen p-4 mt-20 text-center">
+        <SuccessFullSentForm />
       </div>
       <!-- /success -->
     </transition>
   </section>
 </template>
 <style scoped>
+/* global utilities */
+
+/* ── View fade-transform transition ──────────────────────────────── */
+.fade-transform-enter-active {
+  transition:
+    opacity 0.35s var(--ease-smooth),
+    transform 0.38s var(--ease-smooth);
+}
+.fade-transform-leave-active {
+  transition:
+    opacity 0.22s var(--ease-smooth),
+    transform 0.22s var(--ease-smooth);
+  position: absolute;
+  width: calc(100% - 5rem);
+}
+.fade-transform-enter-from {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* ── Spinner ──────────────────────────────────────── */
+.spinner {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(13, 13, 15, 0.3);
+  border-top-color: #0d0d0f;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media screen and (min-width: 140px) {
   /* utilities */
 
